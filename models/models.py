@@ -85,6 +85,30 @@ class CustomLLM(LLM):
                 torch_dtype=torch.float16,
             )
 
+        # --- ADDED UPDATED EXL2 HERE ---
+        elif "exl2" in self.model_name or "EXL2" in self.model_name and self.exllama:
+            from exllamav2 import ExLlamaV2Cache
+            from exllamav2 import ExLlamaV2, ExLlamaV2Config, ExLlamaV2Tokenizer
+            from models.exllamav2_generator_rag import (
+                ExLlamaV2BaseGeneratorRAG,
+            )
+
+            torch.cuda._lazy_init()
+            config = ExLlamaV2Config()
+            config.model_dir = join(base_models, self.model_name)
+            config.prepare()
+            config.max_seq_len = self.max_context_length
+            config.scale_pos_emb = 1.0
+            config.scale_alpha_value = 1.0
+            config.no_flash_attn = False
+            self.model = ExLlamaV2(config)
+            self.model.load()
+            self.tokenizer = ExLlamaV2Tokenizer(config)
+            cache = ExLlamaV2Cache(self.model)
+            self.generator = ExLlamaV2BaseGeneratorRAG(
+                self.model, cache, self.tokenizer
+            )
+            self.generator.warmup()
         elif "GPTQ" in self.model_name:
             if self.exllama:
                 from exllamav2 import ExLlamaV2Cache

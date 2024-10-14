@@ -1,12 +1,12 @@
 defaults:
   - _self_
   - paths: example 
-  - model: WizardLM70B
+  - model: Llama3Instruct8B
 
-pathology: appendicitis
+pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
+summarize: True #Automatically summarize the progress if we begin to reach the token limit
 agent: ZeroShot
 prompt_template: VANILLA
-summarize: True
 fewshot: False
 include_ref_range: False
 bin_lab_results: False

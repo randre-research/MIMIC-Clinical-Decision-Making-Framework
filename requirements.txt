@@ -80,7 +80,7 @@ entrypoints
 et-xmlfile==1.1.0
 exceptiongroup
 executing==2.0.1
-exllamav2==0.0.8
+# exllamav2==0.0.8
 fancyimpute==0.7.0
 fastavro==1.8.2
 fastjsonschema
