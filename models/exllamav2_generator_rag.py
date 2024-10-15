@@ -23,6 +23,17 @@ class ExLlamaV2BaseGeneratorRAG:
         self.cache = cache
         self.tokenizer = tokenizer
 
+        # Check if the model is on GPU
+        gpu_count = 0
+        for context in self.model.device_context:
+            if context is not None and context.device_idx >= 0:
+                gpu_count += 1
+
+        if gpu_count > 0:
+            print(f"Model loaded on {gpu_count} GPU(s).")
+        else:
+            print("Model is loaded on CPU.")
+
     # For testing purposes, run a forward pass to make sure CUDA is fully initialized
 
     def warmup(self):

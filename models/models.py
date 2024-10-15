@@ -98,9 +98,16 @@ class CustomLLM(LLM):
             config.model_dir = join(base_models, self.model_name)
             config.prepare()
             config.max_seq_len = self.max_context_length
+            # config.max_batch_size = 1  # Set a default value; you may adjust if needed
+            # config.max_input_len = 2048  # Adjust based on your model requirements
+            # config.max_attention_size = 2048 ** 2  # Adjust based on your model requirements
             config.scale_pos_emb = 1.0
             config.scale_alpha_value = 1.0
             config.no_flash_attn = False
+            # config.no_xformers = False  # Explicitly set if desired
+            # config.no_sdpa = False  # Explicitly set if desired
+            # config.load_in_q4 = False  # Explicitly set if you do not need Q4 format
+            # config.no_graphs = False  # Explicitly set if you want CUDA graphs
             self.model = ExLlamaV2(config)
             self.model.load()
             self.tokenizer = ExLlamaV2Tokenizer(config)
@@ -276,9 +283,20 @@ class CustomLLM(LLM):
                 if self.self_consistency:
                     settings = settings.clone()
                     settings.temperature = 0.7
+                    # settings.top_k = 50  # Set top_k to control diversity
+                    # settings.top_p = 0.8  # Set top_p to control cumulative probability
+                    # settings.token_repetition_penalty = 1.025  # Discourage token repetition
+                    # settings.mirostat = False  # Explicitly set mirostat if not needed
+                    # settings.dry_multiplier = 0.0  # Set dry run multiplier as needed
                     seed = None
                 else:
                     settings = settings.greedy_clone()
+                    # settings.temperature = 1.0 # No temperature for greedy
+                    # settings.top_k = 1 # No top_k for greedy
+                    # settings.top_p = 0 # No top_p for greedy
+                    # settings.token_repetition_penalty = 1.0  # No repetition penalty for greedy
+                    # settings.mirostat = False  # Set to False for greedy
+                    # settings.dry_multiplier = 0.0 # Set dry run multiplier as needed
                     seed = self.seed
 
                 stop_criteria = create_stop_criteria_exllama(

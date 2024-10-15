@@ -10,15 +10,14 @@ model_name: Llama-3.2-1B-Instruct-exl2-4.0bpw
 max_context_length: 4096
 exllama: True
 
-system_tag_start: "<s>[INST] <<SYS>>\n"
-system_tag_end: "\n<</SYS>>\n\n"
+system_tag_start: "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+system_tag_end: "<|eot_id|>"
 
-user_tag_start: ""
-user_tag_end: " [/INST] "
+user_tag_start: "<|start_header_id|>user<|end_header_id|>\n\n"
+user_tag_end: "<|eot_id|>"
 
-ai_tag_start: ""
-ai_tag_end: " </s><s>[INST] "
+ai_tag_start: "<|start_header_id|>assistant<|end_header_id|>\n\n"
+ai_tag_end: "<|eot_id|>"
 
 stop_words:
- - "[INST]"
- - "[/INST]"
+ - "<|eot_id|>"
