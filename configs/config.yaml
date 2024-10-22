@@ -3,19 +3,23 @@ defaults:
   - paths: example 
   - model: Llama3Instruct8B
 
-pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
+# pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
+pathology: diverticulitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
 summarize: True #Automatically summarize the progress if we begin to reach the token limit
 agent: ZeroShot
 prompt_template: VANILLA
 fewshot: False
 include_ref_range: False
-bin_lab_results: False
-bin_lab_results_abnormal: False
+# bin_lab_results: False
+bin_lab_results: True
+# bin_lab_results_abnormal: False
+bin_lab_results_abnormal: True
 provide_diagnostic_criteria: False
 include_tool_use_examples: False
 abbreviated: True
 self_consistency: False
-only_abnormal_labs: False
+# only_abnormal_labs: False
+only_abnormal_labs: True
 
 seed: 2023
 local_logging: True
@@ -30,4 +34,5 @@ diagnostic_criteria:
 rr_name: RR
 diag_crit_writer_openai_api_key:
 confirm_diagnosis: False
-save_probabilities: False
+# save_probabilities: False
+save_probabilities: True

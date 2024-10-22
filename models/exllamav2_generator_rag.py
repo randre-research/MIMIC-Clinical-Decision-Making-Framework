@@ -34,6 +34,12 @@ class ExLlamaV2BaseGeneratorRAG:
         else:
             print("Model is loaded on CPU.")
 
+        from exllamav2.attn import has_flash_attn
+        if has_flash_attn:
+            print("FlashAttention is enabled.")
+        else:
+            print("FlashAttention is disabled.")
+
     # For testing purposes, run a forward pass to make sure CUDA is fully initialized
 
     def warmup(self):

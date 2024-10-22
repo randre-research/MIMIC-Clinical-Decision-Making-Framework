@@ -2,7 +2,7 @@
 defaults:
   - _self_
 
-base_mimic: 
-base_models: 
-lab_test_mapping_path: 
-local_logging_dir: 
+base_mimic: /container/data
+base_models: /container/models
+lab_test_mapping_path: /container/data/lab_test_mapping.pkl
+local_logging_dir: /container/data/logs
