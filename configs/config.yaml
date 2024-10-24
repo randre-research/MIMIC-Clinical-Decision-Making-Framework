@@ -1,7 +1,8 @@
 defaults:
   - _self_
   - paths: example 
-  - model: Llama3Instruct8B
+  # - model: Llama3Instruct8B
+  - model: Llama3Instruct70B
 
 # pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
 pathology: diverticulitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
