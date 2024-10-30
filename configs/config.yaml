@@ -1,8 +1,8 @@
 defaults:
   - _self_
   - paths: example 
-  - model: Llama3Instruct8B
-  # - model: Llama3Instruct70B
+  # - model: Llama3Instruct8B
+  - model: Llama3Instruct70B
   - rag: RAGExample
 
 # pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
