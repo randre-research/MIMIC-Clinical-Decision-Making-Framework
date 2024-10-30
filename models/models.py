@@ -104,7 +104,7 @@ class CustomLLM(LLM):
             config.scale_pos_emb = 1.0
             config.scale_alpha_value = 1.0
             config.no_flash_attn = False
-            # config.no_xformers = False  # Explicitly set if desired
+            config.no_xformers = False  # Explicitly set if desired #ENABLED
             # config.no_sdpa = False  # Explicitly set if desired
             # config.load_in_q4 = False  # Explicitly set if you do not need Q4 format
             # config.no_graphs = False  # Explicitly set if you want CUDA graphs

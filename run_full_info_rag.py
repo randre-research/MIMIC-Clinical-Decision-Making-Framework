@@ -17,6 +17,14 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from thefuzz import process
 
+# --- RAG ---
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import FAISS
+from rag.rag_appplication import EmbeddingModelContainer, VectorStore, Retriever
+# --- End RAG ---
+
 from utils.nlp import calculate_num_tokens, truncate_text, create_lab_test_string
 from dataset.utils import load_hadm_from_file
 from utils.logging import append_to_pickle_file
@@ -53,6 +61,8 @@ from agents.prompts import (
     DIAGNOSTIC_CRITERIA_PANCREATITIS,
     CONFIRM_DIAG_TEMPLATE,
     WRITE_DIAG_CRITERIA_TEMPLATE,
+    #RAG
+    FULL_INFO_TEMPLATE_RAG,
 )
 
 gpt_tags = {
@@ -115,6 +125,56 @@ def run(args: DictConfig):
     )
     llm.load_model(args.base_models)
 
+    # --- RAG ---
+    if args.use_rag:
+        # Initialize the embedding model with a local model of your choice
+        embedding_model_container = EmbeddingModelContainer(
+            model_name_or_path=args.rag_embedding_model,
+            device="cuda" #if torch.cuda.is_available() else "cpu"
+        )
+
+        embedding_model_container.load_model(args.base_models)
+
+        # Define the paths to your documents (ensure these paths are correct)
+        document_paths = [
+            "cdm_appendicitis_s13017-020-00306-3.pdf",
+            "cdm_cholecystitis_s13017-020-00336-x.pdf",
+            "cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf",
+            "cdm_pancreatitis_s13017-019-0247-0.pdf",
+        ]
+
+        #add base rag documents at the start of each document name
+        document_paths = [join(args.base_rag_documents, doc) for doc in document_paths]
+
+        # # Initialize the vector store
+        # vector_store_instance = VectorStore(
+        #     document_paths=document_paths,
+        #     embedding_model_container=embedding_model_container,
+        #     chunk_size=250,
+        #     chunk_overlap=0
+        # )
+
+        # # Get the vector store object
+        # vector_store = vector_store_instance.get_vector_store()
+
+        # Initialize the vector store
+        vector_store = VectorStore(
+            document_paths=document_paths,
+            embedding_model_container=embedding_model_container,
+            chunk_size=250,
+            chunk_overlap=0
+        )
+
+        # Initialize the retriever
+        retriever = Retriever(
+            vector_store=vector_store,
+            embedding_model_container=embedding_model_container,
+            top_k=args.rag_top_k,  # You can adjust this value
+            re_rank=True,
+            prompt_name="s2p_query"  # or "s2s_query" depending on your task #TODO: C'est quoi ca
+        )
+    # --- End RAG ---
+
     if args.confirm_diagnosis:
         diag_crit_writer = CustomLLM(
             model_name="gpt-3.5-turbo",
@@ -127,56 +187,66 @@ def run(args: DictConfig):
         diag_crit_writer.load_model(args.base_models)
 
     # Interpret desired prompt
-    if args.prompt_template == "NOSYSTEM":
-        prompt_template = FULL_INFO_TEMPLATE_NO_SYSTEM
-    elif args.prompt_template == "NOUSER":
-        prompt_template = FULL_INFO_TEMPLATE_NO_USER
-    elif args.prompt_template == "NOSYSTEMNOUSER":
-        prompt_template = FULL_INFO_TEMPLATE_NO_SYSTEM_NO_USER
-    elif args.prompt_template == "NOMEDICAL":
-        prompt_template = FULL_INFO_TEMPLATE_NO_MEDICAL
-    elif args.prompt_template == "SERIOUS":
-        prompt_template = FULL_INFO_TEMPLATE_SERIOUS
-    elif args.prompt_template == "MINIMALSYSTEM":
-        prompt_template = FULL_INFO_TEMPLATE_MINIMAL_SYSTEM
-    elif args.prompt_template == "NOPROMPT":
-        prompt_template = FULL_INFO_TEMPLATE_NO_PROMPT
-    elif args.prompt_template == "NOFINAL":
-        prompt_template = FULL_INFO_TEMPLATE_NOFINAL
-    elif args.prompt_template == "MAINDIAGNOSIS":
-        prompt_template = FULL_INFO_TEMPLATE_MAINDIAGNOSIS
-    elif args.prompt_template == "PRIMARYDIAGNOSIS":
-        prompt_template = FULL_INFO_TEMPLATE_PRIMARYDIAGNOSIS
-    elif args.prompt_template == "ACUTE":
-        prompt_template = FULL_INFO_TEMPLATE_ACUTE
-    elif args.prompt_template == "SECTION":
-        prompt_template = FULL_INFO_TEMPLATE_SECTION
-    elif args.prompt_template == "TOP3":
-        prompt_template = FULL_INFO_TEMPLATE_TOP3
-        args.save_probabilities = True
-    elif args.prompt_template == "COT":
-        prompt_template = FULL_INFO_TEMPLATE_COT
-        final_diagnosis_prompt = PromptTemplate(
-            template=FULL_INFO_TEMPLATE_COT_FINAL_DIAGNOSIS,
-            input_variables=["cot"],
-            partial_variables={
-                "system_tag_start": tags["system_tag_start"],
-                "system_tag_end": tags["system_tag_end"],
-                "user_tag_start": tags["user_tag_start"],
-                "user_tag_end": tags["user_tag_end"],
-                "ai_tag_start": tags["ai_tag_start"],
-            },
-        )
-        final_diag_chain = LLMChain(llm=llm, prompt=final_diagnosis_prompt)
+    if not args.use_rag:
+        if args.prompt_template == "NOSYSTEM":
+            prompt_template = FULL_INFO_TEMPLATE_NO_SYSTEM
+        elif args.prompt_template == "NOUSER":
+            prompt_template = FULL_INFO_TEMPLATE_NO_USER
+        elif args.prompt_template == "NOSYSTEMNOUSER":
+            prompt_template = FULL_INFO_TEMPLATE_NO_SYSTEM_NO_USER
+        elif args.prompt_template == "NOMEDICAL":
+            prompt_template = FULL_INFO_TEMPLATE_NO_MEDICAL
+        elif args.prompt_template == "SERIOUS":
+            prompt_template = FULL_INFO_TEMPLATE_SERIOUS
+        elif args.prompt_template == "MINIMALSYSTEM":
+            prompt_template = FULL_INFO_TEMPLATE_MINIMAL_SYSTEM
+        elif args.prompt_template == "NOPROMPT":
+            prompt_template = FULL_INFO_TEMPLATE_NO_PROMPT
+        elif args.prompt_template == "NOFINAL":
+            prompt_template = FULL_INFO_TEMPLATE_NOFINAL
+        elif args.prompt_template == "MAINDIAGNOSIS":
+            prompt_template = FULL_INFO_TEMPLATE_MAINDIAGNOSIS
+        elif args.prompt_template == "PRIMARYDIAGNOSIS":
+            prompt_template = FULL_INFO_TEMPLATE_PRIMARYDIAGNOSIS
+        elif args.prompt_template == "ACUTE":
+            prompt_template = FULL_INFO_TEMPLATE_ACUTE
+        elif args.prompt_template == "SECTION":
+            prompt_template = FULL_INFO_TEMPLATE_SECTION
+        elif args.prompt_template == "TOP3":
+            prompt_template = FULL_INFO_TEMPLATE_TOP3
+            args.save_probabilities = True
+        elif args.prompt_template == "COT":
+            prompt_template = FULL_INFO_TEMPLATE_COT
+            final_diagnosis_prompt = PromptTemplate(
+                template=FULL_INFO_TEMPLATE_COT_FINAL_DIAGNOSIS,
+                input_variables=["cot"],
+                partial_variables={
+                    "system_tag_start": tags["system_tag_start"],
+                    "system_tag_end": tags["system_tag_end"],
+                    "user_tag_start": tags["user_tag_start"],
+                    "user_tag_end": tags["user_tag_end"],
+                    "ai_tag_start": tags["ai_tag_start"],
+                },
+            )
+            final_diag_chain = LLMChain(llm=llm, prompt=final_diagnosis_prompt)
 
-    elif args.prompt_template == "VANILLA":
-        prompt_template = FULL_INFO_TEMPLATE
+        elif args.prompt_template == "VANILLA":
+            prompt_template = FULL_INFO_TEMPLATE
+        else:
+            raise NotImplementedError
     else:
-        raise NotImplementedError
+        # RAG
+        if args.prompt_template == "VANILLA":
+            prompt_template = FULL_INFO_TEMPLATE_RAG
+        else:
+            raise NotImplementedError
 
     prompt = PromptTemplate(
         template=prompt_template,
-        input_variables=["input", "fewshot_examples", "diagnostic_criteria"],
+        # input_variables=["input", "fewshot_examples", "diagnostic_criteria"],
+        # input_variables=["input", "fewshot_examples", "diagnostic_criteria", "documents"], #RAG
+        #add documents only if using RAG
+        input_variables=["input", "fewshot_examples", "diagnostic_criteria", "documents"] if args.use_rag else ["input", "fewshot_examples", "diagnostic_criteria"],
         partial_variables={
             "system_tag_start": tags["system_tag_start"],
             "system_tag_end": tags["system_tag_end"],
@@ -188,12 +258,14 @@ def run(args: DictConfig):
     langchain.debug = True
 
     chain = LLMChain(llm=llm, prompt=prompt)
-    #TODO: Inject RAG somewhere here
 
     date_time = datetime.fromtimestamp(time.time())
     str_date = date_time.strftime("%d-%m-%Y_%H:%M:%S")
     args.model_name = args.model_name.replace("/", "_")
-    run_name = f"{args.pathology}_{args.model_name}_{str_date}_FULL_INFO"
+    run_name = f"{args.pathology}_{args.model_name}"
+    if args.use_rag:
+        run_name += f"_{args.rag_name}"
+    run_name += f"_{str_date}_FULL_INFO"
 
     # Create run_name string
     if args.order:
@@ -226,8 +298,9 @@ def run(args: DictConfig):
         run_name += "_NOABBR"
     if args.self_consistency:
         run_name += "_SELFCONSISTENCY"
-    if prompt_template != FULL_INFO_TEMPLATE:
-        run_name += f"_{args.prompt_template}"
+    # if prompt_template != FULL_INFO_TEMPLATE:
+    #     run_name += f"_{args.prompt_template}"
+    run_name += f"_{args.prompt_template}"
     if args.save_probabilities:
         run_name += "_PROBS"
     if args.run_descr:
@@ -360,6 +433,18 @@ def run(args: DictConfig):
         # This we want to leave for future formatting
         input = input.replace("{{rad_reports}}", "{rad_reports}")
 
+        # --- RAG: Retrieve relevant documents ---
+        # Construct the question (this could be the patient's data or a specific question)
+        if args.use_rag:
+            question = input.format(rad_reports=rad_reports)
+
+            # Retrieve relevant documents
+            retrieved_docs = retriever.retrieve(question)
+            # Extract content from retrieved documents
+            doc_texts = "\n".join([doc.page_content for doc in retrieved_docs])
+
+        # --- End RAG ---
+
         input, fewshot_examples, rad_reports = control_context_length(
             input,
             prompt_template,
@@ -373,12 +458,14 @@ def run(args: DictConfig):
             hadm_info_clean,
             diagnostic_criteria,
             args.summarize,
+            documents=doc_texts if args.use_rag else None, #RAG
         )
 
         result = chain.predict(
             input=input.format(rad_reports=rad_reports),
             fewshot_examples=fewshot_examples,
             diagnostic_criteria=diagnostic_criteria,
+            documents=doc_texts if args.use_rag else None, #RAG
             stop=STOP_WORDS,
         )
 
@@ -410,6 +497,7 @@ def run(args: DictConfig):
 
         # Confirm the diagnosis by providing the diagnostic criteria for the first answer and then asking the AI to confirm
         if args.confirm_diagnosis:
+            #TODO: Make sure confirm_diagnosis works with RAG
             # Remove numbering
             diagnosis = re.sub(r"\d+\.\s*", "", result)
             diagnosis = re.split(r"[,.\n]|(?:\s*\b(?:and|or|vs[.]?)\b\s*)", diagnosis)[
@@ -603,6 +691,7 @@ def control_context_length(
     hadm_info_clean,
     diagnostic_criteria,
     summarize,
+    documents=None, #RAG
 ):
     global STOP_WORDS
     max_context_length = args.max_context_length
@@ -630,6 +719,7 @@ def control_context_length(
                 ai_tag_start=tags["ai_tag_start"],
                 fewshot_examples=fewshot_examples,
                 diagnostic_criteria=diagnostic_criteria,
+                documents=documents, #RAG
             ),
         ],
     )
@@ -667,6 +757,7 @@ def control_context_length(
                         ai_tag_start=tags["ai_tag_start"],
                         fewshot_examples=fewshot_examples,
                         diagnostic_criteria=diagnostic_criteria,
+                        documents=documents, #RAG
                     ),
                 ],
             )
@@ -689,6 +780,7 @@ def control_context_length(
                             ai_tag_start=tags["ai_tag_start"],
                             fewshot_examples=fewshot_examples,
                             diagnostic_criteria=diagnostic_criteria,
+                            documents=documents, #RAG
                         ),
                     ],
                 )
@@ -706,6 +798,7 @@ def control_context_length(
                     ai_tag_start=tags["ai_tag_start"],
                     fewshot_examples=fewshot_examples,
                     diagnostic_criteria=diagnostic_criteria,
+                    documents=documents, #RAG
                 )
             ],
         )
@@ -757,6 +850,7 @@ def control_context_length(
                             ai_tag_start=tags["ai_tag_start"],
                             fewshot_examples=fewshot_examples,
                             diagnostic_criteria=diagnostic_criteria,
+                            documents=documents, #RAG
                         ),
                     ],
                 )
@@ -804,3 +898,6 @@ def control_context_length(
 
 if __name__ == "__main__":
     run()
+    #loop run with all 4 pathologies
+    # # for pathology in ["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"]:
+    #     run(args={"pathology": pathology})

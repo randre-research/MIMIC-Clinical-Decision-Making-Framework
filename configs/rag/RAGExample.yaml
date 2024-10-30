@@ -1,0 +1,15 @@
+# @package _global_
+defaults:
+  - _self_
+
+# --- RAG config ---
+rag_name: stella_en_400M_v5
+rag_embedding_model: stella_en_400M_v5
+#Leaderboard: https://huggingface.co/spaces/mteb/leaderboard
+rag_top_k: 4
+#etc
+
+#documents to retrieve (as an array of paths)
+rag_documents: 1
+
+# --- RAG config ---

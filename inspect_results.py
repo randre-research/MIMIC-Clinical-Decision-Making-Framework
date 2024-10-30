@@ -30,6 +30,7 @@ prettify_model_name = {
 #     "Meditron-70B-GPTQ": "Meditron",
     "MIMIC Doctors": "MIMIC Doctors",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw": "Llama-3.2-1B-Instruct-exl2-4.0bpw",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
 }
 
 color_map = {
@@ -40,7 +41,8 @@ color_map = {
     # "Meditron" : "#F97F77",
     "Doctors": "#4c956c",
     "MIMIC Doctors": "#2C6E49",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "#FF00FF",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "#0077B6",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "#00B4D8",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",
@@ -452,9 +454,11 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 # experiments = ['FI_PLI', 'FI_PLI_FEWSHOT']
-experiments = ["FULL_INFO_PLI_N_BIN_BINABNORMAL"]
+# experiments = ["FULL_INFO_PLI_N_BIN_BINABNORMAL"]
+experiments = ["FULL_INFO_PLI_N_ONLYABNORMAL_BIN_BINABNORMAL_VANILLA_PROBS"]
 # models = ["Llama-2-70B-chat-GPTQ", "Llama2-70B-OASST-SFT-v10-GPTQ", "WizardLM-70B-V1.0-GPTQ"]
-models = ["Llama-3.2-1B-Instruct-exl2-4.0bpw"]
+# models = ["Llama-3.2-1B-Instruct-exl2-4.0bpw"]
+models = ["Llama-3.2-1B-Instruct-exl2-4.0bpw", "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5"]
 fields = [DIAG]
 
 experiment_results, experiment_evals, experiment_scores = load_scores(experiments, models=models, fields=fields)
@@ -508,8 +512,10 @@ plt.ylabel('Diagnostic Accuracy (%)')
 plt.xlabel('')
 plt.ylim(0, 100)
 plt.legend(bbox_to_anchor=(1.0, 1.13),  ncol=len(model_scores.keys()), frameon=False, fontsize=14)
-# plt.savefig(f"/home/paulhager/Projects/Papers/ClinicalBenchmark/Figures/DiagnosticAccuraciesFI_ED_Fig1.eps", dpi=300, bbox_inches='tight')
-plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1.eps"), dpi=300, bbox_inches='tight')
-plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1.png"), dpi=300, bbox_inches='tight')
+#get current date and time
+now = datetime.now()
+dt_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.eps"), dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.png"), dpi=300, bbox_inches='tight')
 plt.show()
 

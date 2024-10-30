@@ -1,8 +1,9 @@
 defaults:
   - _self_
   - paths: example 
-  # - model: Llama3Instruct8B
-  - model: Llama3Instruct70B
+  - model: Llama3Instruct8B
+  # - model: Llama3Instruct70B
+  - rag: RAGExample
 
 # pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
 pathology: diverticulitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
@@ -37,3 +38,9 @@ diag_crit_writer_openai_api_key:
 confirm_diagnosis: False
 # save_probabilities: False
 save_probabilities: True
+
+# --- RAG config ---
+
+use_rag: True
+
+# --- RAG config ---

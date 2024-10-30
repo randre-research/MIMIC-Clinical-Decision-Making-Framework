@@ -45,7 +45,8 @@ experiment_evals = {}
 experiment_scores = {}
 
 for experiment in [
-    "FULL_INFO_PLI_N_BIN_BINABNORMAL",
+    "FULL_INFO_PLI_N_ONLYABNORMAL_BIN_BINABNORMAL_VANILLA_PROBS",
+    # "FULL_INFO_PLI_N_BIN_BINABNORMAL",
     # "FI_H",
     # "FI_I",
     # "FI_ILP",
@@ -79,6 +80,7 @@ for experiment in [
 
     for model in [
         "Llama-3.2-1B-Instruct-exl2-4.0bpw",
+        "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
         # "Llama-2-70B-chat-GPTQ",
         # "Llama2-70B-OASST-SFT-v10-GPTQ",
         # "WizardLM-70B-V1.0-GPTQ",
@@ -110,6 +112,15 @@ for experiment in [
             #check if the path exists
             if len(glob.glob(results_log_path)) == 0:
                 print(f"{results_log_path} not found")
+            #else print how many files were found
+            else:
+                print(f"Found {len(glob.glob(results_log_path))} files for {results_log_path}")
+
+            #Make sure none of the results accidentally contain the name of another model, e.g. "Llama-3.2-1B-Instruct-exl2-4.0bpw" will also match "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5"
+            if len(glob.glob(results_log_path)) > 1:
+                #keep only the shortest path
+                results_log_path = min(glob.glob(results_log_path), key=len)
+                print(f"Multiple files, reducing to the shortest path {results_log_path}")
 
             results = []
             for r in read_from_pickle_file(glob.glob(results_log_path)[0]):
