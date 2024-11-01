@@ -20,6 +20,11 @@ from cmcrameri import cm
 # import palettable
 from matplotlib.colors import ListedColormap
 
+MODELS = [
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    ]
 
 prettify_model_name = {
 #     "Llama-2-70B-chat-GPTQ": "Llama 2 Chat",
@@ -31,6 +36,7 @@ prettify_model_name = {
     "MIMIC Doctors": "MIMIC Doctors",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw": "Llama-3.2-1B-Instruct-exl2-4.0bpw",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama-3.1-70B-Instruct-exl2-4.0bpw",
 }
 
 color_map = {
@@ -43,6 +49,7 @@ color_map = {
     "MIMIC Doctors": "#2C6E49",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw": "#0077B6",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "#00B4D8",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "#90E0EF",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",
@@ -356,28 +363,36 @@ def load_scores(experiments, difficulty="first_diag", fields=['Diagnosis'], mode
     experiment_results = {}
     experiment_evals = {}
     experiment_scores = {}
+    experiment_retrievals = {} #RAG
     for experiment in experiments:
         model_results = {}
         model_evals = {}
         model_scores = {}
+        model_retrievals = {} #RAG
         for model in models:
             # m_results = pickle.load(open(f'/home/paulhager/Projects/ClinicalBenchmark/logs/SOTA/{experiment}/{model}_results{"_f1" if f1 else ""}.pkl', 'rb'))
             m_results = pickle.load(open(os.path.join(EXPERIMENTS_BASE, experiment, f'{model}_results{"_f1" if f1 else ""}.pkl'), 'rb'))
             # m_evals = pickle.load(open(f'/home/paulhager/Projects/ClinicalBenchmark/logs/SOTA/{experiment}/{model}_evals{"_f1" if f1 else ""}.pkl', 'rb'))
-            m_evals = pickle.load(open(os.path.join(EXPERIMENTS_BASE, experiment, f'{model}_evals{"_f1" if f1 else ""}.pkl'), 'rb'))            
+            m_evals = pickle.load(open(os.path.join(EXPERIMENTS_BASE, experiment, f'{model}_evals{"_f1" if f1 else ""}.pkl'), 'rb'))         
+    
+            m_retrievals = pickle.load(open(os.path.join(EXPERIMENTS_BASE, experiment, f'{model}_retrievals{"_f1" if f1 else ""}.pkl'), 'rb')) #RAG   
             model_results[model] = m_results
             model_evals[model] = m_evals
+            model_retrievals[model] = m_retrievals #RAG
 
         for model in models:
             all_evals = {}
             all_results = {}
+            all_retrievals = {} #RAG
             for patho in pathos:
                 all_evals[patho] = model_evals[model][patho]
                 all_results[patho] = model_results[model][patho]
+                all_retrievals[patho] = model_retrievals[model][patho]
                 
                 # Subset to only desired ids
                 selected_evals = {}
                 selected_results = {}
+                #RAG: Oops killed the ids in evaluate_fi_custom.py
                 for _id in id_difficulty[patho][difficulty]:
                     if _id not in all_evals[patho]:
                         # Manually tested and all were correct
@@ -388,11 +403,13 @@ def load_scores(experiments, difficulty="first_diag", fields=['Diagnosis'], mode
                         continue
                     selected_evals[_id] = all_evals[patho][_id]
                     selected_results[_id] = all_results[patho][_id]
+
                 all_evals[patho] = selected_evals
                 all_results[patho] = selected_results
             
             model_evals[model] = all_evals
             model_results[model] = all_results
+            model_retrievals[model] = all_retrievals #RAG
             avg_scores = {}
             avg_samples = {}
 
@@ -416,7 +433,9 @@ def load_scores(experiments, difficulty="first_diag", fields=['Diagnosis'], mode
         experiment_results[experiment] = model_results
         experiment_evals[experiment] = model_evals
         experiment_scores[experiment] = model_scores
-    return experiment_results, experiment_evals, experiment_scores
+        experiment_retrievals[experiment] = model_retrievals #RAG
+    # return experiment_results, experiment_evals, experiment_scores
+    return experiment_results, experiment_evals, experiment_scores, experiment_retrievals #RAG
 
 def check_diagnoses_orig_dr_eval(ids, id_difficulty):
     for patho in ['appendicitis', 'cholecystitis', 'pancreatitis', 'diverticulitis']:
@@ -458,10 +477,11 @@ import matplotlib.pyplot as plt
 experiments = ["FULL_INFO_PLI_N_ONLYABNORMAL_BIN_BINABNORMAL_VANILLA_PROBS"]
 # models = ["Llama-2-70B-chat-GPTQ", "Llama2-70B-OASST-SFT-v10-GPTQ", "WizardLM-70B-V1.0-GPTQ"]
 # models = ["Llama-3.2-1B-Instruct-exl2-4.0bpw"]
-models = ["Llama-3.2-1B-Instruct-exl2-4.0bpw", "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5"]
+models = MODELS
 fields = [DIAG]
 
-experiment_results, experiment_evals, experiment_scores = load_scores(experiments, models=models, fields=fields)
+# experiment_results, experiment_evals, experiment_scores = load_scores(experiments, models=models, fields=fields)
+experiment_results, experiment_evals, experiment_scores, experiment_retrievals = load_scores(experiments, models=models, fields=fields) #RAG
 
 data = []
 for experiment in experiment_scores.keys():
@@ -484,6 +504,12 @@ for model in models:
 
 # For each model, remove rows that are not the best experiment
 df = df[df.apply(lambda x: x['Experiment'] == best_experiments[x['Model']], axis=1)]
+
+# For experiment_retrievals, extract best experiment of each model based on mean diagnostic accuracy
+best_experiments_retrievals = {}
+for model in models:
+    model = prettify_model_name[model]
+    best_experiments_retrievals[model] = experiment_retrievals[best_experiments[model]][model] #RAG
 
 sns.set(style="whitegrid", font_scale=1.4)
 
@@ -515,7 +541,166 @@ plt.legend(bbox_to_anchor=(1.0, 1.13),  ncol=len(model_scores.keys()), frameon=F
 #get current date and time
 now = datetime.now()
 dt_string = now.strftime("%Y-%m-%d_%H-%M-%S")
-plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.eps"), dpi=300, bbox_inches='tight')
+# plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.eps"), dpi=300, bbox_inches='tight')
 plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.png"), dpi=300, bbox_inches='tight')
 plt.show()
 
+
+
+# RAG PART: Per Model, Create a 2x2 grid, one cell per pathology, each cell contains a 2x2 grid, one cell per document, each cell contains a barplot with for x the number of chunks of the document and for y the relative (relative to the pathology) count of said chunk.
+
+#For general heatmap
+import pandas as pd
+#Create pandas dataframe with each document name as a column and each pathology as a row
+#Each cell contains the relative count of chunks of the document for the pathology
+
+for model in models:
+    df_heatmap_dict = {}
+
+    model_is_rag = False
+
+    model = prettify_model_name[model]
+    model_retrievals = best_experiments_retrievals[model]
+
+    # #Only one image per model, 2x2 grid of pathology, each pathology has a 2x2 grid of documents
+    # fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+    # fig.suptitle(f'{model}')
+
+    for i, pathology in enumerate(['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']):
+    # for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+        df_heatmap_dict[pathology] = {}
+
+        pathology_retrievals = model_retrievals[pathology]
+        #Example of where to find the count per chunk: all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]][chunk["order_in_document"]]["count"] += 1
+
+        #Count total number of chunks per pathology
+        total_chunks = 0
+        for document in pathology_retrievals.keys():
+            for page in pathology_retrievals[document].keys():
+                for order in pathology_retrievals[document][page]:
+                    total_chunks += pathology_retrievals[document][page][order]["count"]
+
+        if total_chunks > 0:
+            model_is_rag = True
+
+        fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+        # fig.suptitle(f'{model} - {pathology.capitalize()}')
+        fig.suptitle(f'{pathology.capitalize()}')
+        #Alphabetically order keys in pathology_retrievals
+        pathology_retrievals = {key: pathology_retrievals[key] for key in sorted(pathology_retrievals.keys())}
+
+        for j, document in enumerate(pathology_retrievals.keys()):
+            document_retrievals = pathology_retrievals[document]
+            ax = axs[j//2, j%2]
+            #get document name
+            document_name = document.split("/")[-1]
+            #if length>25, end with ...
+            if len(document_name) > 20:
+                document_name = document_name[:25] + "..."
+
+            df_heatmap_dict[pathology][document_name] = 0
+
+            #always make the y axis go from 0 to 1
+            # ax.set_ylim(0, 1)
+            ax.set_ylim(0, .3)
+            #exponential scale for y axis (opposite of log)
+            # ax.set_yscale('symlog')
+            #remove y axis if not the first column
+            if j%2 != 0:
+                ax.set_yticks([])
+
+            #total counts per document
+            doc_counts = 0
+
+            for page in document_retrievals:
+                #add up the counts of all chunks in the page
+                counts = 0
+                for order in document_retrievals[page]:
+                    counts += document_retrievals[page][order]["count"]
+
+                #Create one bar per page, make bar the color of the model
+                if counts/total_chunks > .05:
+                    ax.bar(page, counts/total_chunks, label=str(page), color=color_map[model])
+                    #make sure the label (page) appears above the bar
+                    ax.text(page, counts/total_chunks, str(page), ha='center', va='bottom')
+                else:
+                    ax.bar(page, counts/total_chunks, color=color_map[model])
+
+                doc_counts += counts
+
+            df_heatmap_dict[pathology][document_name] = doc_counts/total_chunks
+
+            #convert doc_count to a percentage string with one decimal
+            doc_counts = f'{doc_counts/total_chunks*100:.1f}%'
+
+            #set title of the document
+            ax.set_title(f'({doc_counts}) {document_name}')
+
+            #reduce the empty space between the bars of the barplot
+            ax.margins(x=0.01)
+
+        if model_is_rag:
+            # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.eps"), dpi=300, bbox_inches='tight')
+            plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        #close the figure
+        plt.close()
+
+    if model_is_rag:
+        #Combine all last four plots into one big plot
+        fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+        fig.suptitle(f'{model}')
+        #load the images
+        for i, pathology in enumerate(['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']):
+            ax = axs[i//2, i%2]
+            #remove margins
+            ax.margins(x=0)
+            #load the image
+            img = plt.imread(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
+            ax.imshow(img)
+            ax.axis('off')
+
+        # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_all_{dt_string}.eps"), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_all_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.close()
+
+        #delete the individual images
+        for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+            os.remove(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
+
+    if model_is_rag:
+        #Create a heatmap of the relative counts of chunks per document per pathology per model
+        df_heatmap_count = pd.DataFrame(df_heatmap_dict)
+        #Transpose the dataframe
+        df_heatmap_count = df_heatmap_count.T
+        #save df_heatmap_count to csv
+        df_heatmap_count.to_csv(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_{dt_string}.csv"))
+        #create new plot
+        plt.figure(figsize=(12, 12))
+        sns.heatmap(df_heatmap_count, cmap='viridis', annot=True, cbar_kws={'label': 'Relative Retrieval Per Pathology'})
+        #make the names be diagonal
+        plt.xticks(rotation=45)
+        #make the names be horizontal
+        plt.yticks(rotation=0)
+        plt.title(f'{model}\nRelative Document Retrieval Per Pathology\n')
+        plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.close()
+
+        #Compute Z-scores per pathology
+        df_heatmap_z = df_heatmap_count.copy()
+        df_heatmap_z = df_heatmap_z.T
+        for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+            df_heatmap_z[pathology] = (df_heatmap_z[pathology] - df_heatmap_z[pathology].mean())/df_heatmap_z[pathology].std()
+        df_heatmap_z = df_heatmap_z.T
+
+        #save df_heatmap_z to csv
+        df_heatmap_z.to_csv(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_zscores_{dt_string}.csv"))
+        #create new plot
+        plt.figure(figsize=(12, 12))
+        sns.heatmap(df_heatmap_z, cmap='coolwarm', annot=True, cbar_kws={'label': 'Z-Score Relative Retrieval Per Pathology'})
+        #make the names be diagonal
+        plt.xticks(rotation=45)
+        #make the names be horizontal
+        plt.yticks(rotation=0)
+        plt.title(f'{model}\nZ-Score Relative Document Retrieval Per Pathology\n')
+        plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_zscores_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.close()

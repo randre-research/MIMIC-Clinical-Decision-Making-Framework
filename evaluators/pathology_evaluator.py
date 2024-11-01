@@ -45,6 +45,7 @@ class PathologyEvaluator(AgentTrajectoryEvaluator):
             "Invalid Tools": 0,
             "Rounds": 0,
         }
+        self.retrieved_chunks = [],
 
     def _evaluate_agent_trajectory(
         self,
@@ -56,6 +57,7 @@ class PathologyEvaluator(AgentTrajectoryEvaluator):
             Tuple[str, List[str], List[str], List[str], List[str], List[str]]
         ] = None,
         diagnosis_probabilities: Optional[Tensor] = None,
+        retrieved_chunks: Optional[List[Dict]] = None, #RAG
         **kwargs: Any,
     ) -> dict:
         self.discharge_diagnosis = reference[0]
@@ -94,6 +96,9 @@ class PathologyEvaluator(AgentTrajectoryEvaluator):
         if diagnosis_probabilities is not None:
             self.answers["Diagnostic Confidence"] = diagnosis_probabilities.squeeze()
 
+        if retrieved_chunks is not None: #RAG
+            self.retrieved_chunks = retrieved_chunks #RAG
+
         # Parse and score treatment
         if len(agent_trajectory) > 0:
             self.parse_treatment(prediction)
@@ -102,6 +107,7 @@ class PathologyEvaluator(AgentTrajectoryEvaluator):
         return {
             "scores": self.scores,
             "answers": self.answers,
+            "retrieved_chunks": self.retrieved_chunks, #RAG
         }
 
     def parse_treatment(self, prediction: str) -> None:

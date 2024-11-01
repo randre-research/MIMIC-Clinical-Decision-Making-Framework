@@ -146,23 +146,12 @@ def run(args: DictConfig):
         #add base rag documents at the start of each document name
         document_paths = [join(args.base_rag_documents, doc) for doc in document_paths]
 
-        # # Initialize the vector store
-        # vector_store_instance = VectorStore(
-        #     document_paths=document_paths,
-        #     embedding_model_container=embedding_model_container,
-        #     chunk_size=250,
-        #     chunk_overlap=0
-        # )
-
-        # # Get the vector store object
-        # vector_store = vector_store_instance.get_vector_store()
-
         # Initialize the vector store
         vector_store = VectorStore(
             document_paths=document_paths,
             embedding_model_container=embedding_model_container,
-            chunk_size=250,
-            chunk_overlap=0
+            chunk_size=args.rag_chunk_size,
+            chunk_overlap=args.rag_chunk_overlap,
         )
 
         # Initialize the retriever
@@ -170,8 +159,8 @@ def run(args: DictConfig):
             vector_store=vector_store,
             embedding_model_container=embedding_model_container,
             top_k=args.rag_top_k,  # You can adjust this value
-            re_rank=True,
-            prompt_name="s2p_query"  # or "s2s_query" depending on your task #TODO: C'est quoi ca
+            re_rank=args.rag_re_rank,
+            prompt_name=args.rag_prompt_name,
         )
     # --- End RAG ---
 
@@ -441,7 +430,7 @@ def run(args: DictConfig):
             # Retrieve relevant documents
             retrieved_docs = retriever.retrieve(question)
             # Extract content from retrieved documents
-            doc_texts = "\n".join([doc.page_content for doc in retrieved_docs])
+            doc_texts = "\n".join([doc["content"] for doc in retrieved_docs])
 
         # --- End RAG ---
 
@@ -567,13 +556,25 @@ def run(args: DictConfig):
                 stop=STOP_WORDS,
             )
 
-        if args.save_probabilities:
-            append_to_pickle_file(
-                results_log_path,
-                {_id: {"Diagnosis": result, "Probabilities": llm.probabilities}},
-            )
-        else:
+        # if args.save_probabilities:
+        #     append_to_pickle_file(
+        #         results_log_path,
+        #         {_id: {"Diagnosis": result, "Probabilities": llm.probabilities}},
+        #     )
+        # else:
+        #     append_to_pickle_file(results_log_path, {_id: result})
+
+        #RAG
+        if not args.save_probabilities and not args.use_rag:
             append_to_pickle_file(results_log_path, {_id: result})
+        else:
+            diag_dict = {"Diagnosis": result}
+            if args.save_probabilities:
+                diag_dict["Probabilities"] = llm.probabilities
+            if args.use_rag:
+                diag_dict["Retrieval"] = retrieved_docs
+            append_to_pickle_file(results_log_path, {_id: diag_dict})
+
 
 
 def write_diagnostic_criteria(pathology, diag_crit_writer):

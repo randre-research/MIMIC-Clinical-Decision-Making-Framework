@@ -1,15 +1,8 @@
+# --- Embedding Model Container ---
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import os
 from os.path import join
-
-from langchain.document_loaders import PyPDFLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema import Document
-import faiss
-import tiktoken
-
-# --- Embedding Model Container ---
 
 class EmbeddingModelContainer:
     def __init__(
@@ -53,6 +46,10 @@ class EmbeddingModelContainer:
 
 # --- Vector Store ---
 
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+import faiss
+
 class VectorStore:
     def __init__(
         self, document_paths, embedding_model_container, chunk_size=250, chunk_overlap=0
@@ -88,48 +85,14 @@ class VectorStore:
 
     def split_documents(self, documents):
         """
-        Split documents into chunks and add metadata.
+        Split documents into chunks.
         :param documents: List of Document objects.
         :return: List of Document chunks.
         """
-        # Use the embedding model's tokenizer
-        tokenizer = self.embedding_model.embedding_model.tokenizer
-
-        # Assuming the tokenizer has a method to get the maximum token length
-        max_length = self.chunk_size
-
-        # Split the documents manually
-        doc_chunks = []
-        for doc in documents:
-            text = doc.page_content
-            tokens = tokenizer.encode(text, add_special_tokens=False)
-            token_chunks = [tokens[i:i + max_length] for i in range(0, len(tokens), max_length - self.chunk_overlap)]
-            for i, token_chunk in enumerate(token_chunks):
-                chunk_text = tokenizer.decode(token_chunk)
-                chunk = Document(page_content=chunk_text, metadata=doc.metadata.copy())
-
-                # Assign a unique ID
-                chunk_id = f"chunk_{len(doc_chunks)}"
-                chunk.metadata['chunk_id'] = chunk_id
-
-                # Token size
-                token_size = len(token_chunk)
-                chunk.metadata['token_size'] = token_size
-
-                # Other metadata as before...
-                # Get document reference
-                doc_source = chunk.metadata.get('source', 'unknown')
-                chunk.metadata['document_reference'] = doc_source
-
-                # Get page number
-                page_number = chunk.metadata.get('page', 'unknown')
-                chunk.metadata['page_number'] = page_number
-
-                # Order in the document
-                order_in_doc = i
-                chunk.metadata['order_in_document'] = order_in_doc
-
-                doc_chunks.append(chunk)
+        text_splitter = RecursiveCharacterTextSplitter.from_tiktoken_encoder(
+            chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap
+        )
+        doc_chunks = text_splitter.split_documents(documents)
         return doc_chunks
 
     def create_vector_store(self, doc_chunks):
@@ -183,7 +146,7 @@ class Retriever:
         """
         Retrieve relevant documents for a query.
         :param query: The query string.
-        :return: List of dictionaries with chunk content and metadata.
+        :return: List of relevant Document objects.
         """
         # Generate embedding for the query
         query_embedding = self.embedding_model.embed_query(query, prompt_name=self.prompt_name)
@@ -196,19 +159,7 @@ class Retriever:
         # Optionally, re-rank the documents
         if self.re_rank:
             retrieved_docs = self.re_rank_documents(query_embedding[0], retrieved_docs)
-        # Extract the content and metadata
-        retrieved_info = []
-        for doc in retrieved_docs:
-            chunk_info = {
-                'chunk_id': doc.metadata.get('chunk_id'),
-                'document_reference': doc.metadata.get('document_reference'),
-                'page_number': doc.metadata.get('page_number'),
-                'token_size': doc.metadata.get('token_size'),
-                'order_in_document': doc.metadata.get('order_in_document'),
-                'content': doc.page_content
-            }
-            retrieved_info.append(chunk_info)
-        return retrieved_info
+        return retrieved_docs
 
     def re_rank_documents(self, query_embedding, documents):
         """
@@ -227,3 +178,40 @@ class Retriever:
         # Return the sorted documents
         sorted_docs = [pair[0] for pair in doc_similarity_pairs]
         return sorted_docs
+
+
+### Heres how you can use it
+
+# # Initialize the embedding model container
+# embedding_model_container = EmbeddingModelContainer(
+#     model_name_or_path="dunzhang/stella_en_400M_v5",
+#     device="cuda"  # or "cpu"
+# )
+
+# # Paths to your documents (PDF files)
+# document_paths = ["path/to/document1.pdf", "path/to/document2.pdf"]
+
+# # Initialize the vector store
+# vector_store = VectorStore(
+#     document_paths=document_paths,
+#     embedding_model_container=embedding_model_container,
+#     chunk_size=250,
+#     chunk_overlap=0
+# )
+
+# # Initialize the retriever
+# retriever = Retriever(
+#     vector_store=vector_store,
+#     embedding_model_container=embedding_model_container,
+#     top_k=4,
+#     re_rank=True,
+#     prompt_name="s2p_query"  # or "s2s_query" depending on your task
+# )
+
+# # Retrieve documents for a query
+# query = "What are the health benefits of green tea?"
+# retrieved_docs = retriever.retrieve(query)
+
+# # Print retrieved documents
+# for doc in retrieved_docs:
+#     print(doc.page_content)
