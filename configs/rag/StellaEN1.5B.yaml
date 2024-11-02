@@ -1,0 +1,22 @@
+
+# @package _global_
+defaults:
+  - _self_
+
+rag_name: stella_en_1.5B_v5
+rag_embedding_model: stella_en_1.5B_v5
+
+#Embedding model parameters
+rag_chunk_size: 252
+rag_chunk_overlap: 0
+
+#Retrieval parameters
+rag_top_k: 4
+rag_re_rank: True
+rag_prompt_name: "s2p_query" # or "s2s_query" depending on your task #TODO: C'est quoi ca
+
+#documents to retrieve (as an array of paths)
+#TODO
+
+
+# RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard
