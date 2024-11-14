@@ -6,4 +6,4 @@ base_mimic: /container/data
 base_models: /container/models
 lab_test_mapping_path: /container/data/lab_test_mapping.pkl
 local_logging_dir: /container/data/logs
-base_rag_documents: /container/guidelines/pdf
+base_rag_documents: /container/guidelines #/container/guidelines/pdf

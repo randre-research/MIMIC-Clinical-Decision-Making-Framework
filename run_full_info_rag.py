@@ -127,24 +127,39 @@ def run(args: DictConfig):
 
     # --- RAG ---
     if args.use_rag:
+
+        #If there is two GPUs available, use the second one for the RAG model
+        import torch
+        #if there are two GPUs available, use the second one
+        if torch.cuda.is_available() and torch.cuda.device_count() > 1:
+            device = torch.device("cuda:1")
+        #if there is only one GPU available, use it
+        elif torch.cuda.is_available() and torch.cuda.device_count() == 1:
+            device = torch.device("cuda:0")
+        #if there are no GPUs available, use the CPU
+        else:
+            device = torch.device("cpu")
+
+
         # Initialize the embedding model with a local model of your choice
         embedding_model_container = EmbeddingModelContainer(
             model_name_or_path=args.rag_embedding_model,
-            device="cuda" #if torch.cuda.is_available() else "cpu"
+            # device="cuda" #if torch.cuda.is_available() else "cpu"
+            device=device
         )
 
         embedding_model_container.load_model(args.base_models)
 
         # Define the paths to your documents (ensure these paths are correct)
-        document_paths = [
-            "cdm_appendicitis_s13017-020-00306-3.pdf",
-            "cdm_cholecystitis_s13017-020-00336-x.pdf",
-            "cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf",
-            "cdm_pancreatitis_s13017-019-0247-0.pdf",
-        ]
+        # document_paths = [
+        #     "cdm_appendicitis_s13017-020-00306-3.pdf",
+        #     "cdm_cholecystitis_s13017-020-00336-x.pdf",
+        #     "cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf",
+        #     "cdm_pancreatitis_s13017-019-0247-0.pdf",
+        # ]
 
         #add base rag documents at the start of each document name
-        document_paths = [join(args.base_rag_documents, doc) for doc in document_paths]
+        document_paths = [os.path.join(args.base_rag_documents, doc.lstrip('/')) for doc in args.rag_documents]
 
         # Initialize the vector store
         vector_store = VectorStore(

@@ -15,8 +15,11 @@ rag_top_k: 4
 rag_re_rank: True
 rag_prompt_name: "s2p_query" # or "s2s_query" depending on your task #TODO: C'est quoi ca
 
-#documents to retrieve (as an array of paths)
-#TODO
-
+# Document paths for retrieval
+document_paths:
+  - /path/to/document1
+  - /path/to/document2
+  - /path/to/document3
+  - /path/to/document4
 
 # RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard

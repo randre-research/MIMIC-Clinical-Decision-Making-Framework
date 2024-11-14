@@ -83,7 +83,14 @@ for experiment in [
     for model in [
         "Llama-3.2-1B-Instruct-exl2-4.0bpw",
         "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-        "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+        "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
+
+        # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+        # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+        # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
+        # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
+        # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
+
         # "Llama-2-70B-chat-GPTQ",
         # "Llama2-70B-OASST-SFT-v10-GPTQ",
         # "WizardLM-70B-V1.0-GPTQ",

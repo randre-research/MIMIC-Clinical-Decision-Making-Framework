@@ -23,20 +23,31 @@ from matplotlib.colors import ListedColormap
 MODELS = [
     "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
+
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
+    # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
     ]
 
 prettify_model_name = {
 #     "Llama-2-70B-chat-GPTQ": "Llama 2 Chat",
 #     "Llama2-70B-OASST-SFT-v10-GPTQ": "OASST",
 #     "WizardLM-70B-V1.0-GPTQ": "WizardLM",
-#     "axiong_PMC_LLaMA_13B": "PMC Llama",
+#     "axiong_PMC_LLaMA_13B": "PMC Llama", 
 #     "ClinicalCamel-70B-GPTQ": "Clinical Camel",
 #     "Meditron-70B-GPTQ": "Meditron",
     "MIMIC Doctors": "MIMIC Doctors",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "Llama-3.2-1B-Instruct-exl2-4.0bpw",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "Llama3 1B 4.0bpw",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 1B 4.0bpw + stella5 400M",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr": "Llama3 1B 4.0bpw + stella5 400M (chunkr)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
+    "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5": "Llama3 70B 2.5bpw + stella5 1.5B",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k": "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)",
+    "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k": "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)",
 }
 
 color_map = {
@@ -47,9 +58,14 @@ color_map = {
     # "Meditron" : "#F97F77",
     "Doctors": "#4c956c",
     "MIMIC Doctors": "#2C6E49",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "#0077B6",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "#00B4D8",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "#90E0EF",
+    "Llama3 1B 4.0bpw": "#0077B6",
+    "Llama3 1B 4.0bpw + stella5 400M": "#00B4D8",
+    "Llama3 1B 4.0bpw + stella5 400M (chunkr)": "#1ee3ab",
+    "Llama3 70B 4.0bpw": "#3EAD0A",
+    "Llama3 70B 4.0bpw + stella5 400M": "#9BD415",
+    "Llama3 70B 2.5bpw + stella5 1.5B": "#F9F871",
+    "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
+    "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)": "#EC9898",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",
@@ -496,6 +512,9 @@ df = pd.DataFrame(data, columns=['Experiment', 'Model', 'Pathology', 'Diagnostic
 df['Diagnostic Accuracy'] *= 100
 df['Model'] = df['Model'].apply(lambda x: prettify_model_name[x])
 
+#RAG: Prettify Experiment Retrievals Names
+experiment_retrievals = {key: {prettify_model_name[exp_model]: exp_value for exp_model, exp_value in value.items()} for key, value in experiment_retrievals.items()}
+
 # Extract best experiment of each model based on mean diagnostic accuracy
 best_experiments = {}
 for model in models:
@@ -537,12 +556,18 @@ plt.title('')
 plt.ylabel('Diagnostic Accuracy (%)')
 plt.xlabel('')
 plt.ylim(0, 100)
-plt.legend(bbox_to_anchor=(1.0, 1.13),  ncol=len(model_scores.keys()), frameon=False, fontsize=14)
+# plt.legend(bbox_to_anchor=(1.0, 1.13),  ncol=len(model_scores.keys()), frameon=False, fontsize=14)
+plt.legend(bbox_to_anchor=(0.5, 1.15), loc="center", ncol=2, frameon=False, fontsize=14) #only two cols
 #get current date and time
 now = datetime.now()
 dt_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+
+#Create folder named dt_string
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+
+
 # plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.eps"), dpi=300, bbox_inches='tight')
-plt.savefig(os.path.join(OUTPUT_BASE, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.png"), dpi=300, bbox_inches='tight')
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"DiagnosticAccuraciesFI_ED_Fig1_{dt_string}.png"), dpi=300, bbox_inches='tight')
 plt.show()
 
 
@@ -641,7 +666,7 @@ for model in models:
 
         if model_is_rag:
             # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.eps"), dpi=300, bbox_inches='tight')
-            plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.png"), dpi=300, bbox_inches='tight')
+            plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_{pathology}_{dt_string}.png"), dpi=300, bbox_inches='tight')
         #close the figure
         plt.close()
 
@@ -655,17 +680,17 @@ for model in models:
             #remove margins
             ax.margins(x=0)
             #load the image
-            img = plt.imread(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
+            img = plt.imread(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
             ax.imshow(img)
             ax.axis('off')
 
         # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_all_{dt_string}.eps"), dpi=300, bbox_inches='tight')
-        plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_all_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_all_{dt_string}.png"), dpi=300, bbox_inches='tight')
         plt.close()
 
         #delete the individual images
         for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
-            os.remove(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
+            os.remove(os.path.join(OUTPUT_BASE, dt_string,f"Retrievals_{model}_{pathology}_{dt_string}.png"))
 
     if model_is_rag:
         #Create a heatmap of the relative counts of chunks per document per pathology per model
@@ -673,7 +698,7 @@ for model in models:
         #Transpose the dataframe
         df_heatmap_count = df_heatmap_count.T
         #save df_heatmap_count to csv
-        df_heatmap_count.to_csv(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_{dt_string}.csv"))
+        # df_heatmap_count.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_{dt_string}.csv"))
         #create new plot
         plt.figure(figsize=(12, 12))
         sns.heatmap(df_heatmap_count, cmap='viridis', annot=True, cbar_kws={'label': 'Relative Retrieval Per Pathology'})
@@ -682,7 +707,7 @@ for model in models:
         #make the names be horizontal
         plt.yticks(rotation=0)
         plt.title(f'{model}\nRelative Document Retrieval Per Pathology\n')
-        plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_{dt_string}.png"), dpi=300, bbox_inches='tight')
         plt.close()
 
         #Compute Z-scores per pathology
@@ -693,7 +718,7 @@ for model in models:
         df_heatmap_z = df_heatmap_z.T
 
         #save df_heatmap_z to csv
-        df_heatmap_z.to_csv(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_zscores_{dt_string}.csv"))
+        # df_heatmap_z.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_{dt_string}.csv"))
         #create new plot
         plt.figure(figsize=(12, 12))
         sns.heatmap(df_heatmap_z, cmap='coolwarm', annot=True, cbar_kws={'label': 'Z-Score Relative Retrieval Per Pathology'})
@@ -702,5 +727,5 @@ for model in models:
         #make the names be horizontal
         plt.yticks(rotation=0)
         plt.title(f'{model}\nZ-Score Relative Document Retrieval Per Pathology\n')
-        plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_heatmap_zscores_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_{dt_string}.png"), dpi=300, bbox_inches='tight')
         plt.close()

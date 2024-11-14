@@ -1,6 +1,7 @@
 from sentence_transformers import SentenceTransformer
 import numpy as np
 import os
+import json
 from os.path import join
 
 from langchain.document_loaders import PyPDFLoader
@@ -24,6 +25,8 @@ class EmbeddingModelContainer:
         self.model_name = model_name_or_path
         self.device = device
         self.trust_remote_code = trust_remote_code
+        self.is_nv_embed = "nv-embed" in self.model_name.lower()
+        self.is_stella = "stella" in self.model_name.lower()
 
     def load_model(self, base_models: str) -> None:
         self.embedding_model = SentenceTransformer(
@@ -31,6 +34,17 @@ class EmbeddingModelContainer:
             trust_remote_code=self.trust_remote_code,
             device=self.device
         )
+        if self.is_nv_embed:
+            self.embedding_model.max_seq_length = 32768
+            self.embedding_model.tokenizer.padding_side = "right"
+
+    def add_eos(self, texts):
+        """
+        Add EOS token to the end of each text.
+        :param texts: A list of strings.
+        :return: A list of strings with EOS tokens appended.
+        """
+        return [text + self.embedding_model.tokenizer.eos_token for text in texts]
 
     def embed(self, texts):
         """
@@ -38,7 +52,14 @@ class EmbeddingModelContainer:
         :param texts: A list of strings to embed.
         :return: A numpy array of embeddings.
         """
-        embeddings = self.embedding_model.encode(texts)
+        if self.is_nv_embed:
+            texts = self.add_eos(texts)
+            embeddings = self.embedding_model.encode(
+                texts,
+                normalize_embeddings=True,
+            )
+        else:
+            embeddings = self.embedding_model.encode(texts)
         return embeddings
 
     def embed_query(self, query, prompt_name='s2p_query'):
@@ -48,7 +69,18 @@ class EmbeddingModelContainer:
         :param prompt_name: The prompt name to use for the query.
         :return: An embedding vector.
         """
-        embedding = self.embedding_model.encode([query], prompt_name=prompt_name)
+        if self.is_nv_embed:
+            # task_instruction = "Given a question, retrieve passages that answer the question"
+            task_instruction = "Given the current patient's information, retrieve relevant medical literature passages"
+            query_prefix = f"Instruct: {task_instruction}\nQuery: "
+            query_text = query_prefix + query + self.embedding_model.tokenizer.eos_token
+            embedding = self.embedding_model.encode(
+                [query_text],
+                prompt=None,
+                normalize_embeddings=True,
+            )
+        else:
+            embedding = self.embedding_model.encode([query], prompt_name=prompt_name)
         return embedding[0]
 
 # --- Vector Store ---
@@ -82,8 +114,44 @@ class VectorStore:
         """
         docs = []
         for path in document_paths:
-            loader = PyPDFLoader(path)
-            docs.extend(loader.load())
+            if "chunkr" in path:
+                docs.extend(self.load_chunkr_file(path))
+            else:
+                loader = PyPDFLoader(path)
+                docs.extend(loader.load())
+        return docs
+
+    def load_chunkr_file(self, path):
+        """
+        Load a chunkr JSON file and create Document objects from it.
+        :param path: Path to the chunkr JSON file.
+        :return: List of Document objects.
+        """
+        with open(path, 'r') as file:
+            chunk_data = json.load(file)
+
+        # Get document name
+        doc_name = path.split("/")[-1]
+        
+        docs = []
+        for chunk in chunk_data:
+            for segment in chunk["segments"]:
+                content = segment["content"]
+                metadata = {
+                    "segment_id": segment["segment_id"],
+                    "bbox": segment["bbox"],
+                    "page": segment["page_number"],
+                    "page_width": segment["page_width"],
+                    "page_height": segment["page_height"],
+                    "segment_type": segment["segment_type"],
+                    "image": segment.get("image"),
+                    "html": segment.get("html"),
+                    "markdown": segment.get("markdown"),
+                    "chunk_length": chunk["chunk_length"],
+                    "source": doc_name,
+                }
+                doc = Document(page_content=content, metadata=metadata)
+                docs.append(doc)
         return docs
 
     def split_documents(self, documents):
@@ -92,43 +160,26 @@ class VectorStore:
         :param documents: List of Document objects.
         :return: List of Document chunks.
         """
-        # Use the embedding model's tokenizer
         tokenizer = self.embedding_model.embedding_model.tokenizer
-
-        # Assuming the tokenizer has a method to get the maximum token length
         max_length = self.chunk_size
-
-        # Split the documents manually
         doc_chunks = []
+
         for doc in documents:
             text = doc.page_content
             tokens = tokenizer.encode(text, add_special_tokens=False)
             token_chunks = [tokens[i:i + max_length] for i in range(0, len(tokens), max_length - self.chunk_overlap)]
+            
             for i, token_chunk in enumerate(token_chunks):
                 chunk_text = tokenizer.decode(token_chunk)
                 chunk = Document(page_content=chunk_text, metadata=doc.metadata.copy())
-
-                # Assign a unique ID
+                
                 chunk_id = f"chunk_{len(doc_chunks)}"
-                chunk.metadata['chunk_id'] = chunk_id
-
-                # Token size
-                token_size = len(token_chunk)
-                chunk.metadata['token_size'] = token_size
-
-                # Other metadata as before...
-                # Get document reference
-                doc_source = chunk.metadata.get('source', 'unknown')
-                chunk.metadata['document_reference'] = doc_source
-
-                # Get page number
-                page_number = chunk.metadata.get('page', 'unknown')
-                chunk.metadata['page_number'] = page_number
-
-                # Order in the document
-                order_in_doc = i
-                chunk.metadata['order_in_document'] = order_in_doc
-
+                chunk.metadata['chunk_id'] = chunk.metadata.get('segment_id', chunk_id)
+                chunk.metadata['token_size'] = len(token_chunk)
+                chunk.metadata['document_reference'] = chunk.metadata.get('source', 'unknown')
+                chunk.metadata['page_number'] = chunk.metadata.get('page', 'unknown')
+                chunk.metadata['order_in_document'] = i
+                
                 doc_chunks.append(chunk)
         return doc_chunks
 
@@ -142,11 +193,9 @@ class VectorStore:
         embeddings = self.embedding_model.embed(texts)
         embeddings = np.array(embeddings).astype('float32')
 
-        # Add embeddings to documents
         for doc, emb in zip(doc_chunks, embeddings):
             doc.metadata['embedding'] = emb
 
-        # Create a FAISS index
         dimension = embeddings.shape[1]
         index = faiss.IndexFlatL2(dimension)
         index.add(embeddings)
