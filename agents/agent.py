@@ -8,7 +8,8 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.agents.mrkl.base import ZeroShotAgent
 from langchain.schema.messages import BaseMessage
-from langchain.schema import AgentAction
+# from langchain.schema import AgentAction
+from langchain.schema import AgentAction, AgentFinish
 from langchain.callbacks import FileCallbackHandler
 
 
@@ -18,6 +19,7 @@ from agents.prompts import (
     DIAG_CRIT_TOOL_DESCR,
     TOOL_USE_EXAMPLES,
     DIAG_CRIT_TOOL_USE_EXAMPLE,
+    CHAT_TEMPLATE_RAG, #RAG
 )
 from agents.DiagnosisWorkflowParser import DiagnosisWorkflowParser
 from tools.Tools import (
@@ -57,6 +59,11 @@ class CustomZeroShotAgent(ZeroShotAgent):
     max_context_length: int
     tags: Dict[str, str]
     summarize: bool
+    # --- RAG ---
+    rag_retriever_agent: Any = None #RAG
+    retrieved_docs_per_step: Dict[int, List[Dict]] = {}
+    step_counter: int = 0
+    # --- End RAG ---
 
     class Config:
         arbitrary_types_allowed = True
@@ -66,6 +73,100 @@ class CustomZeroShotAgent(ZeroShotAgent):
     def _stop(self) -> List[str]:
         return self.stop
 
+    # RAG: Override the plan method to include RAG retrieval
+    def plan(
+        self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
+    ) -> Union[AgentFinish, AgentAction]:
+        print("PLAN HAS BEEN CALLED")
+        # Step 1: Increment the step counter
+        self.step_counter += 1
+
+        # Step 2: Construct the scratchpad
+        thoughts, kwargs = self._construct_scratchpad(intermediate_steps, **kwargs)
+        new_inputs = {"agent_scratchpad": thoughts, "stop": self._stop}
+
+        # Step 3: Extract current information from intermediate steps
+        current_information = self.extract_current_information(intermediate_steps, kwargs)
+        question = current_information
+
+        # Step 3: Perform RAG retrieval
+        retrieved_docs = []
+        retrieved_docs_content = ""
+        if self.rag_retriever_agent is not None:
+            retrieved_docs = self.rag_retriever_agent.retrieve(question)
+            retrieved_docs_content = "\n".join([doc["content"] for doc in retrieved_docs])
+
+            # Store retrieved documents in the dict with the current step number
+            self.retrieved_docs_per_step[self.step_counter] = retrieved_docs
+
+        # Step 5: Add retrieved documents to inputs for this step only
+        # new_inputs["documents"] = retrieved_docs_content
+        # Add retrieved documents to kwargs
+        kwargs["documents"] = retrieved_docs_content
+
+        # Construct the scratchpad with updated kwargs
+        thoughts, kwargs = self._construct_scratchpad(intermediate_steps, **kwargs)
+        new_inputs = {"agent_scratchpad": thoughts, "stop": self._stop}
+
+        # Step 6: Create full inputs for the LLMChain
+        full_inputs = {**kwargs, **new_inputs}
+
+        # Filter full_inputs to only include variables expected by the prompt
+        prompt_variables = self.llm_chain.prompt.input_variables
+        inputs_for_prompt = {k: v for k, v in full_inputs.items() if k in prompt_variables}
+
+        # Step 8: Format the prompt with the filtered inputs
+        prompt_text = self.llm_chain.prompt.format(**inputs_for_prompt)
+
+        # Step 9: Manage token limits (using prompt_text)
+        total_tokens = calculate_num_tokens(
+            self.llm_chain.llm.tokenizer,
+            [prompt_text],
+        )
+        if total_tokens >= self.max_context_length - 100:
+            retrieved_docs_content = self.summarize_docs(retrieved_docs_content)
+            kwargs["documents"] = retrieved_docs_content
+            inputs_for_prompt["documents"] = retrieved_docs_content
+            prompt_text = self.llm_chain.prompt.format(**inputs_for_prompt)
+
+        # Step 10: Proceed to get the LLM output
+        # Now, call the LLM chain with filtered inputs
+        llm_chain_input_variables = self.llm_chain.input_keys
+        inputs_for_llm_chain = {k: v for k, v in full_inputs.items() if k in llm_chain_input_variables}
+
+        # full_output = self.llm_chain.predict(**inputs_for_llm_chain)
+        full_output = self.llm_chain.predict(**inputs_for_llm_chain, stop=self._stop)
+
+        # # ON FI RAG, example:
+        # result = chain.predict(
+        #     input=input.format(rad_reports=rad_reports),
+        #     fewshot_examples=fewshot_examples,
+        #     diagnostic_criteria=diagnostic_criteria,
+        #     documents=doc_texts if args.use_rag else None, #RAG
+        #     stop=STOP_WORDS,
+        # )
+
+        # Step 11: Parse the LLM output
+        return self.output_parser.parse(full_output)
+
+    def extract_current_information(
+        self, intermediate_steps: List[Tuple[AgentAction, str]], kwargs: Any
+    ) -> str:
+        # Concatenate all observations and the current input
+        observations = " ".join([observation for action, observation in intermediate_steps])
+        current_input = kwargs.get("input", "")
+        current_information = f"{observations} {current_input}"
+        return current_information.strip()
+
+    def summarize_docs(self, docs_content: str) -> str:
+        # Implement summarization logic
+        # For simplicity, truncate the content to fit within token limits
+        max_tokens = self.max_context_length - 500  # Adjust as needed
+        tokens = self.llm_chain.llm.tokenizer.encode(docs_content)
+        if len(tokens) > max_tokens:
+            tokens = tokens[:max_tokens]
+        return self.llm_chain.llm.tokenizer.decode(tokens)
+
     # Need to override to pass input so that we can calculate the number of tokes
     def get_full_inputs(
         self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
@@ -73,13 +174,19 @@ class CustomZeroShotAgent(ZeroShotAgent):
         """Create the full inputs for the LLMChain from intermediate steps."""
         thoughts, kwargs = self._construct_scratchpad(intermediate_steps, **kwargs)
         new_inputs = {"agent_scratchpad": thoughts, "stop": self._stop}
+
+        # --- RAG ---
+        # Ensure 'documents' is included in inputs with a default value
+        if 'documents' not in kwargs:
+            new_inputs['documents'] = ''
+        # --- End RAG ---
+
         full_inputs = {**kwargs, **new_inputs}
         return full_inputs
 
-    # Construct the running thoughts and observations of the model. Summarize the convo if we hit our token limit
     def _construct_scratchpad(
         self, intermediate_steps: List[Tuple[AgentAction, str]], **kwargs: Any
-    ) -> Union[str, List[BaseMessage]]:
+    ) -> Union[str, Dict[str, Any]]:
         """Construct the scratchpad that lets the agent continue its thought process."""
         thoughts = ""
         for action, observation in intermediate_steps:
@@ -87,30 +194,40 @@ class CustomZeroShotAgent(ZeroShotAgent):
             thoughts += (
                 f"\n{self.observation_prefix}{observation.strip()}\n{self.llm_prefix} "
             )
+        
+        # Ensure 'documents' is in kwargs with a default value
+        if 'documents' not in kwargs:
+            kwargs['documents'] = ''
+        
+        # When formatting the prompt, include 'documents'
+        prompt_text = self.llm_chain.prompt.format(
+            input=kwargs["input"],
+            agent_scratchpad=thoughts,
+            documents=kwargs["documents"],
+        )
+
+        # Calculate token count with 'documents' included
         if (
             calculate_num_tokens(
                 self.llm_chain.llm.tokenizer,
-                [
-                    self.llm_chain.prompt.format(
-                        input=kwargs["input"],
-                        agent_scratchpad=thoughts,
-                    )
-                ],
+                [prompt_text],
             )
             >= self.max_context_length - 100
         ) and self.summarize:
             thoughts = self._summarize_steps(intermediate_steps)
-
-        # Worst worst case, we are still over or close to the limit even after summarizing and thus should truncate and force a diagnosis
+        
+        # Repeat the process with updated thoughts
+        prompt_text = self.llm_chain.prompt.format(
+            input=kwargs["input"],
+            agent_scratchpad=thoughts,
+            documents=kwargs["documents"],
+        )
+        
+        # Worst-case scenario handling
         if (
             calculate_num_tokens(
                 self.llm_chain.llm.tokenizer,
-                [
-                    self.llm_chain.prompt.format(
-                        input=kwargs["input"],
-                        agent_scratchpad=thoughts,
-                    )
-                ],
+                [prompt_text],
             )
             >= self.max_context_length - 100
         ):
@@ -118,15 +235,22 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 self.llm_chain.llm.tokenizer,
                 [
                     self.llm_chain.prompt.format(
-                        input=kwargs["input"], agent_scratchpad=""
+                        input=kwargs["input"],
+                        agent_scratchpad="",
+                        documents=kwargs["documents"],
                     )
                 ],
             )
-            # Could be that input is already over limit and we need to truncate input
             if prompt_and_input_tokens > self.max_context_length - 100:
                 prompt_tokens = calculate_num_tokens(
                     self.llm_chain.llm.tokenizer,
-                    [self.llm_chain.prompt.format(input="", agent_scratchpad="")],
+                    [
+                        self.llm_chain.prompt.format(
+                            input="",
+                            agent_scratchpad="",
+                            documents=kwargs["documents"],
+                        )
+                    ],
                 )
                 kwargs["input"] = truncate_text(
                     self.llm_chain.llm.tokenizer,
@@ -139,10 +263,14 @@ class CustomZeroShotAgent(ZeroShotAgent):
                     self.llm_chain.llm.tokenizer,
                     thoughts,
                     self.max_context_length - prompt_and_input_tokens - 100,
-                )  # give yourself 100 tokens for diagnosis and treatment and tags
-            thoughts += f'{self.tags["ai_tag_end"]}{self.tags["user_tag_start"]}Provide a Final Diagnosis and Treatment.{self.tags["user_tag_end"]}{self.tags["ai_tag_start"]}Final'
-
-        # Also return kwargs so if we edited input, the change is propagated
+                )
+            thoughts += (
+                f'{self.tags["ai_tag_end"]}{self.tags["user_tag_start"]}'
+                f'Provide a Final Diagnosis and Treatment.'
+                f'{self.tags["user_tag_end"]}{self.tags["ai_tag_start"]}Final'
+            )
+        
+        # Return the thoughts and updated kwargs
         return " " + thoughts.strip(), kwargs
 
     # Takes all tool requests and observations and summarizes them one-by-one
@@ -237,6 +365,26 @@ def create_prompt(
     )
     return template
 
+def create_prompt_rag(
+    tags, tool_names, add_tool_descr, tool_use_examples
+) -> PromptTemplate:
+    template = PromptTemplate(
+        template=CHAT_TEMPLATE_RAG,
+        input_variables=["input", "agent_scratchpad", "documents"],
+        partial_variables={
+            "tool_names": action_input_pretty_printer(tool_names, None),
+            "add_tool_descr": add_tool_descr,
+            "examples": tool_use_examples,
+            "system_tag_start": tags["system_tag_start"],
+            "user_tag_start": tags["user_tag_start"],
+            "ai_tag_start": tags["ai_tag_start"],
+            "system_tag_end": tags["system_tag_end"],
+            "user_tag_end": tags["user_tag_end"],
+        },
+    )
+    return template
+
+
 
 def build_agent_executor_ZeroShot(
     patient,
@@ -251,6 +399,7 @@ def build_agent_executor_ZeroShot(
     provide_diagnostic_criteria,
     summarize,
     model_stop_words,
+    rag_retriever_agent=None, #RAG
 ):
     with open(lab_test_mapping_path, "rb") as f:
         lab_test_mapping_df = pickle.load(f)
@@ -283,7 +432,23 @@ def build_agent_executor_ZeroShot(
         tool_use_examples = TOOL_USE_EXAMPLES.format(
             add_tool_use_examples=add_tool_use_examples
         )
-    prompt = create_prompt(tags, tool_names, add_tool_descr, tool_use_examples)
+
+    if rag_retriever_agent is None:
+        prompt = create_prompt(tags, tool_names, add_tool_descr, tool_use_examples)
+    else:
+        prompt = create_prompt_rag(tags, tool_names, add_tool_descr, tool_use_examples)
+
+
+    # # >>> Add RAG Step Here <<<
+    # if rag_retriever_agent is not None:
+    #     # Extract current information from the patient data
+    #     current_information = extract_current_information(patient)
+
+    #     # Retrieve relevant documents using the RAG retriever
+    #     retrieved_docs = rag_retriever_agent.retrieve(current_information)
+
+    #     # Update the prompt to include the retrieved documents
+    #     prompt = update_prompt_with_retrieved_docs(prompt, retrieved_docs)
 
     # Create output parser
     output_parser = DiagnosisWorkflowParser(lab_test_mapping_df=lab_test_mapping_df)
@@ -308,6 +473,7 @@ def build_agent_executor_ZeroShot(
         tags=tags,
         lab_test_mapping_df=lab_test_mapping_df,
         summarize=summarize,
+        rag_retriever_agent=rag_retriever_agent, #RAG
     )
 
     # Init agent executor

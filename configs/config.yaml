@@ -36,6 +36,6 @@ save_probabilities: True #False
 
 # --- RAG config ---
 
-use_rag: True
+use_rag: False
 
 # --- RAG config ---
