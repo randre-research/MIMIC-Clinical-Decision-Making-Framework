@@ -99,10 +99,10 @@ class CustomZeroShotAgent(ZeroShotAgent):
             # Store retrieved documents in the dict with the current step number
             self.retrieved_docs_per_step[self.step_counter] = retrieved_docs
 
-        # Step 5: Add retrieved documents to inputs for this step only
-        # new_inputs["documents"] = retrieved_docs_content
-        # Add retrieved documents to kwargs
-        kwargs["documents"] = retrieved_docs_content
+            # Step 5: Add retrieved documents to inputs for this step only
+            # new_inputs["documents"] = retrieved_docs_content
+            # Add retrieved documents to kwargs
+            kwargs["documents"] = retrieved_docs_content
 
         # Construct the scratchpad with updated kwargs
         thoughts, kwargs = self._construct_scratchpad(intermediate_steps, **kwargs)
@@ -125,7 +125,8 @@ class CustomZeroShotAgent(ZeroShotAgent):
         )
         if total_tokens >= self.max_context_length - 100:
             retrieved_docs_content = self.summarize_docs(retrieved_docs_content)
-            kwargs["documents"] = retrieved_docs_content
+            if self.rag_retriever_agent is not None:
+                kwargs["documents"] = retrieved_docs_content
             inputs_for_prompt["documents"] = retrieved_docs_content
             prompt_text = self.llm_chain.prompt.format(**inputs_for_prompt)
 
@@ -177,7 +178,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
 
         # --- RAG ---
         # Ensure 'documents' is included in inputs with a default value
-        if 'documents' not in kwargs:
+        if 'documents' not in kwargs and self.rag_retriever_agent is not None:
             new_inputs['documents'] = ''
         # --- End RAG ---
 
@@ -196,15 +197,23 @@ class CustomZeroShotAgent(ZeroShotAgent):
             )
         
         # Ensure 'documents' is in kwargs with a default value
-        if 'documents' not in kwargs:
+        if 'documents' not in kwargs and self.rag_retriever_agent is not None:
             kwargs['documents'] = ''
         
-        # When formatting the prompt, include 'documents'
-        prompt_text = self.llm_chain.prompt.format(
-            input=kwargs["input"],
-            agent_scratchpad=thoughts,
-            documents=kwargs["documents"],
-        )
+        if self.rag_retriever_agent is not None: #RAG
+            # When formatting the prompt, include 'documents'
+            prompt_text = self.llm_chain.prompt.format(
+                input=kwargs["input"],
+                agent_scratchpad=thoughts,
+                documents=kwargs["documents"],
+            )
+        else:
+            # When formatting the prompt, exclude 'documents'
+            prompt_text = self.llm_chain.prompt.format(
+                input=kwargs["input"],
+                agent_scratchpad=thoughts,
+            )
+        
 
         # Calculate token count with 'documents' included
         if (
@@ -216,12 +225,19 @@ class CustomZeroShotAgent(ZeroShotAgent):
         ) and self.summarize:
             thoughts = self._summarize_steps(intermediate_steps)
         
-        # Repeat the process with updated thoughts
-        prompt_text = self.llm_chain.prompt.format(
-            input=kwargs["input"],
-            agent_scratchpad=thoughts,
-            documents=kwargs["documents"],
-        )
+        if self.rag_retriever_agent is not None: #RAG
+            # Repeat the process with updated thoughts
+            prompt_text = self.llm_chain.prompt.format(
+                input=kwargs["input"],
+                agent_scratchpad=thoughts,
+                documents=kwargs["documents"],
+            )
+        else:
+            # Repeat the process with updated thoughts
+            prompt_text = self.llm_chain.prompt.format(
+                input=kwargs["input"],
+                agent_scratchpad=thoughts,
+            )
         
         # Worst-case scenario handling
         if (
@@ -234,10 +250,14 @@ class CustomZeroShotAgent(ZeroShotAgent):
             prompt_and_input_tokens = calculate_num_tokens(
                 self.llm_chain.llm.tokenizer,
                 [
-                    self.llm_chain.prompt.format(
+                    self.llm_chain.prompt.format( # RAG
                         input=kwargs["input"],
                         agent_scratchpad="",
                         documents=kwargs["documents"],
+                    ) if self.rag_retriever_agent is not None else 
+                    self.llm_chain.prompt.format(
+                        input=kwargs["input"],
+                        agent_scratchpad="",
                     )
                 ],
             )
@@ -245,10 +265,14 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 prompt_tokens = calculate_num_tokens(
                     self.llm_chain.llm.tokenizer,
                     [
-                        self.llm_chain.prompt.format(
+                        self.llm_chain.prompt.format( # RAG
                             input="",
                             agent_scratchpad="",
                             documents=kwargs["documents"],
+                        ) if self.rag_retriever_agent is not None else
+                        self.llm_chain.prompt.format(
+                            input="",
+                            agent_scratchpad="",
                         )
                     ],
                 )
