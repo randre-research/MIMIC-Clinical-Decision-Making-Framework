@@ -127,7 +127,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
             retrieved_docs_content = self.summarize_docs(retrieved_docs_content)
             if self.rag_retriever_agent is not None:
                 kwargs["documents"] = retrieved_docs_content
-            inputs_for_prompt["documents"] = retrieved_docs_content
+                inputs_for_prompt["documents"] = retrieved_docs_content
             prompt_text = self.llm_chain.prompt.format(**inputs_for_prompt)
 
         # Step 10: Proceed to get the LLM output
