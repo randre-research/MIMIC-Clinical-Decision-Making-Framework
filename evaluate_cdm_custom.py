@@ -39,8 +39,11 @@ base_hosp = join("mimic-iv", "hosp")
 id_difficulty = pickle.load(open(BASE_MIMIC + "/id_difficulty.pkl", "rb"))
 difficulty = "first_diag"
 models = [
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
 ]
 
 experiment_results = {}

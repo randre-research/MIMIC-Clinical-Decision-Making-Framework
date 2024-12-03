@@ -1,8 +1,4 @@
 # Constants for paths
-# MIMIC_BASE = r'D:\Users\orosh\Documents\Research\Datasets\mimic-iv-ext-cdm-1.1-from-iv'
-# EXPERIMENTS_BASE = r'D:\Users\orosh\Documents\Research\Datasets\mimic-iv-ext-cdm-1.1-from-iv\logs\analysis'
-# OUTPUT_BASE = r'D:\Users\orosh\Documents\Research\Datasets\mimic-iv-ext-cdm-1.1-from-iv\logs\analysis\output'
-
 MIMIC_BASE = '/container/data'
 EXPERIMENTS_BASE = '/container/data/logs/analysis'
 OUTPUT_BASE = '/container/data/logs/analysis/output'
@@ -24,12 +20,13 @@ import pandas as pd
 import numpy as np
 
 MODELS = [
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
 
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
@@ -48,6 +45,7 @@ prettify_model_name = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr": "Llama3 1B 4.0bpw + stella5 400M (chunkr)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5": "Llama3 70B 4.0bpw + stella5 1.5B",
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5": "Llama3 70B 2.5bpw + stella5 1.5B",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k": "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)",
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k": "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)",
@@ -66,6 +64,7 @@ color_map = {
     "Llama3 1B 4.0bpw + stella5 400M (chunkr)": "#1ee3ab",
     "Llama3 70B 4.0bpw": "#3EAD0A",
     "Llama3 70B 4.0bpw + stella5 400M": "#9BD415",
+    "Llama3 70B 4.0bpw + stella5 1.5B": "#d4bb15",
     "Llama3 70B 2.5bpw + stella5 1.5B": "#F9F871",
     "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
     "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)": "#EC9898",
@@ -615,8 +614,6 @@ legend_handles = modality_handles + model_handles
 plt.legend(handles=legend_handles, bbox_to_anchor=(0.95, 1.25), ncol=5, frameon=False, fontsize=15)
 
 # Save the plot
-now = datetime.now()
-dt_string = now.strftime("%Y-%m-%d_%H-%M-%S")
 os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
 plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"ImagingPercentages_{dt_string}.png"), dpi=300, bbox_inches='tight')
 
@@ -745,8 +742,6 @@ fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.03), ncol
 plt.tight_layout()
 
 # Save the plot
-now = datetime.now()
-dt_string = now.strftime("%Y-%m-%d_%H-%M-%S")
 os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
 plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"TreatmentRequested_{dt_string}.png"), dpi=300, bbox_inches='tight')
 
@@ -754,6 +749,293 @@ plt.show()
 
 
 # --- Plot Treatment Percentage End ---
+
+
+
+
+# --- Plot Physical Examination ---
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Use the same models as in the main code
+models = MODELS  # from the main code
+experiment = 'BIN'  # Assuming 'BIN' is the experiment we are using
+fields = ['Physical Examination', 'Late Physical Examination']
+
+# Now, call load_scores
+experiment_results, experiment_evals, experiment_scores, experiment_retrievals = load_scores([experiment], fields=fields, models=models)
+
+# Get the scores for the experiment
+model_scores = experiment_scores[experiment]
+model_results = experiment_results[experiment]
+model_evals = experiment_evals[experiment]
+
+# Prepare data
+data = []
+for model in model_scores.keys():
+    mean_physical = np.mean([model_scores[model]['Physical Examination'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    mean_physical_late = np.mean([model_scores[model]['Late Physical Examination'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    data.append([model, mean_physical, mean_physical_late])
+
+df = pd.DataFrame(data, columns=['Model', 'Physical Examination', '(Late) Physical Examination'])
+df['Physical Examination'] *= 100
+df['(Late) Physical Examination'] *= 100
+
+# Reshaping the dataframe
+melted_df = df.melt(id_vars=['Model'], var_name='Category', value_name='Percentage' )
+
+sns.set(style="whitegrid", font_scale=1.4)
+
+# Creating the bar plot
+plt.figure(figsize=(10, 4))
+melted_df['Model'] = melted_df['Model'].apply(lambda x: prettify_model_name[x])
+
+bar_plot = sns.barplot(x='Category', y='Percentage', hue='Model', data=melted_df, palette=color_map, saturation=intensity)
+
+# Adding the scores above the bars
+for p in bar_plot.patches:
+    if p.get_height() > 0:
+        bar_plot.annotate(format(p.get_height(), '.1f'), 
+                      (p.get_x() + p.get_width() / 2., p.get_height()), 
+                      ha = 'center', va = 'center', 
+                      xytext = (0, 9), 
+                      textcoords = 'offset points')
+
+# Additional plot formatting
+plt.title('')
+plt.ylabel('Examination Requested (%)')
+plt.xlabel('')
+plt.ylim(0, 100)
+plt.legend(bbox_to_anchor=(0.9, 1.2),  ncol=len(model_scores.keys()), frameon=False, fontsize=16)
+# Save the plot
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"PhysicalExaminationPercentages_{dt_string}.png"), dpi=300, bbox_inches='tight')
+plt.show()
+
+# --- Plot Physical Examination End ---
+
+
+
+
+# --- Plot Laboratory Tests ---
+from agents.AgentAction import AgentAction
+
+# Evaluators are loaded using the existing load_evaluator function
+evaluators = {}
+for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+    evaluators[patho] = load_evaluator(patho)
+
+# Using same models as in the main code
+models = MODELS
+experiment = 'BIN'
+fields = []
+
+# Load the scores
+experiment_results, experiment_evals, experiment_scores, experiment_retrievals = load_scores([experiment], fields=fields, models=models)
+
+model_scores = experiment_scores[experiment]
+model_results = experiment_results[experiment]
+model_evals = experiment_evals[experiment]
+
+# Now, we need to process required lab tests
+required_lab_tests = {}
+for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+    required_lab_tests[patho] = evaluators[patho].required_lab_tests
+
+# Load the hadm_info files
+app_hadm_info_firstdiag         = load_hadm_from_file('appendicitis_hadm_info_first_diag', base_mimic=MIMIC_BASE)
+cholec_hadm_info_firstdiag      = load_hadm_from_file('cholecystitis_hadm_info_first_diag', base_mimic=MIMIC_BASE)
+pancr_hadm_info_firstdiag       = load_hadm_from_file('pancreatitis_hadm_info_first_diag', base_mimic=MIMIC_BASE)
+divert_hadm_info_firstdiag      = load_hadm_from_file('diverticulitis_hadm_info_first_diag', base_mimic=MIMIC_BASE)
+
+# Now, we process MIMIC Doctors
+model_evals["MIMIC Doctors"] = {}
+for patho, hadm_info in zip(['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis'], [app_hadm_info_firstdiag, cholec_hadm_info_firstdiag, divert_hadm_info_firstdiag, pancr_hadm_info_firstdiag]):
+    model_evals["MIMIC Doctors"][patho] = {}
+    for patient in hadm_info.keys():
+        evaluator = evaluators[patho]
+        action = AgentAction(tool="Laboratory Tests", tool_input={"action_input": list(hadm_info[patient]['Laboratory Tests'].keys())}, log="", custom_parsings=0)
+        evaluator.score_laboratory_tests(action)
+        eval = {
+            "scores": evaluator.scores.copy(),
+            "answers": evaluator.answers.copy(),
+        }
+        model_evals["MIMIC Doctors"][patho][patient] = eval
+
+# Prepare data for plotting
+data = []
+required_lab_test_percentages = {}
+for model in model_evals.keys():
+    required_lab_test_percentages[model] = {}
+    for patho in model_evals[model].keys():
+        required_lab_test_percentages[model][patho] = {}
+        for required_lab_test in required_lab_tests[patho]:
+            required_lab_test_percentages[model][patho][required_lab_test] = 0
+        for _id in model_evals[model][patho].keys():
+            for required_lab_test in required_lab_tests[patho]:
+                required_lab_test_percentages[model][patho][required_lab_test] += 1 if len(model_evals[model][patho][_id]['answers']['Correct Laboratory Tests'][required_lab_test]) else 0
+        for required_lab_test in required_lab_tests[patho]:
+            required_lab_test_percentages[model][patho][required_lab_test] /= len(model_evals[model][patho].keys())
+            required_lab_test_percentages[model][patho][required_lab_test] *= 100
+            data.append([prettify_model_name[model], patho.capitalize(), required_lab_test, required_lab_test_percentages[model][patho][required_lab_test]])
+
+df = pd.DataFrame(data, columns=['Model', 'Pathology', 'Required Laboratory Test', 'Percentage'])
+
+# Creating the plot
+sns.set_theme(style="whitegrid", font_scale=1.6)
+fig, axes = plt.subplots(2, 2, figsize=(16, 10), sharey=True)
+
+# Replace 'Seriousness' with 'Severity' for consistency
+df['Required Laboratory Test'] = df['Required Laboratory Test'].replace('Seriousness', 'Severity')
+
+# Pathologies and their relevant tests
+pathology_tests = {
+    'Appendicitis': ['Inflammation'],
+    'Cholecystitis': ['Inflammation', 'Liver', 'Gallbladder'],
+    'Diverticulitis': ['Inflammation'],
+    'Pancreatitis': ['Inflammation', 'Pancreas', 'Severity']
+}
+
+# Plotting each pathology in its subplot
+for i, (pathology, tests) in enumerate(pathology_tests.items()):
+    ax = axes[i // 2, i % 2]
+    pathology_df = df[(df['Pathology'] == pathology) & (df['Required Laboratory Test'].isin(tests))]
+    bar_plot = sns.barplot(x='Required Laboratory Test', y='Percentage', hue='Model', data=pathology_df, ax=ax, palette=color_map, saturation=intensity)
+
+    unique_tests = pathology_df['Required Laboratory Test'].unique()
+    for j in range(len(unique_tests) - 1):
+        bar_plot.axvline(x=j + 0.5, color='gray', linestyle='--', linewidth=1)
+
+    ax.set_title(pathology)
+    if i > 1:
+        ax.set_xlabel('Laboratory Test Category')
+    else:
+        ax.set_xlabel('')
+    ax.set_ylabel('Lab Test Requested (%)')
+    bar_plot.get_legend().remove()
+
+    # Print % correct above each bar
+    for p in bar_plot.patches:
+        if p.get_height() > 0:
+            adjust = 0 if p.get_height() < 99 else 10
+            color = 'black' if p.get_height() < 99 else 'white'
+            _format = '.1f' if p.get_height() < 99 else '.0f'
+            bar_plot.annotate(format(p.get_height(), _format),
+                (p.get_x() + p.get_width() / 2., p.get_height() - adjust),
+                ha='center', va='center',
+                xytext=(0, 9),
+                textcoords='offset points',
+                fontsize=15, color=color)
+
+# Adjust layout and save the figure
+plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+plt.ylim(0, 100)
+
+# Create a single legend
+handles, labels = axes[0, 0].get_legend_handles_labels()
+fig.legend(handles, labels, loc='upper center', bbox_to_anchor=(0.5, 1.03), ncol=len(model_evals.keys()), frameon=False, fontsize=16)
+
+# Save the plot
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"LaboratoryTestPercentages_{dt_string}.png"), dpi=300, bbox_inches='tight')
+plt.show()
+
+# --- Plot Laboratory Tests End ---
+
+
+
+
+
+
+
+# --- Plot Instruction Following Scores ---
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Use the same models as in the main code
+models = MODELS
+
+# experiments = ['BIN', 'FI_PLI']
+experiments = ['BIN']
+fields = ['Action Parsing', 'Treatment Parsing', 'Diagnosis Parsing', 'Invalid Tools']
+
+# Load the scores for both experiments
+experiment_results, experiment_evals, experiment_scores, experiment_retrievals = load_scores(experiments, fields=fields, models=models)
+
+# Get scores for 'BIN' experiment
+model_scores = experiment_scores["BIN"]
+model_results = experiment_results["BIN"]
+model_evals = experiment_evals["BIN"]
+
+# Get scores for 'FI_PLI' experiment
+# model_scores_fi = experiment_scores["FI_PLI"]
+# model_results_fi = experiment_results["FI_PLI"]
+# model_evals_fi = experiment_evals["FI_PLI"]
+
+data = []
+for model in model_scores.keys():
+    mean_action_parsing = np.mean([model_scores[model]['Action Parsing'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    mean_treatment_parsing = np.mean([model_scores[model]['Treatment Parsing'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    mean_diagnosis_parsing = np.mean([model_scores[model]['Diagnosis Parsing'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    # mean_diagnosis_parsing_fi = np.mean([model_scores_fi[model]['Diagnosis Parsing'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    mean_invalid_tools = np.mean([model_scores[model]['Invalid Tools'][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+    # data.append([model, mean_action_parsing, mean_diagnosis_parsing, mean_invalid_tools, mean_diagnosis_parsing_fi])
+    data.append([model, mean_action_parsing, mean_diagnosis_parsing, mean_invalid_tools])
+
+# df = pd.DataFrame(data, columns=['Model', 'Action Parsing', 'Diagnosis Parsing', 'Invalid Tools', 'Diagnosis Parsing FI'])
+df = pd.DataFrame(data, columns=['Model', 'Action Parsing', 'Diagnosis Parsing', 'Invalid Tools'])
+df["Model"] = df["Model"].apply(lambda x: prettify_model_name[x])
+df['Invalid Tools'] = 1 / df['Invalid Tools']
+df["Action Parsing"] = 1 / df["Action Parsing"]
+df["Diagnosis Parsing"] = 1 / df["Diagnosis Parsing"]
+# df["Diagnosis Parsing FI"] = 1 / df["Diagnosis Parsing FI"]
+
+# Reshaping the dataframe
+melted_df = df.melt(id_vars=['Model'], var_name='Category', value_name='Percentage' )
+
+sns.set(style="whitegrid", font_scale=1.4)
+
+# Creating the bar plot
+plt.figure(figsize=(12, 4))
+
+# bar_plot = sns.barplot(x='Category', y='Percentage', hue='Model', data=melted_df, palette=color_map, order=['Action Parsing', 'Invalid Tools', 'Diagnosis Parsing', 'Diagnosis Parsing FI'], saturation=intensity)
+bar_plot = sns.barplot(x='Category', y='Percentage', hue='Model', data=melted_df, palette=color_map, order=['Action Parsing', 'Invalid Tools', 'Diagnosis Parsing'], saturation=intensity)
+
+# unique_categories = ['Action Parsing', 'Invalid Tools', 'Diagnosis Parsing', 'Diagnosis Parsing FI']
+unique_categories = ['Action Parsing', 'Invalid Tools', 'Diagnosis Parsing']
+for j in range(len(unique_categories) - 1):
+    bar_plot.axvline(x=j + 0.5, color='gray', linestyle='--', linewidth=1)
+
+# Adding the scores above the bars
+for p in bar_plot.patches:
+    if p.get_height() > 0:
+        bar_plot.annotate(format(p.get_height(), '.1f'),
+                      (p.get_x() + p.get_width() / 2., p.get_height()),
+                      ha='center', va='center',
+                      xytext=(0, 9),
+                      textcoords='offset points')
+
+# Additional plot formatting
+plt.title('')
+plt.ylabel('Average Number of Patients\nUntil Formatting Error')
+plt.xlabel('')
+plt.ylim(0, 30)
+# plt.xticks(labels=['BIN\nNext Action Error', 'BIN\nTool Hallucination', 'BIN\nDiagnosis Error', 'FI_PLI\nDiagnosis Error'], ticks=[0, 1, 2, 3])
+plt.xticks(labels=['BIN\nNext Action Error', 'BIN\nTool Hallucination', 'BIN\nDiagnosis Error'], ticks=[0, 1, 2])
+plt.legend(bbox_to_anchor=(0.85, 1.2),  ncol=len(model_scores.keys()), frameon=False, fontsize=16)
+
+# Save the plot
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"InstructionFollowingScores_{dt_string}.png"), dpi=300, bbox_inches='tight')
+plt.show()
+
+# --- Plot Instruction Following Scores End ---
+
+
+
+
+
+
+
 
 
 

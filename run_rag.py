@@ -196,6 +196,42 @@ def run(args: DictConfig):
         #     doc_texts = ""
         # --- End RAG Document Retrieval ---
 
+        # # Build the agent executor, passing retrieved documents if RAG is used
+        # agent_executor = build_agent_executor_ZeroShot(
+        #     patient=hadm_info_clean[_id],
+        #     llm=llm,
+        #     lab_test_mapping_path=args.lab_test_mapping_path,
+        #     logfile=log_path,
+        #     max_context_length=args.max_context_length,
+        #     tags=tags,
+        #     include_ref_range=args.include_ref_range,
+        #     bin_lab_results=args.bin_lab_results,
+        #     include_tool_use_examples=args.include_tool_use_examples,
+        #     provide_diagnostic_criteria=args.provide_diagnostic_criteria,
+        #     summarize=args.summarize,
+        #     model_stop_words=args.stop_words,
+        #     # documents=doc_texts if args.use_rag else None,  # Pass documents to the agent
+        #     rag_retriever_agent = retriever if args.use_rag else None, #RAG
+        # )
+
+        # # Prepare the input for the agent executor
+        # input_data = {"input": hadm_info_clean[_id]["Patient History"].strip()}
+        # if args.use_rag:
+        #     input_data["documents"] = ''
+
+        # # Run the agent executor
+        # result = agent_executor(input_data)
+
+        # #RAG
+        # # Access the retrieved documents per step
+        # retrieved_docs_per_step = agent_executor.agent.retrieved_docs_per_step
+
+        # # Save results, including retrieved documents if RAG is used
+        # if args.use_rag:
+        #     result["retrieval"] = retrieved_docs_per_step
+
+        # append_to_pickle_file(results_log_path, {_id: result})
+
         # Build the agent executor, passing retrieved documents if RAG is used
         agent_executor = build_agent_executor_ZeroShot(
             patient=hadm_info_clean[_id],
@@ -210,8 +246,7 @@ def run(args: DictConfig):
             provide_diagnostic_criteria=args.provide_diagnostic_criteria,
             summarize=args.summarize,
             model_stop_words=args.stop_words,
-            # documents=doc_texts if args.use_rag else None,  # Pass documents to the agent
-            rag_retriever_agent = retriever if args.use_rag else None, #RAG
+            rag_retriever_agent=retriever if args.use_rag else None,  # RAG
         )
 
         # Prepare the input for the agent executor
@@ -222,15 +257,21 @@ def run(args: DictConfig):
         # Run the agent executor
         result = agent_executor(input_data)
 
-        #RAG
-        # Access the retrieved documents per step
+        # Access the step data from the agent
+        step_data = agent_executor.agent.step_data
+
+        # Include the step_data in the results
+        result['step_data'] = step_data
+
+        # RAG: Access the retrieved documents per step
         retrieved_docs_per_step = agent_executor.agent.retrieved_docs_per_step
 
-        # Save results, including retrieved documents if RAG is used
+        # Save results, including retrieved documents and step data if RAG is used
         if args.use_rag:
             result["retrieval"] = retrieved_docs_per_step
 
         append_to_pickle_file(results_log_path, {_id: result})
+
 
     logger.info("Processing completed.")
 

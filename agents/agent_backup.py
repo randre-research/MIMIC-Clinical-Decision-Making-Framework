@@ -12,7 +12,6 @@ from langchain.schema.messages import BaseMessage
 from langchain.schema import AgentAction, AgentFinish
 from langchain.callbacks import FileCallbackHandler
 
-from pydantic import Field  # Added for proper initialization
 
 from agents.prompts import (
     CHAT_TEMPLATE,
@@ -65,16 +64,9 @@ class CustomZeroShotAgent(ZeroShotAgent):
     retrieved_docs_per_step: Dict[int, List[Dict]] = {}
     # step_counter: int = 0
     # --- End RAG ---
-    # Added to store step-by-step data
-    step_data: List[Dict[str, Any]] = Field(default_factory=list)
 
     class Config:
         arbitrary_types_allowed = True
-
-    # Initialize step_data in __init__
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.step_data = []
 
     # Allow for multiple stop criteria instead of just taking the observation prefix string
     @property
@@ -139,28 +131,12 @@ class CustomZeroShotAgent(ZeroShotAgent):
             # Reformat the prompt with summarized documents
             prompt_text = self.llm_chain.prompt.format(**inputs_for_prompt)
 
-        # --- Added code to record intermediate data ---
-        # Store the prompt and other relevant data
-        self.step_data.append({
-            'step': current_step,
-            'inputs_for_prompt': inputs_for_prompt,
-            'prompt_text': prompt_text,
-            'retrieved_docs_content': retrieved_docs_content,
-            # You can add more fields here if needed
-        })
-        # --- End of added code ---
-
         # Prepare inputs for the LLM chain
         llm_chain_input_keys = self.llm_chain.input_keys
         inputs_for_llm_chain = {k: v for k, v in updated_kwargs.items() if k in llm_chain_input_keys}
 
         # Generate the output using the LLM chain
         full_output = self.llm_chain.predict(**inputs_for_llm_chain, stop=self._stop)
-
-        # --- Added code to record the output ---
-        # Update the last entry in step_data with the full output
-        self.step_data[-1]['full_output'] = full_output
-        # --- End of added code ---
 
         # Parse and return the LLM output
         return self.output_parser.parse(full_output)
@@ -306,7 +282,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
             thoughts += (
                 f'{self.tags["ai_tag_end"]}{self.tags["user_tag_start"]}'
                 f'Provide a Final Diagnosis and Treatment.'
-                f'{self.tags["user_tag_end"]}{self.tags["ai_tag_start"]}{self.llm_prefix}'
+                f'{self.tags["user_tag_end"]}{self.tags["ai_tag_start"]}Final'
             )
         
         # Return the thoughts and updated kwargs
@@ -476,18 +452,6 @@ def build_agent_executor_ZeroShot(
         prompt = create_prompt(tags, tool_names, add_tool_descr, tool_use_examples)
     else:
         prompt = create_prompt_rag(tags, tool_names, add_tool_descr, tool_use_examples)
-
-
-    # # >>> Add RAG Step Here <<<
-    # if rag_retriever_agent is not None:
-    #     # Extract current information from the patient data
-    #     current_information = extract_current_information(patient)
-
-    #     # Retrieve relevant documents using the RAG retriever
-    #     retrieved_docs = rag_retriever_agent.retrieve(current_information)
-
-    #     # Update the prompt to include the retrieved documents
-    #     prompt = update_prompt_with_retrieved_docs(prompt, retrieved_docs)
 
     # Create output parser
     output_parser = DiagnosisWorkflowParser(lab_test_mapping_df=lab_test_mapping_df)
