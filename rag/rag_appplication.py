@@ -114,12 +114,39 @@ class VectorStore:
         """
         docs = []
         for path in document_paths:
-            if "chunkr" in path:
+            if "chunkr" in path.lower():
+                # Handle JSON chunkr files
                 docs.extend(self.load_chunkr_file(path))
-            else:
+            elif path.lower().endswith('.pdf'):
+                # Handle PDF documents
                 loader = PyPDFLoader(path)
                 docs.extend(loader.load())
+            elif path.lower().endswith('.md'):
+                # Handle Markdown documents
+                docs.extend(self.load_markdown_file(path))
+            else:
+                # If a new file type arises, implement similar loading logic
+                raise ValueError(f"Unsupported file format for: {path}")
         return docs
+
+    def load_markdown_file(self, path):
+        """
+        Load a Markdown file and create Document objects from it.
+        :param path: Path to the Markdown file.
+        :return: List of Document objects.
+        """
+        with open(path, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        doc_name = os.path.basename(path)
+        doc = Document(
+            page_content=content,
+            metadata={
+                "source": doc_name,
+                "format": "markdown"
+            }
+        )
+        return [doc]
 
     def load_chunkr_file(self, path):
         """
@@ -127,11 +154,10 @@ class VectorStore:
         :param path: Path to the chunkr JSON file.
         :return: List of Document objects.
         """
-        with open(path, 'r') as file:
+        with open(path, 'r', encoding='utf-8') as file:
             chunk_data = json.load(file)
 
-        # Get document name
-        doc_name = path.split("/")[-1]
+        doc_name = os.path.basename(path)
         
         docs = []
         for chunk in chunk_data:
@@ -207,6 +233,129 @@ class VectorStore:
         :return: The FAISS index and documents.
         """
         return self.index, self.doc_chunks
+
+# class VectorStore:
+#     def __init__(
+#         self, document_paths, embedding_model_container, chunk_size=250, chunk_overlap=0
+#     ):
+#         """
+#         Initialize the vector store with documents and embeddings.
+#         :param document_paths: List of document file paths.
+#         :param embedding_model_container: An instance of EmbeddingModelContainer.
+#         :param chunk_size: Size of text chunks for splitting documents.
+#         :param chunk_overlap: Overlap size between chunks.
+#         """
+#         self.embedding_model = embedding_model_container
+#         self.chunk_size = chunk_size
+#         self.chunk_overlap = chunk_overlap
+#         # Load documents from paths
+#         self.docs = self.load_documents(document_paths)
+#         # Split documents into chunks
+#         self.doc_chunks = self.split_documents(self.docs)
+#         # Create vector store
+#         self.index, self.doc_chunks = self.create_vector_store(self.doc_chunks)
+
+#     def load_documents(self, document_paths):
+#         """
+#         Load documents from the provided file paths.
+#         :param document_paths: List of document file paths.
+#         :return: List of Document objects.
+#         """
+#         docs = []
+#         for path in document_paths:
+#             if "chunkr" in path:
+#                 docs.extend(self.load_chunkr_file(path))
+#             else:
+#                 loader = PyPDFLoader(path)
+#                 docs.extend(loader.load())
+#         return docs
+
+#     def load_chunkr_file(self, path):
+#         """
+#         Load a chunkr JSON file and create Document objects from it.
+#         :param path: Path to the chunkr JSON file.
+#         :return: List of Document objects.
+#         """
+#         with open(path, 'r') as file:
+#             chunk_data = json.load(file)
+
+#         # Get document name
+#         doc_name = path.split("/")[-1]
+        
+#         docs = []
+#         for chunk in chunk_data:
+#             for segment in chunk["segments"]:
+#                 content = segment["content"]
+#                 metadata = {
+#                     "segment_id": segment["segment_id"],
+#                     "bbox": segment["bbox"],
+#                     "page": segment["page_number"],
+#                     "page_width": segment["page_width"],
+#                     "page_height": segment["page_height"],
+#                     "segment_type": segment["segment_type"],
+#                     "image": segment.get("image"),
+#                     "html": segment.get("html"),
+#                     "markdown": segment.get("markdown"),
+#                     "chunk_length": chunk["chunk_length"],
+#                     "source": doc_name,
+#                 }
+#                 doc = Document(page_content=content, metadata=metadata)
+#                 docs.append(doc)
+#         return docs
+
+#     def split_documents(self, documents):
+#         """
+#         Split documents into chunks and add metadata.
+#         :param documents: List of Document objects.
+#         :return: List of Document chunks.
+#         """
+#         tokenizer = self.embedding_model.embedding_model.tokenizer
+#         max_length = self.chunk_size
+#         doc_chunks = []
+
+#         for doc in documents:
+#             text = doc.page_content
+#             tokens = tokenizer.encode(text, add_special_tokens=False)
+#             token_chunks = [tokens[i:i + max_length] for i in range(0, len(tokens), max_length - self.chunk_overlap)]
+            
+#             for i, token_chunk in enumerate(token_chunks):
+#                 chunk_text = tokenizer.decode(token_chunk)
+#                 chunk = Document(page_content=chunk_text, metadata=doc.metadata.copy())
+                
+#                 chunk_id = f"chunk_{len(doc_chunks)}"
+#                 chunk.metadata['chunk_id'] = chunk.metadata.get('segment_id', chunk_id)
+#                 chunk.metadata['token_size'] = len(token_chunk)
+#                 chunk.metadata['document_reference'] = chunk.metadata.get('source', 'unknown')
+#                 chunk.metadata['page_number'] = chunk.metadata.get('page', 'unknown')
+#                 chunk.metadata['order_in_document'] = i
+                
+#                 doc_chunks.append(chunk)
+#         return doc_chunks
+
+#     def create_vector_store(self, doc_chunks):
+#         """
+#         Create the vector store from document chunks and embeddings.
+#         :param doc_chunks: List of Document chunks.
+#         :return: A FAISS index and corresponding documents.
+#         """
+#         texts = [doc.page_content for doc in doc_chunks]
+#         embeddings = self.embedding_model.embed(texts)
+#         embeddings = np.array(embeddings).astype('float32')
+
+#         for doc, emb in zip(doc_chunks, embeddings):
+#             doc.metadata['embedding'] = emb
+
+#         dimension = embeddings.shape[1]
+#         index = faiss.IndexFlatL2(dimension)
+#         index.add(embeddings)
+#         return index, doc_chunks
+
+#     def get_vector_store(self):
+#         """
+#         Get the underlying vector store.
+#         :return: The FAISS index and documents.
+#         """
+#         return self.index, self.doc_chunks
 
 # --- Retriever ---
 

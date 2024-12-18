@@ -19,14 +19,20 @@ from matplotlib.colors import ListedColormap
 import pandas as pd
 import numpy as np
 
+EXPERIMENTS = [
+    # "CDM_VANILLA",
+    "BIN",
+]
+
 MODELS = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
 
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
@@ -42,6 +48,7 @@ prettify_model_name = {
     "MIMIC Doctors": "MIMIC Doctors",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw": "Llama3 1B 4.0bpw",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 1B 4.0bpw + stella5 400M",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr": "Llama3 1B 4.0bpw + stella5 400M (chunkr)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
@@ -61,6 +68,7 @@ color_map = {
     "MIMIC Doctors": "#2C6E49",
     "Llama3 1B 4.0bpw": "#0077B6",
     "Llama3 1B 4.0bpw + stella5 400M": "#00B4D8",
+    "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)": "#4abd98",
     "Llama3 1B 4.0bpw + stella5 400M (chunkr)": "#1ee3ab",
     "Llama3 70B 4.0bpw": "#3EAD0A",
     "Llama3 70B 4.0bpw + stella5 400M": "#9BD415",
@@ -369,6 +377,62 @@ def load_scores(experiments, difficulty="first_diag", fields=['Diagnosis'], mode
     # return experiment_results, experiment_evals, experiment_scores
     return experiment_results, experiment_evals, experiment_scores, experiment_retrievals #RAG
 
+def load_mismatch_data(
+    experiments,
+    models=["Llama-2-70B-chat-GPTQ", "Llama2-70B-OASST-SFT-v10-GPTQ", "WizardLM-70B-V1.0-GPTQ"],
+    pathos=["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"],
+):
+    """
+    Load mismatch scores and mismatch retrievals for specified experiments, models, and pathologies.
+
+    Args:
+        experiments (list): List of experiment names.
+        models (list): List of models to load data for.
+        pathos (list): List of pathologies to load data for.
+
+    Returns:
+        tuple: A tuple containing:
+            - experiment_mismatch_scores (dict): Mismatch scores for each experiment and model.
+            - experiment_mismatch_retrievals (dict): Mismatch retrievals for each experiment and model.
+    """
+    experiment_mismatch_scores = {}
+    experiment_mismatch_retrievals = {}
+
+    for experiment in experiments:
+        model_mismatch_scores = {}
+        model_mismatch_retrievals = {}
+
+        # Load mismatch scores
+        mismatch_scores_path = os.path.join(EXPERIMENTS_BASE, experiment, f"mismatch_scores.pkl")
+        if os.path.exists(mismatch_scores_path):
+            m_scores = pickle.load(open(mismatch_scores_path, "rb"))
+        else:
+            print(f"Mismatch scores file not found: {mismatch_scores_path}")
+            m_scores = {}
+
+        # Load mismatch retrievals
+        mismatch_retrievals_path = os.path.join(EXPERIMENTS_BASE, experiment, f"mismatch_retrievals.pkl")
+        if os.path.exists(mismatch_retrievals_path):
+            m_retrievals = pickle.load(open(mismatch_retrievals_path, "rb"))
+        else:
+            print(f"Mismatch retrievals file not found: {mismatch_retrievals_path}")
+            m_retrievals = {}
+
+        for model in models:
+            model_mismatch_scores[model] = m_scores[model] if model in m_scores else {}
+            model_mismatch_retrievals[model] = m_retrievals[model] if model in m_retrievals else {}
+
+            #Fix scores (scores = avg)
+            for patho in pathos:
+                for patho2 in pathos:
+                    # print("Patients per patho: ", patho, " - ", patho2, " - :: ", len(model_mismatch_scores[model][patho][patho2]))
+                    model_mismatch_scores[model][patho][patho2] = np.mean(model_mismatch_scores[model][patho][patho2])
+
+        experiment_mismatch_scores[experiment] = model_mismatch_scores
+        experiment_mismatch_retrievals[experiment] = model_mismatch_retrievals
+
+    return experiment_mismatch_scores, experiment_mismatch_retrievals
+
 def check_diagnoses_orig_dr_eval(ids, id_difficulty):
     for patho in ['appendicitis', 'cholecystitis', 'pancreatitis', 'diverticulitis']:
         id_difficulty[patho]['original_dr_eval'] = []
@@ -404,10 +468,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-experiments = [
-    # 'CDM_VANILLA',
-    'BIN',
-    ]
+experiments = EXPERIMENTS
 fields = [DIAG]
 # models = ["Llama-2-70B-chat-GPTQ", "Llama2-70B-OASST-SFT-v10-GPTQ", "WizardLM-70B-V1.0-GPTQ"]
 models = MODELS
@@ -626,7 +687,6 @@ plt.show()
 
 
 
-
 # --- Plot Treatment Percentage  ---
 
 import pandas as pd
@@ -760,7 +820,8 @@ import matplotlib.pyplot as plt
 
 # Use the same models as in the main code
 models = MODELS  # from the main code
-experiment = 'BIN'  # Assuming 'BIN' is the experiment we are using
+# experiment = 'BIN'  # Assuming 'BIN' is the experiment we are using
+experiment = experiments[0]
 fields = ['Physical Examination', 'Late Physical Examination']
 
 # Now, call load_scores
@@ -827,7 +888,8 @@ for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']
 
 # Using same models as in the main code
 models = MODELS
-experiment = 'BIN'
+# experiment = 'BIN'
+experiment = experiments[0]
 fields = []
 
 # Load the scores
@@ -956,16 +1018,21 @@ import matplotlib.pyplot as plt
 models = MODELS
 
 # experiments = ['BIN', 'FI_PLI']
-experiments = ['BIN']
+experiments = EXPERIMENTS
 fields = ['Action Parsing', 'Treatment Parsing', 'Diagnosis Parsing', 'Invalid Tools']
 
 # Load the scores for both experiments
 experiment_results, experiment_evals, experiment_scores, experiment_retrievals = load_scores(experiments, fields=fields, models=models)
 
+# Get scores for experiment
+model_scores = experiment_scores[experiments[0]]
+model_results = experiment_results[experiments[0]]
+model_evals = experiment_evals[experiments[0]]
+
 # Get scores for 'BIN' experiment
-model_scores = experiment_scores["BIN"]
-model_results = experiment_results["BIN"]
-model_evals = experiment_evals["BIN"]
+# model_scores = experiment_scores["BIN"]
+# model_results = experiment_results["BIN"]
+# model_evals = experiment_evals["BIN"]
 
 # Get scores for 'FI_PLI' experiment
 # model_scores_fi = experiment_scores["FI_PLI"]
@@ -1021,7 +1088,8 @@ plt.ylabel('Average Number of Patients\nUntil Formatting Error')
 plt.xlabel('')
 plt.ylim(0, 30)
 # plt.xticks(labels=['BIN\nNext Action Error', 'BIN\nTool Hallucination', 'BIN\nDiagnosis Error', 'FI_PLI\nDiagnosis Error'], ticks=[0, 1, 2, 3])
-plt.xticks(labels=['BIN\nNext Action Error', 'BIN\nTool Hallucination', 'BIN\nDiagnosis Error'], ticks=[0, 1, 2])
+# plt.xticks(labels=['BIN\nNext Action Error', 'BIN\nTool Hallucination', 'BIN\nDiagnosis Error'], ticks=[0, 1, 2])
+plt.xticks(labels=[experiment+'\nNext Action Error', experiment+'\nTool Hallucination', experiment+'\nDiagnosis Error'], ticks=[0, 1, 2])
 plt.legend(bbox_to_anchor=(0.85, 1.2),  ncol=len(model_scores.keys()), frameon=False, fontsize=16)
 
 # Save the plot
@@ -1199,3 +1267,302 @@ for model in models:
         plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_{dt_string}.png"), dpi=300, bbox_inches='tight')
         plt.close()
 
+
+
+# === MISMATCH RAG PLOT ===
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+
+def create_mismatch_heatmap(mismatch_data, mismatch_retrievals_data, models, pathologies, output_base, dt_string):
+    """
+    Generate a heatmap for mismatch data.
+
+    Args:
+        mismatch_data (dict): Contains scores for actual vs predicted pathologies.
+        mismatch_retrievals_data (dict): Contains retrieval data for each mismatch.
+        models (list): List of models to process.
+        pathologies (list): List of pathologies.
+        output_base (str): Base directory for saving outputs.
+        dt_string (str): Timestamp for filenames.
+    """
+    for model in models:
+        model_mismatch_scores = mismatch_data[model]
+        model_mismatch_retrievals = mismatch_retrievals_data[model]
+
+        # Prepare data for the heatmap
+        heatmap_data = []
+        documents = []
+
+        for actual_patho in pathologies:
+            row = []
+            subrows = []
+            for predicted_patho in pathologies:
+                # Calculate total score and counts for each document
+                if actual_patho in model_mismatch_retrievals and predicted_patho in model_mismatch_retrievals[actual_patho]:
+                    retrieval_data = model_mismatch_retrievals[actual_patho][predicted_patho]
+                    for document in retrieval_data.keys():
+                        total_chunks = sum(
+                            retrieval_data[document][page][chunk]["count"]
+                            for page in retrieval_data[document]
+                            for chunk in retrieval_data[document][page]
+                        )
+                        row.append(total_chunks)
+                        subrows.append((document, total_chunks))
+                        documents.append(document)
+                else:
+                    row.append(0)
+            heatmap_data.append(row)
+
+        # Normalize the rows by the number of documents retrieved
+        for i, row in enumerate(heatmap_data):
+            row_total = sum(row)
+            if row_total > 0:
+                heatmap_data[i] = [x / row_total for x in row]
+
+        # Create the heatmap
+        plt.figure(figsize=(len(pathologies) * 3, len(pathologies) * 2))
+        df_heatmap = pd.DataFrame(heatmap_data, index=pathologies, columns=pathologies)
+
+        sns.heatmap(
+            df_heatmap,
+            annot=True,
+            cmap="coolwarm",
+            cbar_kws={"label": "Normalized Retrieval Count"},
+            xticklabels=pathologies,
+            yticklabels=pathologies,
+        )
+
+        plt.title(f"{model} - Mismatch Retrieval Heatmap")
+        plt.xlabel("Predicted Pathology")
+        plt.ylabel("Actual Pathology")
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+
+        # Save the heatmap
+        os.makedirs(os.path.join(output_base, dt_string), exist_ok=True)
+        heatmap_path = os.path.join(output_base, dt_string, f"{model}_mismatch_heatmap.png")
+        plt.savefig(heatmap_path, dpi=300)
+        plt.close()
+
+        # Save the document-level breakdown (optional)
+        doc_df = pd.DataFrame(subrows, columns=["Document", "Count"])
+        doc_breakdown_path = os.path.join(output_base, dt_string, f"{model}_document_breakdown.csv")
+        doc_df.to_csv(doc_breakdown_path, index=False)
+
+        print(f"Saved heatmap to {heatmap_path}")
+        print(f"Saved document breakdown to {doc_breakdown_path}")
+
+
+mismatch_data, mismatch_retrievals_data = load_mismatch_data(experiments, models)
+
+experiment = experiments[0]
+models = MODELS
+
+mismatch_data = mismatch_data[experiment]
+mismatch_retrievals_data = mismatch_retrievals_data[experiment]
+
+#save the mismatch data to csv
+mismatch_data_df = pd.DataFrame(mismatch_data)
+mismatch_data_df.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"MismatchData_{dt_string}.csv"), index=False)
+
+
+
+#print keys of mismatch_data and mismatch_retrievals_data to know what to pass to the function
+print("Mismatch data keys:", mismatch_data.keys())
+print("Mismatch retrievals data keys:", mismatch_retrievals_data.keys())
+
+# Example usage
+# create_mismatch_heatmap(
+#     mismatch_data=mismatch_data,
+#     mismatch_retrievals_data=mismatch_retrievals_data,
+#     models=models,
+#     pathologies=["appendicitis", "cholecystitis", "diverticulitis", "pancreatitis"],
+#     output_base=OUTPUT_BASE,
+#     dt_string=dt_string,
+# )
+
+
+
+# === CREATE MISMATCH HEATMAP ===
+
+import pickle
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Pathologies under consideration
+diseases = [
+    "appendicitis",
+    "cholecystitis",
+    "diverticulitis",
+    "pancreatitis",
+]
+
+# Create a heatmap for each model
+for model in models:
+    # Initialize a matrix to store average scores
+    # Rows = actual pathologies, Columns = predicted pathologies
+    matrix = np.zeros((len(diseases), len(diseases)))
+
+    for i, actual_patho in enumerate(diseases):
+        for j, predicted_patho in enumerate(diseases):
+            matrix[i, j] = mismatch_data[model][actual_patho][predicted_patho]
+
+    # Create a heatmap using seaborn
+    fig, ax = plt.subplots(figsize=(12, 12))
+    sns.heatmap(matrix, annot=True, fmt=".2f", cmap="viridis", xticklabels=diseases, yticklabels=diseases, cbar_kws={"label": "Average Diagnosis Score"}, ax=ax)
+    ax.set_xlabel("Predicted Pathology")
+    ax.set_ylabel("Actual Pathology")
+    ax.set_title(f"Diagnosis Confusion Heatmap for\n{model}")
+
+    #Make sure each cell is a square
+    ax.set_aspect('equal')
+
+    #Angle the x-axis labels
+    plt.xticks(rotation=45)
+
+    # Save the figure
+    plt.tight_layout()
+    plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"MismatchHeatmap__{model}_{dt_string}.png"), dpi=300, bbox_inches='tight')
+    plt.close(fig)
+
+# === CREATE MISMATCH HEATMAP END ===
+
+
+# === CREATE RETRIEVAL MISMATCH HEATMAP ===
+
+#Map of document counts per pathology predicted per pathology actual per model
+
+map = {}
+for model in models:
+    model_is_rag = False
+
+    map[model] = {}
+    for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+        map[model][pathology] = {"count": 0}
+        for pathology2 in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+            map[model][pathology][pathology2] = {"count": 0}
+            if pathology in mismatch_retrievals_data[model] and pathology2 in mismatch_retrievals_data[model][pathology]:
+                for document in mismatch_retrievals_data[model][pathology][pathology2]:
+                    total_chunks = 0
+                    for page in mismatch_retrievals_data[model][pathology][pathology2][document]:
+                        for order in mismatch_retrievals_data[model][pathology][pathology2][document][page]:
+                            total_chunks += mismatch_retrievals_data[model][pathology][pathology2][document][page][order]["count"]
+                    map[model][pathology][pathology2][document] = total_chunks
+                    map[model][pathology]["count"] += total_chunks
+                    map[model][pathology][pathology2]["count"] += total_chunks
+
+                    if total_chunks > 0:
+                        model_is_rag = True
+
+    if model_is_rag:
+        #order the documents by alphabetical order
+        for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+            for pathology2 in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+                map[model][pathology][pathology2] = {k: v for k, v in sorted(map[model][pathology][pathology2].items(), key=lambda item: item[0])}
+
+        #Create the heatmap
+        qty_docs = len([k for k in map[model]['appendicitis']['appendicitis'].keys() if k != "count"])
+
+        # Create the matrix
+        matrix = np.zeros((len(diseases)*qty_docs, len(diseases)))
+
+        for i, actual_patho in enumerate(diseases):
+            # Retrieve sorted document keys for the "actual_patho/actual_patho" pair (just to ensure consistent count)
+            doc_keys_for_actual = [doc for doc in map[model][actual_patho][actual_patho].keys() if doc != "count"]
+            # Make sure qty_docs matches the actual number of documents for each pathology pair if needed
+            # qty_docs = len(doc_keys_for_actual)  # If needed
+
+            for j, predicted_patho in enumerate(diseases):
+                # Now iterate over the sorted keys from `map`, excluding 'count'
+                doc_keys = [doc for doc in map[model][actual_patho][predicted_patho].keys() if doc != "count"]
+                
+                for k, document in enumerate(doc_keys):
+                    matrix[i*qty_docs + k, j] = map[model][actual_patho][predicted_patho][document]
+                    # Normalize by the total count of chunks for the actual pathology
+                    matrix[i*qty_docs + k, j] /= map[model][actual_patho]["count"]
+
+        # # Save map to JSON
+        # import json
+        # with open(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_map_{dt_string}.json"), 'w') as f:
+        #     json.dump(map[model], f)
+
+        # Get all document names from the sorted keys in the primary pair 'appendicitis/appendicitis'
+        documents = [key for key in map[model]['appendicitis']['appendicitis'].keys() if key != "count"]
+        # Split and shorten long document names
+        documents = [doc.split("/")[-1] for doc in documents]
+        documents = [doc[:25] + "..." if len(doc) > 25 else doc for doc in documents]
+
+        # Plotting the heatmap with consistent ordering
+        fig, ax = plt.subplots(figsize=(24, 24))
+        sns.heatmap(matrix, annot=True, fmt=".2f", cmap="viridis", xticklabels=diseases,
+                    yticklabels=[f"{disease}\n{doc}" for disease in diseases for doc in documents],
+                    cbar_kws={"label": "Normalized Retrieval Count"}, ax=ax)
+        ax.set_xlabel("Predicted Pathology")
+        ax.set_ylabel("Actual Pathology")
+        ax.set_title(f"Retrieval Mismatch Heatmap (Weighted by total chunks per actual pathology) for\n{model}")
+
+        #Angle the x-axis labels
+        plt.xticks(rotation=45)
+
+        # Save the figure
+        plt.tight_layout()
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"MismatchRetrievalHeatmap__{model}_{dt_string}.png"), dpi=300, bbox_inches='tight')
+
+
+
+
+        # === CREATE RETRIEVAL MISMATCH HEATMAP WEIGHTED ===
+
+        # Create the matrix
+        matrix = np.zeros((len(diseases)*qty_docs, len(diseases)))
+
+        for i, actual_patho in enumerate(diseases):
+            # Retrieve sorted document keys for the "actual_patho/actual_patho" pair (just to ensure consistent count)
+            doc_keys_for_actual = [doc for doc in map[model][actual_patho][actual_patho].keys() if doc != "count"]
+            # Make sure qty_docs matches the actual number of documents for each pathology pair if needed
+            # qty_docs = len(doc_keys_for_actual)  # If needed
+
+            for j, predicted_patho in enumerate(diseases):
+                # Now iterate over the sorted keys from `map`, excluding 'count'
+                doc_keys = [doc for doc in map[model][actual_patho][predicted_patho].keys() if doc != "count"]
+                
+                for k, document in enumerate(doc_keys):
+                    matrix[i*qty_docs + k, j] = map[model][actual_patho][predicted_patho][document]
+                    # Normalize by the total count of chunks for the PREDICTED PATHOLOGY for the actual pathology
+                    matrix[i*qty_docs + k, j] /= map[model][actual_patho][predicted_patho]["count"]
+
+        # # Save map to JSON
+        # import json
+        # with open(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_map_{dt_string}.json"), 'w') as f:
+        #     json.dump(map[model], f)
+
+        # Get all document names from the sorted keys in the primary pair 'appendicitis/appendicitis'
+        documents = [key for key in map[model]['appendicitis']['appendicitis'].keys() if key != "count"]
+        # Split and shorten long document names
+        documents = [doc.split("/")[-1] for doc in documents]
+        documents = [doc[:25] + "..." if len(doc) > 25 else doc for doc in documents]
+
+        # Plotting the heatmap with consistent ordering
+        fig, ax = plt.subplots(figsize=(24, 24))
+        sns.heatmap(matrix, annot=True, fmt=".2f", cmap="viridis", xticklabels=diseases,
+                    yticklabels=[f"{disease}\n{doc}" for disease in diseases for doc in documents],
+                    cbar_kws={"label": "Normalized Retrieval Count"}, ax=ax)
+        ax.set_xlabel("Predicted Pathology")
+        ax.set_ylabel("Actual Pathology")
+        ax.set_title(f"Retrieval Mismatch Heatmap (Weighted by total chunks per predicted pathology per actual pathology) for\n{model}")
+
+        #Angle the x-axis labels
+        plt.xticks(rotation=45)
+
+        # Save the figure
+        plt.tight_layout()
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"MismatchRetrievalHeatmapPredictProfiles__{model}_{dt_string}.png"), dpi=300, bbox_inches='tight')
+
+        # === CREATE RETRIEVAL MISMATCH HEATMAP END WEIGHTED ===
+
+
+# === CREATE RETRIEVAL MISMATCH HEATMAP END ===
