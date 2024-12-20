@@ -4,7 +4,7 @@ defaults:
 
 openai_api_key:
 model_name: Llama-3.1-70B-Instruct-exl2-4.0bpw
-max_context_length: 4096
+max_context_length: 16384 #4096
 exllama: True
 
 system_tag_start: "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"

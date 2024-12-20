@@ -10,6 +10,8 @@ rag_embedding_model: stella_en_1.5B_v5
 rag_chunk_size: 252
 rag_chunk_overlap: 0
 
+rag_smart_chunking: True #For markdown
+
 #Retrieval parameters
 rag_top_k: 4
 rag_re_rank: True

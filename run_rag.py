@@ -114,6 +114,7 @@ def run(args: DictConfig):
             embedding_model_container=embedding_model_container,
             chunk_size=args.rag_chunk_size,
             chunk_overlap=args.rag_chunk_overlap,
+            smart_chunking=args.rag_smart_chunking,
         )
 
         # Initialize the retriever

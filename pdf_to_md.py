@@ -21,7 +21,7 @@ def main():
     # output_dir = sys.argv[2] if len(sys.argv) > 2 else "/container/guidelines/markdown"
     # artifacts_path = sys.argv[3] if len(sys.argv) > 3 else "/container/models/docling_artifacts"
     input_dir = "/container/guidelines/pdf_edited"
-    output_dir = "/container/guidelines/markdown2"
+    output_dir = "/container/guidelines/markdown"
     artifacts_path = "/container/models/docling_artifacts"
 
     # Ensure the artifacts path exists
@@ -41,7 +41,7 @@ def main():
     # Set up PDF pipeline options
     pipeline_options = PdfPipelineOptions(
         # artifacts_path=artifacts_path,
-        do_ocr=False,
+        do_ocr=True,
         do_table_structure=True,
     )
 

@@ -6,6 +6,7 @@ from os.path import join
 
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.text_splitter import MarkdownHeaderTextSplitter
 from langchain.schema import Document
 import faiss
 import tiktoken
@@ -87,7 +88,7 @@ class EmbeddingModelContainer:
 
 class VectorStore:
     def __init__(
-        self, document_paths, embedding_model_container, chunk_size=250, chunk_overlap=0
+        self, document_paths, embedding_model_container, chunk_size=250, chunk_overlap=0, smart_chunking=False
     ):
         """
         Initialize the vector store with documents and embeddings.
@@ -95,10 +96,12 @@ class VectorStore:
         :param embedding_model_container: An instance of EmbeddingModelContainer.
         :param chunk_size: Size of text chunks for splitting documents.
         :param chunk_overlap: Overlap size between chunks.
+        :param smart_chunking: When chunking markdown chunk by parts and always include the full tree title at the start.
         """
         self.embedding_model = embedding_model_container
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
+        self.smart_chunking = smart_chunking
         # Load documents from paths
         self.docs = self.load_documents(document_paths)
         # Split documents into chunks
@@ -191,22 +194,80 @@ class VectorStore:
         doc_chunks = []
 
         for doc in documents:
-            text = doc.page_content
-            tokens = tokenizer.encode(text, add_special_tokens=False)
-            token_chunks = [tokens[i:i + max_length] for i in range(0, len(tokens), max_length - self.chunk_overlap)]
-            
-            for i, token_chunk in enumerate(token_chunks):
-                chunk_text = tokenizer.decode(token_chunk)
-                chunk = Document(page_content=chunk_text, metadata=doc.metadata.copy())
+            if self.smart_chunking and doc.metadata.get('format') == 'markdown':
+                # --- Markdown header splitter ---
+                headers_to_split_on = [
+                    ("#", "header_1"),
+                    ("##", "header_2"),
+                    ("###", "header_3"),
+                    ("####", "header_4"),
+                    ("#####", "header_5"),
+                    ("######", "header_6"),
+                ]
+                markdown_splitter = MarkdownHeaderTextSplitter(headers_to_split_on)
+                chunks = markdown_splitter.split_text(doc.page_content)
+                # --- Markdown header splitter end ---
+
+                # --- Constrain chunk size ---
+                chunk_size = self.chunk_size
+                chunk_overlap = self.chunk_overlap
+                text_splitter = RecursiveCharacterTextSplitter(
+                    chunk_size=chunk_size, chunk_overlap=chunk_overlap
+                )
+
+                # Split
+                chunks = text_splitter.split_documents(chunks)
+                # --- Constrain chunk size end ---
+
+                for i, chunk in enumerate(chunks):
+                    #https://python.langchain.com/docs/how_to/markdown_header_metadata_splitter/
+                    chunk_text = chunk.page_content
+                    chunk_metadata = chunk.metadata
+                    #Add each titles back at the start of the text of each tokens
+                    chunk_title = ""
+                    for key in chunk_metadata:
+                        if "header" in key:
+                            #get the count of #
+                            count = int(key.split("_")[-1])
+                            chunk_title += "#" * count + " "
+                            chunk_title += chunk_metadata[key] + "\n"
+                    chunk_text = chunk_title + chunk_text
+                    
+                    tokens = tokenizer.encode(chunk_text, add_special_tokens=False)
+
+                    chunk = Document(page_content=chunk_text, metadata=doc.metadata.copy())
+                    
+                    chunk_id = f"chunk_{len(doc_chunks)}"
+                    chunk.metadata['chunk_id'] = chunk.metadata.get('segment_id', chunk_id)
+                    chunk.metadata['token_size'] = len(tokens)
+                    chunk.metadata['document_reference'] = chunk.metadata.get('source', 'unknown')
+                    chunk.metadata['page_number'] = chunk.metadata.get('page', 'unknown')
+                    chunk.metadata['order_in_document'] = i
+                    chunk.metadata['header_1'] = chunk_metadata.get('header_1', 'unknown')
+                    chunk.metadata['header_2'] = chunk_metadata.get('header_2', 'unknown')
+                    chunk.metadata['header_3'] = chunk_metadata.get('header_3', 'unknown')
+                    chunk.metadata['header_4'] = chunk_metadata.get('header_4', 'unknown')
+                    chunk.metadata['header_5'] = chunk_metadata.get('header_5', 'unknown')
+                    chunk.metadata['header_6'] = chunk_metadata.get('header_6', 'unknown')
+                    
+                    doc_chunks.append(chunk)
+            else:
+                text = doc.page_content
+                tokens = tokenizer.encode(text, add_special_tokens=False)
+                token_chunks = [tokens[i:i + max_length] for i in range(0, len(tokens), max_length - self.chunk_overlap)]
                 
-                chunk_id = f"chunk_{len(doc_chunks)}"
-                chunk.metadata['chunk_id'] = chunk.metadata.get('segment_id', chunk_id)
-                chunk.metadata['token_size'] = len(token_chunk)
-                chunk.metadata['document_reference'] = chunk.metadata.get('source', 'unknown')
-                chunk.metadata['page_number'] = chunk.metadata.get('page', 'unknown')
-                chunk.metadata['order_in_document'] = i
-                
-                doc_chunks.append(chunk)
+                for i, token_chunk in enumerate(token_chunks):
+                    chunk_text = tokenizer.decode(token_chunk)
+                    chunk = Document(page_content=chunk_text, metadata=doc.metadata.copy())
+                    
+                    chunk_id = f"chunk_{len(doc_chunks)}"
+                    chunk.metadata['chunk_id'] = chunk.metadata.get('segment_id', chunk_id)
+                    chunk.metadata['token_size'] = len(token_chunk)
+                    chunk.metadata['document_reference'] = chunk.metadata.get('source', 'unknown')
+                    chunk.metadata['page_number'] = chunk.metadata.get('page', 'unknown')
+                    chunk.metadata['order_in_document'] = i
+                    
+                    doc_chunks.append(chunk)
         return doc_chunks
 
     def create_vector_store(self, doc_chunks):

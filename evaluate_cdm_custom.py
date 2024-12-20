@@ -8,6 +8,8 @@ from run import load_evaluator
 
 BASE_MIMIC = r"/container/data"
 
+EVAL_MISMATCH = False
+
 def calculate_average(evals, field, pathology):
     average = 0
     for patient in evals.keys():
@@ -44,6 +46,7 @@ models = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
 ]
 
@@ -283,126 +286,126 @@ for experiment in [
     experiment_retrievals[experiment] = model_retrievals #RAG
 
 
+if EVAL_MISMATCH:
+    # =========================================
+    # START OF DISEASE MISMATCH + RETRIEVAL EVALUATION SNIPPET
+    # =========================================
 
-# =========================================
-# START OF DISEASE MISMATCH + RETRIEVAL EVALUATION SNIPPET
-# =========================================
+    diseases = [
+        "appendicitis",
+        "cholecystitis",
+        "diverticulitis",
+        "pancreatitis",
+    ]
 
-diseases = [
-    "appendicitis",
-    "cholecystitis",
-    "diverticulitis",
-    "pancreatitis",
-]
+    # This dictionary will hold diagnosis mismatch scores:
+    # mismatch_data[model][actual_patho][predicted_patho] = list_of_scores_for_each_patient
+    mismatch_data = {}
 
-# This dictionary will hold diagnosis mismatch scores:
-# mismatch_data[model][actual_patho][predicted_patho] = list_of_scores_for_each_patient
-mismatch_data = {}
+    # This dictionary will hold retrieval logs for each mismatch scenario:
+    # mismatch_retrievals_data[model][actual_patho][predicted_patho][document][page_number][chunk_order] = {"count": X, "content": "..."}
+    mismatch_retrievals_data = {}
 
-# This dictionary will hold retrieval logs for each mismatch scenario:
-# mismatch_retrievals_data[model][actual_patho][predicted_patho][document][page_number][chunk_order] = {"count": X, "content": "..."}
-mismatch_retrievals_data = {}
+    from tqdm import tqdm
 
-from tqdm import tqdm
+    for model in tqdm(models, desc="Processing models"):
+        mismatch_data[model] = {}
+        mismatch_retrievals_data[model] = {}
+        for actual_patho in tqdm(diseases, desc=f"Processing diseases for model {model}", leave=False):
+            # Re-load the hadm_info for the actual pathology and difficulty if not in scope:
+            hadm_info_clean = load_hadm_from_file(f"{actual_patho}_hadm_info_{difficulty}", base_mimic=BASE_MIMIC)
 
-for model in tqdm(models, desc="Processing models"):
-    mismatch_data[model] = {}
-    mismatch_retrievals_data[model] = {}
-    for actual_patho in tqdm(diseases, desc=f"Processing diseases for model {model}", leave=False):
-        # Re-load the hadm_info for the actual pathology and difficulty if not in scope:
-        hadm_info_clean = load_hadm_from_file(f"{actual_patho}_hadm_info_{difficulty}", base_mimic=BASE_MIMIC)
+            mismatch_data[model][actual_patho] = {}
+            mismatch_retrievals_data[model][actual_patho] = {}
 
-        mismatch_data[model][actual_patho] = {}
-        mismatch_retrievals_data[model][actual_patho] = {}
+            # Initialize predicted_patho entries
+            for predicted_patho in diseases:
+                mismatch_data[model][actual_patho][predicted_patho] = []
+                mismatch_retrievals_data[model][actual_patho][predicted_patho] = {}
 
-        # Initialize predicted_patho entries
-        for predicted_patho in diseases:
-            mismatch_data[model][actual_patho][predicted_patho] = []
-            mismatch_retrievals_data[model][actual_patho][predicted_patho] = {}
+            # Make sure we have results for this model and pathology
+            if model in model_results and actual_patho in model_results[model]:
+                for _id, result in tqdm(model_results[model][actual_patho].items(), desc=f"Evaluating predictions for {model}-{actual_patho}", leave=False):
+                    prediction = result["output"]
+                    input_data = result["input"]
+                    agent_trajectory = result["intermediate_steps"]
 
-        # Make sure we have results for this model and pathology
-        if model in model_results and actual_patho in model_results[model]:
-            for _id, result in tqdm(model_results[model][actual_patho].items(), desc=f"Evaluating predictions for {model}-{actual_patho}", leave=False):
-                prediction = result["output"]
-                input_data = result["input"]
-                agent_trajectory = result["intermediate_steps"]
-
-                reference = (
-                    hadm_info_clean[_id]["Discharge Diagnosis"],
-                    hadm_info_clean[_id]["ICD Diagnosis"],
-                    hadm_info_clean[_id]["Procedures ICD9"],
-                    hadm_info_clean[_id]["Procedures ICD10"],
-                    hadm_info_clean[_id]["Procedures Discharge"],
-                )
-
-                # Original retrieval logs for this patient
-                # This was gathered from the initial evaluation run
-                # They won't change when re-scoring with different predicted_pathologies
-                retrieved_chunks = result.get("retrieval", None)
-
-                # Evaluate the predicted diagnosis using each evaluator (predicted_pathology)
-                for predicted_patho in diseases:
-                    evaluator = load_evaluator(predicted_patho)
-                    eval_mismatch = evaluator._evaluate_agent_trajectory(
-                        prediction=prediction,
-                        input=input_data,
-                        reference=reference,
-                        agent_trajectory=agent_trajectory
+                    reference = (
+                        hadm_info_clean[_id]["Discharge Diagnosis"],
+                        hadm_info_clean[_id]["ICD Diagnosis"],
+                        hadm_info_clean[_id]["Procedures ICD9"],
+                        hadm_info_clean[_id]["Procedures ICD10"],
+                        hadm_info_clean[_id]["Procedures Discharge"],
                     )
 
-                    # Record the diagnosis score
-                    mismatch_data[model][actual_patho][predicted_patho].append(eval_mismatch["scores"]["Diagnosis"])
+                    # Original retrieval logs for this patient
+                    # This was gathered from the initial evaluation run
+                    # They won't change when re-scoring with different predicted_pathologies
+                    retrieved_chunks = result.get("retrieval", None)
 
-                    # Record the retrieval logs under this predicted_patho scenario as well
-                    if eval_mismatch["scores"]["Diagnosis"] > 0:
-                        # Only store retrieval logs if the diagnosis is correct
-                        if retrieved_chunks is not None:
-                            for step in retrieved_chunks:
-                                for chunk in retrieved_chunks[step]:
-                                    doc_ref = chunk["document_reference"]
-                                    page_num = chunk["page_number"]
-                                    order_in_doc = chunk["order_in_document"]
+                    # Evaluate the predicted diagnosis using each evaluator (predicted_pathology)
+                    for predicted_patho in diseases:
+                        evaluator = load_evaluator(predicted_patho)
+                        eval_mismatch = evaluator._evaluate_agent_trajectory(
+                            prediction=prediction,
+                            input=input_data,
+                            reference=reference,
+                            agent_trajectory=agent_trajectory
+                        )
 
-                                    # Initialize nested dictionaries if not present
-                                    if doc_ref not in mismatch_retrievals_data[model][actual_patho][predicted_patho]:
-                                        mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref] = {}
-                                    if page_num not in mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref]:
-                                        mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num] = {}
-                                    if order_in_doc not in mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num]:
-                                        mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num][order_in_doc] = {
-                                            "id": chunk["chunk_id"],
-                                            "count": 0,
-                                            "content": chunk["content"],
-                                        }
+                        # Record the diagnosis score
+                        mismatch_data[model][actual_patho][predicted_patho].append(eval_mismatch["scores"]["Diagnosis"])
 
-                                    # Add to the count
-                                    mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num][order_in_doc]["count"] += 1
+                        # Record the retrieval logs under this predicted_patho scenario as well
+                        if eval_mismatch["scores"]["Diagnosis"] > 0:
+                            # Only store retrieval logs if the diagnosis is correct
+                            if retrieved_chunks is not None:
+                                for step in retrieved_chunks:
+                                    for chunk in retrieved_chunks[step]:
+                                        doc_ref = chunk["document_reference"]
+                                        page_num = chunk["page_number"]
+                                        order_in_doc = chunk["order_in_document"]
+
+                                        # Initialize nested dictionaries if not present
+                                        if doc_ref not in mismatch_retrievals_data[model][actual_patho][predicted_patho]:
+                                            mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref] = {}
+                                        if page_num not in mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref]:
+                                            mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num] = {}
+                                        if order_in_doc not in mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num]:
+                                            mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num][order_in_doc] = {
+                                                "id": chunk["chunk_id"],
+                                                "count": 0,
+                                                "content": chunk["content"],
+                                            }
+
+                                        # Add to the count
+                                        mismatch_retrievals_data[model][actual_patho][predicted_patho][doc_ref][page_num][order_in_doc]["count"] += 1
 
 
-# Make the score of each predicted patho an average
-# for model in models:
-#     for actual_patho in diseases:
-#         for predicted_patho in diseases:
-#             mismatch_data[model][actual_patho][predicted_patho] = sum(mismatch_data[model][actual_patho][predicted_patho]) / len(mismatch_data[model][actual_patho][predicted_patho])
+    # Make the score of each predicted patho an average
+    # for model in models:
+    #     for actual_patho in diseases:
+    #         for predicted_patho in diseases:
+    #             mismatch_data[model][actual_patho][predicted_patho] = sum(mismatch_data[model][actual_patho][predicted_patho]) / len(mismatch_data[model][actual_patho][predicted_patho])
 
-# Save the mismatch data
-pickle.dump(
-    mismatch_data,
-    open(
-        f"{BASE_MIMIC}/logs/analysis/{experiment}/mismatch_scores.pkl",
-        "wb",
-    ),
-)
+    # Save the mismatch data
+    pickle.dump(
+        mismatch_data,
+        open(
+            f"{BASE_MIMIC}/logs/analysis/{experiment}/mismatch_scores.pkl",
+            "wb",
+        ),
+    )
 
-# Save the mismatch retrieval data
-pickle.dump(
-    mismatch_retrievals_data,
-    open(
-        f"{BASE_MIMIC}/logs/analysis/{experiment}/mismatch_retrievals.pkl",
-        "wb",
-    ),
-)
+    # Save the mismatch retrieval data
+    pickle.dump(
+        mismatch_retrievals_data,
+        open(
+            f"{BASE_MIMIC}/logs/analysis/{experiment}/mismatch_retrievals.pkl",
+            "wb",
+        ),
+    )
 
-# =========================================
-# END OF DISEASE MISMATCH + RETRIEVAL EVALUATION SNIPPET
-# =========================================
+    # =========================================
+    # END OF DISEASE MISMATCH + RETRIEVAL EVALUATION SNIPPET
+    # =========================================
