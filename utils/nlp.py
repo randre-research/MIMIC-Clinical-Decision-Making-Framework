@@ -160,14 +160,30 @@ def convert_labs_to_itemid(tests: List[str], lab_test_mapping_df: pd.DataFrame):
                         if score < 90:
                             # Finally, return just test itself. Will not match going forward but saves original intent
                             test_match = ""
-                            with open("no_canonical_names.txt", "a") as f:
-                                f.write(f"{test_full}\n")
+                            # with open("no_canonical_names.txt", "a") as f:
+                            #     f.write(f"{test_full}\n")
+                            # DEBUG: Try/catch open "a" os.environ["LOG_PATH"] + "no_canonical_names.txt" (os join)
+                            import os
+                            file_path = os.path.join(os.environ["LOG_PATH"], "no_canonical_names.txt")
+                            try:
+                                with open(file_path, "a") as f:
+                                    f.write(f"{test_full}\n")
+                            except Exception as e:
+                                print(f"Error writing to file: {e}")
                     else:
                         # Finally, return just test itself. Will not match going forward but saves original intent
                         test_match = ""
-                        with open("no_canonical_names.txt", "a") as f:
-                            f.write(f"{test_full}\n")
-
+                        # with open("no_canonical_names.txt", "a") as f:
+                        #     f.write(f"{test_full}\n")
+                        # DEBUG: Try/catch open "a" os.environ["LOG_PATH"] + "no_canonical_names.txt" (os join)
+                        import os
+                        file_path = os.path.join(os.environ["LOG_PATH"], "no_canonical_names.txt")
+                        try:
+                            with open(file_path, "a") as f:
+                                f.write(f"{test_full}\n")
+                        except Exception as e:
+                            print(f"Error writing to file: {e}")
+                            
         # Replace test with full list of valid names if matched
         if test_match:
             expanded_tests = lab_test_mapping_df.loc[

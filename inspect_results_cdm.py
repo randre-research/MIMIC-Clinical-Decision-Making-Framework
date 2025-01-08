@@ -35,6 +35,8 @@ MODELS = [
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
@@ -56,6 +58,8 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md": "Llama3 70B 4.0bpw + stella5 400M (smart markdown chunked)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full": "Llama3 70B 4.0bpw + stella5 400M (smart markdown full)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5": "Llama3 70B 4.0bpw + stella5 1.5B",
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5": "Llama3 70B 2.5bpw + stella5 1.5B",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k": "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)",
@@ -77,6 +81,8 @@ color_map = {
     "Llama3 70B 4.0bpw": "#3EAD0A",
     "Llama3 70B 4.0bpw + stella5 400M": "#9BD415",
     "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)": "#d165d6",
+    "Llama3 70B 4.0bpw + stella5 400M (smart markdown chunked)": "#943199",
+    "Llama3 70B 4.0bpw + stella5 400M (smart markdown full)": "#6d1d7b",
     "Llama3 70B 4.0bpw + stella5 1.5B": "#d4bb15",
     "Llama3 70B 2.5bpw + stella5 1.5B": "#F9F871",
     "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
@@ -631,7 +637,20 @@ modality_colors = {"CT": "#C2C2C2",
 model_order = [prettify_model_name[model] for model in MODELS] + ["MIMIC Doctors"]
 
 # Define hatch patterns for models
-model_hatches = ['/', '.', '-', "x", '*']
+model_hatches = [
+    '/',   # diagonal slash
+    '.',   # dots
+    '-',   # horizontal dash
+    'x',   # diagonal cross
+    '*',   # star
+    '\\',  # backslash
+    '|',   # vertical bar
+    '+',   # plus
+    'o',   # circle
+    'O',   # larger circle
+    '//',  # double slash
+    '..',  # dense dots
+]
 
 # Plotting
 plt.figure(figsize=(14, 6))
@@ -670,7 +689,19 @@ plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(0.9, 1.1),  ncol=
 modality_handles = [mpatches.Patch(color=modality_colors[modality], label=modality) for modality in modality_order]
 
 # Create custom legend handles for models using hatch patterns
-dense_model_hatches = ['///', '..', '---', 'xxx', '**']
+dense_model_hatches = [
+    '///',  # triple slashes
+    '..',   # dots
+    '---',  # triple dash
+    'xxx',  # triple x
+    '**',   # double asterisk
+    '\\\\', # double backslash
+    '||',   # vertical bars
+    '+++',  # plus signs
+    'ooo',  # triple o
+    'OOO',  # triple capital O
+]
+
 model_handles = [mpatches.Patch(facecolor='white', edgecolor='black', hatch=dense_model_hatches[j], label=model_order[j]) for j in range(len(model_order))]
 
 # Combine the modality and model handles

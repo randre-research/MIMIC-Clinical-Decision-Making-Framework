@@ -161,6 +161,8 @@ def run(args: DictConfig):
     run_dir = join(args.local_logging_dir, run_name)
 
     os.makedirs(run_dir, exist_ok=True)
+    # Apply path to utils.nlp
+    os.environ["LOG_PATH"] = run_dir
 
     # Setup logfile and logpickle
     results_log_path = join(run_dir, f"{run_name}_results.pkl")
