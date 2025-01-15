@@ -33,15 +33,18 @@ MODELS = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
 
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
     ]
+
+BASELINE_MODEL = "Llama-3.1-70B-Instruct-exl2-4.0bpw"
 
 prettify_model_name = {
 #     "Llama-2-70B-chat-GPTQ": "Llama 2 Chat",
@@ -55,9 +58,12 @@ prettify_model_name = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 1B 4.0bpw + stella5 400M",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr": "Llama3 1B 4.0bpw + stella5 400M (chunkr)",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "LLM (Llama3 70B 4.0bpw)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10": "Llama3 70B 4.0bpw + stella5 400M (smart markdown 252k10)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md": "Llama3 70B 4.0bpw + stella5 400M (smart markdown chunked)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full": "Llama3 70B 4.0bpw + stella5 400M (smart markdown full)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5": "Llama3 70B 4.0bpw + stella5 1.5B",
@@ -81,12 +87,16 @@ color_map = {
     "Llama3 70B 4.0bpw": "#3EAD0A",
     "Llama3 70B 4.0bpw + stella5 400M": "#9BD415",
     "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)": "#d165d6",
+    "Llama3 70B 4.0bpw + stella5 400M (smart markdown 252k10)": "#F9F871",
     "Llama3 70B 4.0bpw + stella5 400M (smart markdown chunked)": "#943199",
     "Llama3 70B 4.0bpw + stella5 400M (smart markdown full)": "#6d1d7b",
     "Llama3 70B 4.0bpw + stella5 1.5B": "#d4bb15",
     "Llama3 70B 2.5bpw + stella5 1.5B": "#F9F871",
     "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
     "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)": "#EC9898",
+
+    "LLM (Llama3 70B 4.0bpw)": "#0077B6",
+    "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",
@@ -536,6 +546,216 @@ plt.show()
 
 
 
+# --- P-Values ---
+
+import numpy as np
+from scipy.stats import bartlett, ttest_ind, levene, chi2
+# from statsmodels.stats.contingency_tables import mcnemar
+from statsmodels.stats.contingency_tables import StratifiedTable
+# Example per-disease accuracies for two models
+# modelA = np.array([0.70, 0.78, 0.82, 0.75])  # 4 diseases
+# modelB = np.array([0.65, 0.74, 0.79, 0.80])
+
+# # 1. Bartlett’s test for equal variance
+# stat_b, p_bartlett = bartlett(modelA, modelB)
+# print(f"Bartlett's test: statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
+
+# # 2. Welch’s two-sided t-test
+# t_stat, p_value = ttest_ind(modelA, modelB, equal_var=False)
+# print(f"Welch's t-test: t-stat={t_stat:.3f}, raw p-value={p_value:.3f}")
+
+# # Suppose this is one of several comparisons -> apply Bonferroni
+# m = 3  # or 5, depending on how many comparisons you do overall
+# p_value_corrected = min(1, p_value * m)
+# print(f"Bonferroni corrected p-value={p_value_corrected:.3f}")
+
+"""
+7. Interpreting the results
+
+    Bartlett’s test: If p < 0.05, it suggests the groups have unequal variances → it justifies using Welch’s t-test.
+    Welch’s t-test: If the final, Bonferroni-corrected p-value < 0.05, you conclude a statistically significant difference in the mean accuracies (i.e., per-disease accuracies) between the two groups/models.
+    Effect size: Keep in mind a p-value does not show how big or meaningful the difference is. You might also want to look at the raw difference in the average accuracies (e.g., aˉ−bˉaˉ−bˉ) or compute confidence intervals.
+
+8. Additional notes
+
+    Using per-disease accuracy as “sample points”: Strictly speaking, you only have 4 diseases, so your sample size for each group is n=4n=4. A t-test with 4 data points per group is quite small; interpret with caution. The original paper apparently does this (or something similar) due to the constraints mentioned.
+    Bartlett vs. Levene test: In practice, many prefer Levene’s test over Bartlett’s test because Bartlett’s is sensitive to nonnormal data. But you should follow the paper’s methodology if that’s a requirement.
+    Multiclass + single-class metrics: The paper highlights that “per-class accuracy … is the only metric that can be calculated without bias” given their constraints. That is why they focus on per-class accuracies rather than overall accuracy, sensitivity, specificity, etc., which might be misleading with a small or unrepresentative sample of diseases.
+
+Final Takeaway
+
+    To compute p-values in the same way as the paper:
+
+        Compute per-disease (per-class) accuracies for each model/doctor.
+        Check variance with Bartlett’s test.
+        Use a two-sided Welch’s t-test (ttest_ind(..., equal_var=False)) for comparing means.
+        Bonferroni correct the resulting p-values by multiplying each by the number of comparisons (5 or 3 as in the paper).
+
+    This method gives you a single p-value per comparison (e.g., doctor vs. model or specialist vs. generalist), corrected for multiple testing.
+"""
+
+no_rag_model = BASELINE_MODEL
+
+
+# #Save model_evals to text file
+# model_evals = experiment_evals[experiment]
+# with open(os.path.join(OUTPUT_BASE, dt_string, f"model_evals_{dt_string}.txt"), "w") as f:
+#     f.write(f"Experiment: {experiment}\n\n")
+#     for model in model_evals.keys():
+#         f.write(f"Model: {model}\n")
+#         for patho in model_evals[model].keys():
+#             f.write(f"Pathology: {patho}\n")
+#             for _id in model_evals[model][patho].keys():
+#                 f.write(f"ID: {_id}\n")
+#                 f.write(f"Scores: {model_evals[model][patho][_id]}\n\n")
+#         f.write("\n\n")
+
+# #For each pathology in model_evals, order patients by ID
+# for model in model_evals.keys():
+#     for patho in model_evals[model].keys():
+#         model_evals[model][patho] = dict(sorted(model_evals[model][patho].items()))
+
+# model_scores_long = {}
+# for model in model_evals.keys():
+#     model_scores_long[model] = {}
+#     for patho in model_evals[model].keys():
+#         model_scores_long[model][patho] = []
+#         for patient in model_evals[model][patho].keys():
+#             model_scores_long[model][patho].append(model_evals[model][patho][patient]["scores"]["Diagnosis"])
+
+# #Save model_scores_long to text file
+# with open(os.path.join(OUTPUT_BASE, dt_string, f"model_scores_long_{dt_string}.txt"), "w") as f:
+#     f.write(f"Experiment: {experiment}\n\n")
+#     for model in model_scores_long.keys():
+#         f.write(f"Model: {model}\n")
+#         for patho in model_scores_long[model].keys():
+#             f.write(f"Pathology: {patho}\n")
+#             f.write(f"Scores: {model_scores_long[model][patho]}\n\n")
+#         f.write("\n\n")
+
+
+
+
+#Keep only, model evals Scores
+
+# for each other model, compare to no_rag_model
+for model in MODELS:
+    if model == no_rag_model:
+        continue
+    else:
+        # modelA = np.array([model_scores[no_rag_model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+        # modelB = np.array([model_scores[model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+
+        # modelA = np.array([model_scores_long[no_rag_model][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+        # modelA = []
+        # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+        #     modelA.extend(model_scores_long[no_rag_model][patho])
+        # modelA = np.array(modelA)
+        # # modelB = np.array([model_scores_long[model][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+        # modelB = []
+        # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+        #     modelB.extend(model_scores_long[model][patho])
+        # modelB = np.array(modelB)
+        
+        # #McNemar's test for paired data
+        # #contingency table
+        # n_11 = np.sum(np.logical_and(modelA > 0.5, modelB > 0.5))
+        # n_10 = np.sum(np.logical_and(modelA > 0.5, modelB <= 0.5))
+        # n_01 = np.sum(np.logical_and(modelA <= 0.5, modelB > 0.5))
+        # n_00 = np.sum(np.logical_and(modelA <= 0.5, modelB <= 0.5))
+
+        # #cochran-mantel-haenszel
+        # tables = []
+        # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+        #     table = []
+        #     for patient in model_evals[model][patho].keys():
+        #         if patient in model_evals[no_rag_model][patho].keys():
+        #             table.append([model_evals[model][patho][patient]["scores"]["Diagnosis"], model_evals[no_rag_model][patho][patient]["scores"]["Diagnosis"]])
+        #     table = np.array(table)
+
+        #     n_11 = np.sum(np.logical_and(table[:, 0] > 0.5, table[:, 1] > 0.5))
+        #     n_10 = np.sum(np.logical_and(table[:, 0] > 0.5, table[:, 1] <= 0.5))
+        #     n_01 = np.sum(np.logical_and(table[:, 0] <= 0.5, table[:, 1] > 0.5))
+        #     n_00 = np.sum(np.logical_and(table[:, 0] <= 0.5, table[:, 1] <= 0.5))
+
+        #     tables.append(np.array([[n_11, n_10], [n_01, n_00]]))
+
+        # # Create the stratified table object
+        # st = StratifiedTable(tables)
+
+        # # Run the Cochran–Mantel–Haenszel test
+        # result = st.test_equal_odds()
+
+        # # The result is a 'ContrastResult' containing statistic, p-value, etc.
+        # print("CMH test statistic:", result.statistic)
+        # print("p-value:", result.pvalue)
+        # print("Common odds ratio estimate:", result.oddsratio)
+        
+        # modelA = [92.7, 62.5, 68.5, 58.9]
+        modelA = [70.6]
+        modelA = np.array(modelA)
+        #Repeat each number 5 times
+        modelA = np.repeat(modelA, 3)
+
+        # modelB = [94.9, 93.9, 93.5, 92.2, 94.6, 
+        #           77.9, 72.8, 84.8, 74.9, 76.3,
+        #           75.5, 71.2, 72.8, 70.4, 76.3,
+        #           58.9, 66.4, 54.3, 49.6, 50.7]
+        modelB = [76.0, 76.3, 77.8]
+        modelB = np.array(modelB)
+
+        # modelA = np.array([model_scores[no_rag_model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+        # modelB = np.array([model_scores[model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+
+        # modelA = [89,62,55,58,66]
+        # modelB = [100,68,50,76,73]
+        # modelA = np.array(modelA)
+        # modelB = np.array(modelB)
+
+        # # * 100 to get percentages
+        # modelA *= 100
+        # modelB *= 100
+
+        m = 3
+
+
+        # Append array to itself m times to get m*4 data points
+        # modelA = np.tile(modelA, m)
+        # modelB = np.tile(modelB, m)
+
+        # 1. Bartlett’s test for equal variance
+        stat_b, p_bartlett = bartlett(modelA, modelB)
+        print(f"Bartlett's test for {model} vs {no_rag_model}: statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
+
+        # 2. Welch’s two-sided t-test
+        ttest_res = ttest_ind(modelA, modelB, equal_var=False)
+        print(f"Welch's t-test for {model} vs {no_rag_model}: t-stat={ttest_res.statistic:.5f}, raw p-value={ttest_res.pvalue:.5f}")
+        # # Welch’s t-test for equal variance
+        # stat_w, p_welch = ttest_ind(modelA, modelB)
+        # print(f"Welch's test for {model} vs {no_rag_model}: statistic={stat_w:.3f}, p-value={p_welch:.3f}")
+
+        # Levene test for equal variance
+        stat_l, p_levene = levene(modelA, modelB, center='mean')
+        print(f"Levene's test for {model} vs {no_rag_model}: statistic={stat_l:.3f}, p-value={p_levene:.3f}")
+
+        # Bonferroni correction for k=5 comparisons
+        p_value_corrected = min(1, ttest_res.pvalue * m)
+        print(f"Bonferroni corrected p-value for {model} vs {no_rag_model}={p_value_corrected:.3f}")
+
+        # No need to correct for multiple comparisons here, as we only do one comparison
+        #Save to text file
+        with open(os.path.join(OUTPUT_BASE, dt_string, f"p-values_{dt_string}.txt"), "a") as f:
+            #Write the modelA and modelB arrays first
+            f.write(f"Model: {model} vs {no_rag_model}\n")
+            f.write(f"{model} accuracies:\n{modelA}\n")
+            f.write(f"{no_rag_model} accuracies:\n{modelB}\n")
+            f.write(f"Bartlett's test for {model} vs {no_rag_model}:\nstatistic={stat_b:.7f}, p-value={p_bartlett:.7f}\n")
+            f.write(f"Levene's test for {model} vs {no_rag_model}:\nstatistic={stat_l:.7f}, p-value={p_levene:.7f}\n")
+            f.write(f"Welch's t-test for {model} vs {no_rag_model}:\nt-stat={ttest_res.statistic:.7f}, raw p-value={ttest_res.pvalue:.7f}\n")
+            # f.write(f"Bonferroni corrected p-value for {model} vs {no_rag_model}:\n{p_value_corrected:.7f}\n\n")
+
+# --- P-Values End ---
+
 
 
 
@@ -720,7 +940,245 @@ plt.show()
 # --- Plot Imaging Percentage End ---
 
 
+# --- Plot Imaging Count ---
 
+import os
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib as mpl
+from collections import defaultdict
+
+# ----------------------------------------------------------------------------
+# STEP A: Collect ALL imaging data while tracking unique patient IDs.
+# ----------------------------------------------------------------------------
+
+data = []
+unique_patients_map = defaultdict(set)  # (model, pathology) -> set of patient IDs
+
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id in model_results[model][patho].keys():
+            # Keep track of unique patients
+            unique_patients_map[(prettify_model_name[model], patho.capitalize())].add(_id)
+            found_any_imaging = False
+
+            for step in model_results[model][patho][_id]['intermediate_steps']:
+                if step[0].tool == 'Imaging':
+                    tool_input = step[0].tool_input
+                    region = tool_input['action_input']["region"]
+                    modality = tool_input['action_input']["modality"]
+                    if region == "Abdomen":
+                        found_any_imaging = True
+                        modality = modality_map.get(modality, modality)
+                        data.append({
+                            "Model": prettify_model_name[model],
+                            "Pathology": patho.capitalize(),
+                            "Modality": modality
+                        })
+
+            # If no abdominal imaging was requested, log "None"
+            if not found_any_imaging:
+                data.append({
+                    "Model": prettify_model_name[model],
+                    "Pathology": patho.capitalize(),
+                    "Modality": "None"
+                })
+
+# For MIMIC Doctors
+for patho, hadm_info in zip(
+    ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis'],
+    [app_hadm_info_firstdiag, cholec_hadm_info_firstdiag, 
+     divert_hadm_info_firstdiag, pancr_hadm_info_firstdiag]
+):
+    for patient in hadm_info.keys():
+        # Track unique patients for MIMIC
+        unique_patients_map[("MIMIC Doctors", patho.capitalize())].add(patient)
+        found_any_imaging = False
+
+        for rad in hadm_info[patient]["Radiology"]:
+            if rad["Region"] == "Abdomen":
+                found_any_imaging = True
+                data.append({
+                    "Model": "MIMIC Doctors",
+                    "Pathology": patho.capitalize(),
+                    "Modality": modality_map.get(rad["Modality"], rad["Modality"])
+                })
+
+        if not found_any_imaging:
+            data.append({
+                "Model": "MIMIC Doctors",
+                "Pathology": patho.capitalize(),
+                "Modality": "None"
+            })
+
+# Convert to DataFrame
+df = pd.DataFrame(data, columns=['Model', 'Pathology', 'Modality'])
+
+# ----------------------------------------------------------------------------
+# STEP B: Aggregate counts and remove "None".
+# ----------------------------------------------------------------------------
+counts = df.groupby(['Model', 'Pathology', 'Modality']).size().reset_index(name='Counts')
+counts = counts[counts['Modality'] != 'None']  # Exclude "None"
+
+# ----------------------------------------------------------------------------
+# STEP C: Build a dictionary of unique patient counts for normalization.
+# ----------------------------------------------------------------------------
+patient_counts_dict = {}
+for (model, patho), pid_set in unique_patients_map.items():
+    patient_counts_dict[(model, patho)] = len(pid_set)
+
+# Create a new column 'Normalized' = Counts / (# patients in that pathology for that model)
+counts['Normalized'] = counts.apply(
+    lambda row: row['Counts'] / patient_counts_dict[(row['Model'], row['Pathology'])],
+    axis=1
+)
+
+# ----------------------------------------------------------------------------
+# STEP D: Plot Setup (thinner hatches & white text).
+# ----------------------------------------------------------------------------
+sns.set(style="whitegrid", font_scale=1.3)
+
+# Make hatches thinner & white
+mpl.rcParams['hatch.color'] = 'white'
+mpl.rcParams['hatch.linewidth'] = 0.5  # Thinner hatch lines
+
+# We'll plot the 'Normalized' column on the y-axis.
+models_in_counts = counts['Model'].unique()
+pathologies = counts['Pathology'].unique()
+modality_order = ["CT", "Ultrasound", "MRI", "Radiograph", "Other"]
+
+model_order = [prettify_model_name[m] for m in MODELS] + ["MIMIC Doctors"]
+
+# Single color per model
+# color_map = {
+#     "GPT-3.5": "#1f77b4",
+#     "GPT-4": "#ff7f0e",
+#     "Vicuna": "#2ca02c",
+#     "MIMIC Doctors": "#8c564b",
+# }
+
+# White hatches for each modality
+modality_hatches = {
+    "CT": "///",
+    "Ultrasound": "...",
+    "MRI": "xxx",
+    "Radiograph": "\\\\",
+    "Other": "+++"
+}
+
+# Bar chart parameters
+n_bars = len(model_order)
+bar_width = 0.15
+
+plt.figure(figsize=(14, 6))
+
+for j, model in enumerate(model_order):
+    offsets = np.arange(len(pathologies)) + (j - n_bars / 2) * bar_width + bar_width / 2
+    bottom_val = np.zeros(len(pathologies))
+
+    for modality in modality_order:
+        subset = counts[(counts['Model'] == model) & (counts['Modality'] == modality)]
+
+        # Grab the 'Normalized' values
+        heights = (
+            subset.set_index('Pathology')
+            .reindex(pathologies)['Normalized']
+            .fillna(0)
+            .tolist()
+        )
+
+        bars = plt.bar(
+            offsets,
+            heights,
+            width=bar_width,
+            bottom=bottom_val,
+            color=color_map.get(model, "#999999"),
+            hatch=modality_hatches.get(modality, ""),
+            #Edgecolor = white for all, black if MIMIC Doctors
+            # edgecolor='black' if model == "MIMIC Doctors" else 'white',
+            edgecolor='white',
+            alpha=1.0,
+            label=modality if j == 0 else ""
+        )
+
+        # # Plot the numbers in white
+        # for bar in bars:
+        #     height = bar.get_height()
+        #     # if height > 0.0:
+        #     if height >= 0.1:
+        #         y_position = bar.get_y() + height / 2
+        #         plt.text(
+        #             bar.get_x() + bar.get_width() / 2,
+        #             y_position,
+        #             f'{height:.2f}',  # or use int(...) if desired
+        #             ha='center',
+        #             va='center',
+        #             #Color = black for all, white if MIMIC Doctors
+        #             color='black' if model != "MIMIC Doctors" else 'white',
+        #             weight="bold",
+        #             fontsize=10
+        #         )
+
+        bottom_val += np.array(heights)
+
+    for i, offset in enumerate(offsets):
+        total_height = bottom_val[i]
+        if total_height > 0:
+            # Slight vertical offset (0.01) to ensure the label isn't cut off
+            plt.text(
+                offset,
+                total_height + 0.01,      # a small gap above the bar
+                f'{total_height:.2f}',    # display as float or int
+                ha='center',
+                va='bottom',
+                color='black',           # White text
+                # weight='bold',
+                fontsize=12
+            )
+
+# Labels and ticks
+plt.xlabel('Pathology')
+plt.ylabel('Imaging Requests Count\n(Average per Patient)')
+plt.xticks(np.arange(len(pathologies)), pathologies)
+
+# Legends for models and modalities
+model_handles = [
+    mpatches.Patch(facecolor=color_map[m], label=m)
+    for m in model_order
+]
+modality_handles = [
+    mpatches.Patch(
+        facecolor='#333333',  # Dummy color
+        hatch=modality_hatches[m],
+        edgecolor='white',
+        label=m
+    ) for m in modality_order
+]
+
+plt.legend(
+    handles=model_handles + modality_handles,
+    bbox_to_anchor=(0.95, 1.15),
+    ncol=4,
+    frameon=False,
+    fontsize=12
+)
+
+# Save & show
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(
+    os.path.join(OUTPUT_BASE, dt_string, f"ImagingNormalized_{dt_string}.png"),
+    dpi=300,
+    bbox_inches='tight'
+)
+
+plt.tight_layout()
+plt.show()
+
+
+# --- Plot Imaging Count End ---
 
 
 # --- Plot Treatment Percentage  ---
@@ -1138,7 +1596,87 @@ plt.show()
 
 
 
+# --- Hallucination Plot ---
 
+# --- Sample Data Collection ---
+pathologies = ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']
+data = []
+for model in model_scores.keys():
+    # Add each pathology row
+    for patho in pathologies:
+        tool_hallucination = model_scores[model]['Invalid Tools'][patho]
+        data.append([model, patho.capitalize(), tool_hallucination])
+    
+    # Compute the average (mean) across pathologies for this model
+    avg_tool_hallucination = np.mean([
+        model_scores[model]['Invalid Tools'][patho] for patho in pathologies
+    ])
+    data.append([model, 'Mean', avg_tool_hallucination])
+
+# Create a DataFrame
+df_tool_hallucination = pd.DataFrame(
+    data, columns=['Model', 'Pathology', 'Tool Hallucination']
+)
+
+# (Optional) Prettify model names
+df_tool_hallucination['Model'] = df_tool_hallucination['Model'].apply(
+    lambda x: prettify_model_name[x]
+)
+
+# --- Style the plot similarly to your diagnostic accuracy snippet ---
+sns.set(style="whitegrid", font_scale=1.4)
+plt.figure(figsize=(12, 4))
+
+# Specify the order of categories so that 'Average' is last
+order = ['Appendicitis', 'Cholecystitis', 'Diverticulitis', 'Pancreatitis', 'Mean']
+
+bar_plot = sns.barplot(
+    x='Pathology',
+    y='Tool Hallucination',
+    hue='Model',
+    data=df_tool_hallucination,
+    palette=color_map,   # Reuse your custom color_map if available
+    saturation=intensity,  # Reuse your intensity if available
+    order=order
+)
+
+# Draw vertical dashed lines between each category (except the last)
+for i in range(len(order) - 1):
+    bar_plot.axvline(x=i + 0.5, color='gray', linestyle='--', linewidth=1)
+
+# Add the scores above the bars
+for p in bar_plot.patches:
+    if p.get_height() > 0:
+        bar_plot.annotate(
+            # format(p.get_height(), '.1f'),  # Format to 1 decimal place
+            # Format to 2 decimal places
+            format(p.get_height(), '.2f'),
+            (p.get_x() + p.get_width() / 2., p.get_height()),
+            ha='center', va='center',
+            xytext=(0, 9),
+            textcoords='offset points',
+            fontsize=14
+        )
+
+# Additional plot formatting
+plt.title('')
+plt.ylabel('Tool Hallucination Count\n(Average per Patient)')
+plt.xlabel('')
+plt.ylim(0, max(df_tool_hallucination['Tool Hallucination']) * 1.2)  # Give headroom
+plt.legend(
+    bbox_to_anchor=(0.8, 1.18), 
+    ncol=len(df_tool_hallucination['Model'].unique()),
+    frameon=False, 
+    fontsize=15
+)
+
+
+# Save the plot (optional)
+now = datetime.now()
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"HallucinationPlot_{dt_string}.png"), dpi=300, bbox_inches='tight')
+plt.show()
+
+# --- Hallucination Plot End ---
 
 
 
