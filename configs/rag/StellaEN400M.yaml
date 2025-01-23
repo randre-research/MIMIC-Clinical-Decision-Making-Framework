@@ -14,7 +14,7 @@ rag_smart_chunking: True #For markdown
 #Retrieval parameters
 rag_top_k: 4
 rag_re_rank: True
-rag_prompt_name: "s2p_query" # or "s2s_query" depending on your task #TODO: C'est quoi ca
+rag_prompt_name: "s2p_query" # or "s2s_query" s2p = (short query to long passage)
 
 # Document paths for retrieval
 rag_documents:

@@ -2,21 +2,20 @@
 defaults:
   - _self_
 
-rag_name: NV-Embed-v2
-rag_embedding_model: NV-Embed-v2
-
+rag_name: all-MiniLM-L6-v2
+rag_embedding_model: all-MiniLM-L6-v2
 #Embedding model parameters
-rag_chunk_size: 252
-rag_chunk_overlap: 0
+rag_chunk_size: 384
+rag_chunk_overlap: 76
 
 rag_smart_chunking: True #For markdown
 
-rag_embed_max_length: 32768
+rag_embed_max_length: 512
 
 #Retrieval parameters
-rag_top_k: 4
-rag_re_rank: False
-rag_top_k_rerank: 4
+rag_top_k: 8
+rag_re_rank: True
+rag_top_k_rerank: 3
 rag_prompt_name: "None"
 
 # Document paths for retrieval
@@ -25,6 +24,5 @@ rag_documents:
   - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
   - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
   - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
-
 
 # RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard

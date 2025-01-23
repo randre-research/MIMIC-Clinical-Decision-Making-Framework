@@ -3,6 +3,7 @@ from os.path import join
 import random
 from datetime import datetime
 import time
+from tqdm import tqdm
 
 import numpy as np
 import torch
@@ -98,7 +99,8 @@ def run(args: DictConfig):
         # Initialize the embedding model
         embedding_model_container = EmbeddingModelContainer(
             model_name_or_path=args.rag_embedding_model,
-            device=device
+            device=device,
+            embed_max_length=args.rag_embed_max_length if hasattr(args, 'rag_embed_max_length') else 512,
         )
         embedding_model_container.load_model(args.base_models)
 
@@ -117,11 +119,22 @@ def run(args: DictConfig):
             smart_chunking=args.rag_smart_chunking,
         )
 
+        # --- IF USING MEDCPT: DOCUMENTS EMBEDDER DIFFERENT FROM QUERY EMBEDDER ---
+        if hasattr(args, 'rag_query_embedding_model'):
+            vector_store.embedding_model.free_memory() #Free Memory of the documents embedder, we don't need it anymore
+            embedding_model_container = EmbeddingModelContainer( #Initialize the query embedding model over the previous one
+                model_name_or_path=args.rag_query_embedding_model,
+                device=device,
+                embed_max_length=args.rag_embed_max_length if hasattr(args, 'rag_embed_max_length') else 512,
+            )
+            embedding_model_container.load_model(args.base_models)
+
         # Initialize the retriever
         retriever = Retriever(
             vector_store=vector_store,
             embedding_model_container=embedding_model_container,
-            top_k=args.rag_top_k,
+            top_k_retrieval=args.rag_top_k,
+            top_k_rerank=args.rag_top_k_rerank if hasattr(args, 'rag_top_k_rerank') else args.rag_top_k,
             re_rank=args.rag_re_rank,
             prompt_name=args.rag_prompt_name,
         )
@@ -176,7 +189,8 @@ def run(args: DictConfig):
 
     # Predict for all patients
     first_patient_seen = False
-    for _id in hadm_info_clean.keys():
+    # for _id in hadm_info_clean.keys():
+    for _id in tqdm(hadm_info_clean.keys(), desc="Processing "+args.pathology+ " patients", total=len(list(hadm_info_clean.keys()))):
         if args.first_patient and not first_patient_seen:
             if _id == args.first_patient:
                 first_patient_seen = True
@@ -184,56 +198,6 @@ def run(args: DictConfig):
                 continue
 
         logger.info(f"Processing patient: {_id}")
-
-        # --- RAG Document Retrieval ---
-        # if args.use_rag:
-        #     # Construct the query from patient history
-        #     question = hadm_info_clean[_id]["Patient History"].strip()
-
-        #     # Retrieve relevant documents
-        #     retrieved_docs = retriever.retrieve(question)
-
-        #     # Combine the content of retrieved documents
-        #     doc_texts = "\n".join([doc["content"] for doc in retrieved_docs])
-        # else:
-        #     doc_texts = ""
-        # --- End RAG Document Retrieval ---
-
-        # # Build the agent executor, passing retrieved documents if RAG is used
-        # agent_executor = build_agent_executor_ZeroShot(
-        #     patient=hadm_info_clean[_id],
-        #     llm=llm,
-        #     lab_test_mapping_path=args.lab_test_mapping_path,
-        #     logfile=log_path,
-        #     max_context_length=args.max_context_length,
-        #     tags=tags,
-        #     include_ref_range=args.include_ref_range,
-        #     bin_lab_results=args.bin_lab_results,
-        #     include_tool_use_examples=args.include_tool_use_examples,
-        #     provide_diagnostic_criteria=args.provide_diagnostic_criteria,
-        #     summarize=args.summarize,
-        #     model_stop_words=args.stop_words,
-        #     # documents=doc_texts if args.use_rag else None,  # Pass documents to the agent
-        #     rag_retriever_agent = retriever if args.use_rag else None, #RAG
-        # )
-
-        # # Prepare the input for the agent executor
-        # input_data = {"input": hadm_info_clean[_id]["Patient History"].strip()}
-        # if args.use_rag:
-        #     input_data["documents"] = ''
-
-        # # Run the agent executor
-        # result = agent_executor(input_data)
-
-        # #RAG
-        # # Access the retrieved documents per step
-        # retrieved_docs_per_step = agent_executor.agent.retrieved_docs_per_step
-
-        # # Save results, including retrieved documents if RAG is used
-        # if args.use_rag:
-        #     result["retrieval"] = retrieved_docs_per_step
-
-        # append_to_pickle_file(results_log_path, {_id: result})
 
         # Build the agent executor, passing retrieved documents if RAG is used
         agent_executor = build_agent_executor_ZeroShot(

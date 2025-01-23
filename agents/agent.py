@@ -102,6 +102,20 @@ class CustomZeroShotAgent(ZeroShotAgent):
         # Extract current information to form the question
         question = self.extract_current_information(intermediate_steps, kwargs)
 
+        #Print the question
+        print(f"RAG Query (length): {len(question)}")
+        print(f"RAG Query: {question}")
+
+        # #If the question is too long, ask the LLM to summarize it
+        # if len(question) > self.rag_retriever_agent.embedding_model.embed_max_length:
+        #     #Ask the LLM to summarize the question
+        #     # question = self.llm_chain.predict(input=question, stop=self._stop)
+        #     thoughts = self._summarize_steps(intermediate_steps)
+        #     question = thoughts
+        #     #Print the summarized question
+        #     print(f"Summarized RAG Query (length): {len(question)}")
+        #     print(f"Summarized RAG Query: {question}")
+
         # Initialize retrieved documents content
         retrieved_docs_content = ""
 

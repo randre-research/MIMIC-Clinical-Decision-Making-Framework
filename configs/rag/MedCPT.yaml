@@ -2,8 +2,10 @@
 defaults:
   - _self_
 
-rag_name: MedCPT_md_k10
-rag_embedding_model: MedCPT-Cross-Encoder
+rag_name: MedCPT_md_k4_context_large
+# rag_embedding_model: MedCPT-Cross-Encoder
+rag_embedding_model: MedCPT-Article-Encoder
+rag_query_embedding_model: MedCPT-Query-Encoder
 
 #Embedding model parameters
 rag_chunk_size: 252
@@ -11,10 +13,12 @@ rag_chunk_overlap: 0
 
 rag_smart_chunking: True #For markdown
 
+rag_embed_max_length: 512
+
 #Retrieval parameters
-rag_top_k: 10
-rag_re_rank: False
-rag_prompt_name: "s2p_query" # or "s2s_query" depending on your task #TODO: C'est quoi ca
+rag_top_k: 4
+rag_re_rank: True
+rag_prompt_name: "None"
 
 # Document paths for retrieval
 rag_documents:

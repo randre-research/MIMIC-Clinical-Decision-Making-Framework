@@ -27,14 +27,16 @@ EXPERIMENTS = [
 ]
 
 MODELS = [
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
-
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
@@ -44,7 +46,8 @@ MODELS = [
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
     ]
 
-BASELINE_MODEL = "Llama-3.1-70B-Instruct-exl2-4.0bpw"
+# BASELINE_MODEL = "Llama-3.1-70B-Instruct-exl2-4.0bpw"
+BASELINE_MODEL = "Llama-3.2-1B-Instruct-exl2-4.0bpw"
 
 prettify_model_name = {
 #     "Llama-2-70B-chat-GPTQ": "Llama 2 Chat",
@@ -58,6 +61,9 @@ prettify_model_name = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 1B 4.0bpw + stella5 400M",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr": "Llama3 1B 4.0bpw + stella5 400M (chunkr)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4": "Llama3 1B 4.0bpw + MedCPT (k=4)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank": "Llama3 1B 4.0bpw + MedCPT (k=4, no rerank)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2": "Llama3 1B 4.0bpw + MiniLM-L6-v2 (k=8, rerank=3)",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "LLM (Llama3 70B 4.0bpw)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
@@ -84,6 +90,9 @@ color_map = {
     "Llama3 1B 4.0bpw + stella5 400M": "#00B4D8",
     "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)": "#4abd98",
     "Llama3 1B 4.0bpw + stella5 400M (chunkr)": "#1ee3ab",
+    "Llama3 1B 4.0bpw + MedCPT (k=4)": "#F97F77",
+    "Llama3 1B 4.0bpw + MedCPT (k=4, no rerank)": "#EC9898",
+    "Llama3 1B 4.0bpw + MiniLM-L6-v2 (k=8, rerank=3)": "#F9F871",
     "Llama3 70B 4.0bpw": "#3EAD0A",
     "Llama3 70B 4.0bpw + stella5 400M": "#9BD415",
     "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)": "#d165d6",
