@@ -129,8 +129,11 @@ class EmbeddingModelContainer:
                     instruction=passage_prefix, 
                     max_length=max_length
                 )
+                
+                batch_emb_np = batch_emb.detach().cpu().numpy()  # Convert tensor -> NumPy
+
                 # Convert to tensor if not already and store
-                passage_embeddings.append(torch.from_numpy(batch_emb))
+                passage_embeddings.append(torch.from_numpy(batch_emb_np))
             
             # Combine all batches and normalize
             passage_embeddings = torch.cat(passage_embeddings, dim=0)
