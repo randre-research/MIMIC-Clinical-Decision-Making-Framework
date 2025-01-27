@@ -189,6 +189,8 @@ class EmbeddingModelContainer:
             max_length = self.embed_max_length
             query_embeddings = self.embedding_model.encode(queries, instruction=query_prefix, max_length=max_length)
 
+            query_embeddings = query_embeddings.detach().cpu()  # Convert tensor -> NumPy
+
             # normalize embeddings
             query_embeddings = F.normalize(query_embeddings, p=2, dim=1)
 
