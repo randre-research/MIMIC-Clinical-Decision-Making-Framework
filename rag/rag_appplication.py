@@ -117,8 +117,22 @@ class EmbeddingModelContainer:
             passages = texts
             # get the embeddings
             max_length = self.embed_max_length
-            passage_embeddings = self.embedding_model.encode(passages, instruction=passage_prefix, max_length=max_length)
-            # normalize embeddings
+            # Process in batches
+            batch_size = 32  # You can adjust this based on your GPU memory
+            passage_embeddings = []
+            
+            for i in range(0, len(passages), batch_size):
+                batch = passages[i:i + batch_size]
+                batch_emb = self.embedding_model.encode(
+                    batch, 
+                    instruction=passage_prefix, 
+                    max_length=max_length
+                )
+                # Convert to tensor if not already and store
+                passage_embeddings.append(torch.from_numpy(batch_emb))
+            
+            # Combine all batches and normalize
+            passage_embeddings = torch.cat(passage_embeddings, dim=0)
             passage_embeddings = F.normalize(passage_embeddings, p=2, dim=1)
             embeddings = passage_embeddings
         elif self.is_medcpt:
