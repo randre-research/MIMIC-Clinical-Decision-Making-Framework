@@ -119,7 +119,7 @@ class EmbeddingModelContainer:
             # get the embeddings
             max_length = self.embed_max_length
             # Process in batches
-            batch_size = 4  # You can adjust this based on your GPU memory
+            batch_size = 32  # You can adjust this based on your GPU memory
             passage_embeddings = []
             
             for i in range(0, len(passages), batch_size):
@@ -130,7 +130,7 @@ class EmbeddingModelContainer:
                     max_length=max_length
                 )
                 
-                batch_emb_np = batch_emb.detach().cpu().numpy()  # Convert tensor -> NumPy
+                batch_emb_np = batch_emb.clone().detach().cpu().numpy()  # Convert tensor -> NumPy
 
                 # Convert to tensor if not already and store
                 passage_embeddings.append(torch.from_numpy(batch_emb_np))
@@ -189,7 +189,7 @@ class EmbeddingModelContainer:
             max_length = self.embed_max_length
             query_embeddings = self.embedding_model.encode(queries, instruction=query_prefix, max_length=max_length)
 
-            query_embeddings = query_embeddings.detach().cpu()  # Convert tensor -> NumPy
+            query_embeddings = query_embeddings.clone().detach().cpu()  # Convert tensor -> NumPy
 
             # normalize embeddings
             query_embeddings = F.normalize(query_embeddings, p=2, dim=1)
