@@ -69,11 +69,12 @@ class EmbeddingModelContainer:
             # load model with tokenizer
             self.embedding_model = AutoModel.from_pretrained(
                 join(base_models, self.model_name), 
-                trust_remote_code=self.trust_remote_code
+                trust_remote_code=self.trust_remote_code,
+                torch_dtype=torch.float16  # Load model in FP16
             ).to(self.device)
             self.tokenizer = AutoTokenizer.from_pretrained(
                 join(base_models, self.model_name), 
-                trust_remote_code=self.trust_remote_code
+                trust_remote_code=self.trust_remote_code,
             )
         elif self.is_medcpt:
             self.embedding_model = AutoModel.from_pretrained(

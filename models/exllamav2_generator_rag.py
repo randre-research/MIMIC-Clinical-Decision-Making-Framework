@@ -34,6 +34,11 @@ class ExLlamaV2BaseGeneratorRAG:
         else:
             print("Model is loaded on CPU.")
 
+        #Print on which GPU the model is loaded
+        for context in self.model.device_context:
+            if context is not None and context.device_idx >= 0:
+                print(f"Model loaded on GPU {context.device_idx}.")
+
         from exllamav2.attn import has_flash_attn
         if has_flash_attn:
             print("FlashAttention is enabled.")
