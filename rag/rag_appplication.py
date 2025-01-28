@@ -119,7 +119,7 @@ class EmbeddingModelContainer:
             # get the embeddings
             max_length = self.embed_max_length
             # Process in batches
-            batch_size = 32  # You can adjust this based on your GPU memory
+            batch_size = 8  # You can adjust this based on your GPU memory
             passage_embeddings = []
             
             for i in range(0, len(passages), batch_size):

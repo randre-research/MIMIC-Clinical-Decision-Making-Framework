@@ -34,7 +34,7 @@ MODELS = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
