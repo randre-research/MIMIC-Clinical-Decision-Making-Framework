@@ -2,7 +2,7 @@
 defaults:
   - _self_
 
-rag_name: NV-Embed-v2
+rag_name: NV-Embed-v2-md_full
 rag_embedding_model: NV-Embed-v2
 
 #Embedding model parameters

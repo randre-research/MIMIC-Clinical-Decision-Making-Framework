@@ -27,27 +27,29 @@ EXPERIMENTS = [
 ]
 
 MODELS = [
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
     ]
 
+BASELINE_MODEL = MODELS[0]
 # BASELINE_MODEL = "Llama-3.1-70B-Instruct-exl2-4.0bpw"
-BASELINE_MODEL = "Llama-3.2-1B-Instruct-exl2-4.0bpw"
+# BASELINE_MODEL = "Llama-3.2-1B-Instruct-exl2-4.0bpw"
 
 prettify_model_name = {
 #     "Llama-2-70B-chat-GPTQ": "Llama 2 Chat",
@@ -76,6 +78,7 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5": "Llama3 70B 2.5bpw + stella5 1.5B",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k": "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)",
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k": "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked)",
 }
 
 color_map = {
@@ -103,6 +106,7 @@ color_map = {
     "Llama3 70B 2.5bpw + stella5 1.5B": "#F9F871",
     "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
     "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)": "#EC9898",
+    "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked)": "#1ee3ab",
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
