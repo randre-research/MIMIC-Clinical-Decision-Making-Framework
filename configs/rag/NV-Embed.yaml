@@ -2,21 +2,21 @@
 defaults:
   - _self_
 
-rag_name: NV-Embed-v2-md_full
+rag_name: NV-Embed-v2-md_k8
 rag_embedding_model: NV-Embed-v2
 
 #Embedding model parameters
 rag_chunk_size: 252
-rag_chunk_overlap: 0
+rag_chunk_overlap: 32
 
 rag_smart_chunking: True #For markdown
 
 rag_embed_max_length: 32768 #32768
 
 #Retrieval parameters
-rag_top_k: 4
+rag_top_k: 8
 rag_re_rank: False
-rag_top_k_rerank: 4
+rag_top_k_rerank: 8
 rag_prompt_name: "None"
 
 # Document paths for retrieval

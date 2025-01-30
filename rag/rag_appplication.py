@@ -349,13 +349,13 @@ class VectorStore:
                 # --- Markdown header splitter end ---
 
                 # --- Constrain chunk size ---
-                # chunk_size = self.chunk_size
-                # chunk_overlap = self.chunk_overlap
-                # text_splitter = RecursiveCharacterTextSplitter(
-                #     chunk_size=chunk_size, chunk_overlap=chunk_overlap
-                # )
-                # # Split
-                # chunks = text_splitter.split_documents(chunks)
+                chunk_size = self.chunk_size
+                chunk_overlap = self.chunk_overlap
+                text_splitter = RecursiveCharacterTextSplitter(
+                    chunk_size=chunk_size, chunk_overlap=chunk_overlap
+                )
+                # Split
+                chunks = text_splitter.split_documents(chunks)
                 # --- Constrain chunk size end ---
 
                 for i, chunk in enumerate(chunks):
