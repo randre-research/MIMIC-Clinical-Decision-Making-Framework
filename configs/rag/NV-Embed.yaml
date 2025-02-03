@@ -14,9 +14,9 @@ rag_smart_chunking: True #For markdown
 rag_embed_max_length: 32768 #32768
 
 #Retrieval parameters
-rag_top_k: 8
+rag_top_k: 24
 rag_re_rank: False
-rag_top_k_rerank: 8
+rag_top_k_rerank: 24
 rag_prompt_name: "None"
 
 # Document paths for retrieval

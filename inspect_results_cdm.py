@@ -45,6 +45,8 @@ MODELS = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
     ]
 
 BASELINE_MODEL = MODELS[0]
@@ -79,6 +81,8 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k": "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)",
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k": "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown full)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked, k=8)",
 }
 
 color_map = {
@@ -107,6 +111,8 @@ color_map = {
     "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
     "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)": "#EC9898",
     "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked)": "#1ee3ab",
+    "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown full)": "#4abd98",
+    "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked, k=8)": "#943199",
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
