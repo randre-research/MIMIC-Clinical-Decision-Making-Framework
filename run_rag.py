@@ -149,6 +149,10 @@ def run(args: DictConfig):
 
     if args.use_rag:
         run_name += f"_{args.rag_name}"
+
+    if args.seed != 2023:
+        run_name += f"_SEED={args.seed}"
+
     run_name += f"_{str_date}"
 
     if args.fewshot:

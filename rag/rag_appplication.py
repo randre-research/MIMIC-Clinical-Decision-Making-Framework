@@ -53,6 +53,7 @@ class EmbeddingModelContainer:
         elif self.is_stella:
             self.embedding_model = SentenceTransformer(
                 join(base_models, self.model_name),
+                trust_remote_code=self.trust_remote_code,
                 device=self.device
             )
             self.tokenizer = self.embedding_model.tokenizer
