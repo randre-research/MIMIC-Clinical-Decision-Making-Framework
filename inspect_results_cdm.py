@@ -4,6 +4,9 @@ EXPERIMENTS_BASE = '/container/data/logs/analysis'
 OUTPUT_BASE = '/container/data/logs/analysis/output'
 
 DIAG = "Gracious Diagnosis"
+SEEDED = False
+# SEEDS = [110,891,484,1126,431,435,1246,1852,283,1370,1063,1945,887,567,950,1633,1496,728,1507,1508]
+SEEDS = [110,891,484,1126]
 
 import os
 # import paramiko
@@ -31,22 +34,31 @@ MODELS = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
     # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_ablated",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_no_titles",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
     ]
 
 BASELINE_MODEL = MODELS[0]
@@ -65,12 +77,14 @@ prettify_model_name = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 1B 4.0bpw + stella5 400M",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr": "Llama3 1B 4.0bpw + stella5 400M (chunkr)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise": "Llama3 1B 4.0bpw + stella5 400M (noise dataset)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4": "Llama3 1B 4.0bpw + MedCPT (k=4)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank": "Llama3 1B 4.0bpw + MedCPT (k=4, no rerank)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2": "Llama3 1B 4.0bpw + MiniLM-L6-v2 (k=8, rerank=3)",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw": "Llama3 70B 4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "LLM (Llama3 70B 4.0bpw)",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "Llama3 70B 4.0bpw + stella5 400M",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5": "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "Llama3 70B 4.0bpw + stella5 400M (cleaned markdown)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown": "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10": "Llama3 70B 4.0bpw + stella5 400M (smart markdown 252k10)",
@@ -80,9 +94,17 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5": "Llama3 70B 2.5bpw + stella5 1.5B",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k": "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)",
     "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k": "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_requery": "Llama3 70B 4.0bpw + stella5 400M (requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown full)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8": "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked, k=8)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_ablated": "Llama3 70B 4.0bpw + NV-Embed-v2 (without highest retrieved wrong guideline)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_no_titles": "Llama3 70B 4.0bpw + NV-Embed-v2 (no titles in chunks)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery": "Llama3 70B 4.0bpw + NV-Embed-v2 (requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery": "Llama3 70B 4.0bpw + MedCPT (requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery": "Llama3 70B 4.0bpw + MedCPT (raw md, requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery": "Llama3 70B 4.0bpw + MedCPT (ref md, requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext": "Llama3 70B 4.0bpw + NV-Embed-v2 (requery)",
 }
 
 color_map = {
@@ -97,6 +119,7 @@ color_map = {
     "Llama3 1B 4.0bpw + stella5 400M": "#00B4D8",
     "Llama3 1B 4.0bpw + stella5 400M (cleaned markdown)": "#4abd98",
     "Llama3 1B 4.0bpw + stella5 400M (chunkr)": "#1ee3ab",
+    "Llama3 1B 4.0bpw + stella5 400M (noise dataset)": "#943199",
     "Llama3 1B 4.0bpw + MedCPT (k=4)": "#F97F77",
     "Llama3 1B 4.0bpw + MedCPT (k=4, no rerank)": "#EC9898",
     "Llama3 1B 4.0bpw + MiniLM-L6-v2 (k=8, rerank=3)": "#F9F871",
@@ -110,9 +133,16 @@ color_map = {
     "Llama3 70B 2.5bpw + stella5 1.5B": "#F9F871",
     "Llama3 70B 4.0bpw + stella5 400M (TopK=12, 8k Context)": "#F97F77",
     "Llama3 70B 2.5bpw + stella5 1.5B (TopK=12, 8k Context)": "#EC9898",
+    "Llama3 70B 4.0bpw + stella5 400M (requery)": "#d165d6",
     "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked)": "#1ee3ab",
     "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown full)": "#4abd98",
     "Llama3 70B 4.0bpw + NV-Embed-v2 (markdown chunked, k=8)": "#943199",
+    "Llama3 70B 4.0bpw + NV-Embed-v2 (without highest retrieved wrong guideline)": "#F97F77",
+    "Llama3 70B 4.0bpw + NV-Embed-v2 (no titles in chunks)": "#EC9898",
+    "Llama3 70B 4.0bpw + NV-Embed-v2 (requery)": "#d165d6",
+    "Llama3 70B 4.0bpw + MedCPT (requery)": "#AD57AC",
+    "Llama3 70B 4.0bpw + MedCPT (raw md, requery)": "#6A2276",
+    "Llama3 70B 4.0bpw + MedCPT (ref md, requery)": "#F9F871",
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
@@ -564,216 +594,524 @@ plt.show()
 
 
 
+# # --- Seeded run ---
+if SEEDED:
+    # 1. Prepare a list of seeded model names and a mapping from base model -> all seeded variants
+    models_seeded_parents = {}
+    models_seeded = []
+    for model in MODELS:
+        # models_seeded_parents[model] = [model]
+        # models_seeded.append(model)
+        models_seeded_parents[model] = []
+        for seed in SEEDS:
+            seed_name = f"{model}_SEED={seed}"
+            models_seeded_parents[model].append(seed_name)
+            models_seeded.append(seed_name)
 
-# --- P-Values ---
-
-import numpy as np
-from scipy.stats import bartlett, ttest_ind, levene, chi2
-# from statsmodels.stats.contingency_tables import mcnemar
-from statsmodels.stats.contingency_tables import StratifiedTable
-# Example per-disease accuracies for two models
-# modelA = np.array([0.70, 0.78, 0.82, 0.75])  # 4 diseases
-# modelB = np.array([0.65, 0.74, 0.79, 0.80])
-
-# # 1. Bartlett’s test for equal variance
-# stat_b, p_bartlett = bartlett(modelA, modelB)
-# print(f"Bartlett's test: statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
-
-# # 2. Welch’s two-sided t-test
-# t_stat, p_value = ttest_ind(modelA, modelB, equal_var=False)
-# print(f"Welch's t-test: t-stat={t_stat:.3f}, raw p-value={p_value:.3f}")
-
-# # Suppose this is one of several comparisons -> apply Bonferroni
-# m = 3  # or 5, depending on how many comparisons you do overall
-# p_value_corrected = min(1, p_value * m)
-# print(f"Bonferroni corrected p-value={p_value_corrected:.3f}")
-
-"""
-7. Interpreting the results
-
-    Bartlett’s test: If p < 0.05, it suggests the groups have unequal variances → it justifies using Welch’s t-test.
-    Welch’s t-test: If the final, Bonferroni-corrected p-value < 0.05, you conclude a statistically significant difference in the mean accuracies (i.e., per-disease accuracies) between the two groups/models.
-    Effect size: Keep in mind a p-value does not show how big or meaningful the difference is. You might also want to look at the raw difference in the average accuracies (e.g., aˉ−bˉaˉ−bˉ) or compute confidence intervals.
-
-8. Additional notes
-
-    Using per-disease accuracy as “sample points”: Strictly speaking, you only have 4 diseases, so your sample size for each group is n=4n=4. A t-test with 4 data points per group is quite small; interpret with caution. The original paper apparently does this (or something similar) due to the constraints mentioned.
-    Bartlett vs. Levene test: In practice, many prefer Levene’s test over Bartlett’s test because Bartlett’s is sensitive to nonnormal data. But you should follow the paper’s methodology if that’s a requirement.
-    Multiclass + single-class metrics: The paper highlights that “per-class accuracy … is the only metric that can be calculated without bias” given their constraints. That is why they focus on per-class accuracies rather than overall accuracy, sensitivity, specificity, etc., which might be misleading with a small or unrepresentative sample of diseases.
-
-Final Takeaway
-
-    To compute p-values in the same way as the paper:
-
-        Compute per-disease (per-class) accuracies for each model/doctor.
-        Check variance with Bartlett’s test.
-        Use a two-sided Welch’s t-test (ttest_ind(..., equal_var=False)) for comparing means.
-        Bonferroni correct the resulting p-values by multiplying each by the number of comparisons (5 or 3 as in the paper).
-
-    This method gives you a single p-value per comparison (e.g., doctor vs. model or specialist vs. generalist), corrected for multiple testing.
-"""
-
-no_rag_model = BASELINE_MODEL
+    # 2. Load the scores for all seeded models
+    experiments = EXPERIMENTS
+    fields = [DIAG]
+    experiment_results_seeded, experiment_evals_seeded, experiment_scores_seeded, experiment_retrievals_seeded = load_scores(
+        experiments, 
+        models=models_seeded, 
+        fields=fields
+    )
 
 
-# #Save model_evals to text file
-# model_evals = experiment_evals[experiment]
-# with open(os.path.join(OUTPUT_BASE, dt_string, f"model_evals_{dt_string}.txt"), "w") as f:
-#     f.write(f"Experiment: {experiment}\n\n")
-#     for model in model_evals.keys():
-#         f.write(f"Model: {model}\n")
-#         for patho in model_evals[model].keys():
-#             f.write(f"Pathology: {patho}\n")
-#             for _id in model_evals[model][patho].keys():
-#                 f.write(f"ID: {_id}\n")
-#                 f.write(f"Scores: {model_evals[model][patho][_id]}\n\n")
-#         f.write("\n\n")
+    experiment = experiments[0]
+    pathologies = ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']
 
-# #For each pathology in model_evals, order patients by ID
-# for model in model_evals.keys():
-#     for patho in model_evals[model].keys():
-#         model_evals[model][patho] = dict(sorted(model_evals[model][patho].items()))
+    # Initialize dicts to store raw points, mean, std
+    points_per_patho = {}
+    score_per_patho = {}
+    std_per_patho = {}
 
-# model_scores_long = {}
-# for model in model_evals.keys():
-#     model_scores_long[model] = {}
-#     for patho in model_evals[model].keys():
-#         model_scores_long[model][patho] = []
-#         for patient in model_evals[model][patho].keys():
-#             model_scores_long[model][patho].append(model_evals[model][patho][patient]["scores"]["Diagnosis"])
+    for base_model in MODELS:
+        points_per_patho[base_model] = {p: [] for p in pathologies + ["Mean"]}
+        score_per_patho[base_model] = {p: 0   for p in pathologies + ["Mean"]}
+        std_per_patho[base_model]   = {p: 0   for p in pathologies + ["Mean"]}
 
-# #Save model_scores_long to text file
-# with open(os.path.join(OUTPUT_BASE, dt_string, f"model_scores_long_{dt_string}.txt"), "w") as f:
-#     f.write(f"Experiment: {experiment}\n\n")
-#     for model in model_scores_long.keys():
-#         f.write(f"Model: {model}\n")
-#         for patho in model_scores_long[model].keys():
-#             f.write(f"Pathology: {patho}\n")
-#             f.write(f"Scores: {model_scores_long[model][patho]}\n\n")
-#         f.write("\n\n")
+    # Fill in the dictionaries
+    for base_model in MODELS:
+        # For each seed variant (including the original as "SEED=None")
+        seed_models = models_seeded_parents[base_model]
+
+        # Collect all seed scores for each pathology
+        for patho in pathologies:
+            # Scores from each seed variant for this pathology
+            scores = [
+                experiment_scores_seeded[experiment][seed_model][DIAG][patho]
+                for seed_model in seed_models
+            ]
+            # Add them to points_per_patho
+            points_per_patho[base_model][patho].extend(scores)
+
+        # Also collect the "Mean" per seed across all pathologies
+        mean_scores = []
+        for seed_model in seed_models:
+            # For each seed, compute the average across pathologies
+            patho_scores = [
+                experiment_scores_seeded[experiment][seed_model][DIAG][p]
+                for p in pathologies
+            ]
+            mean_scores.append(np.mean(patho_scores))
+
+        points_per_patho[base_model]["Mean"].extend(mean_scores)
+
+    # Now compute the average and std for each base model & pathology
+    for base_model in MODELS:
+        for patho in pathologies + ["Mean"]:
+            all_scores = points_per_patho[base_model][patho]
+            mean_score = np.mean(all_scores)
+            std_score = np.std(all_scores)
+            score_per_patho[base_model][patho] = mean_score
+            std_per_patho[base_model][patho] = std_score
+
+    # -------------------------------------------------------------------
+    # 2) Build a DataFrame for barplot (mean ± std) 
+    #    and another “long” DF to plot individual seed points
+    # -------------------------------------------------------------------
+
+    # Long DataFrame of all seed-level points
+    rows_all_seeds = []
+    for base_model in MODELS:
+        pretty_name = prettify_model_name[base_model]
+        seed_models = models_seeded_parents[base_model]
+
+        for seed_model in seed_models:
+            # For each seed, gather patho-level + "Mean"
+            for patho in pathologies:
+                score = experiment_scores_seeded[experiment][seed_model][DIAG][patho]
+                rows_all_seeds.append({
+                    "Model": pretty_name,
+                    "Pathology": patho.capitalize(),
+                    "Diagnostic Accuracy": score * 100,
+                    "Seed": seed_model  # or extract the seed number from the name if desired
+                })
+            # "Mean" across these pathologies
+            patho_scores = [
+                experiment_scores_seeded[experiment][seed_model][DIAG][p]
+                for p in pathologies
+            ]
+            mean_score = np.mean(patho_scores)
+            rows_all_seeds.append({
+                "Model": pretty_name,
+                "Pathology": "Mean",
+                "Diagnostic Accuracy": mean_score * 100,
+                "Seed": seed_model
+            })
+
+    df_all_seeds = pd.DataFrame(rows_all_seeds)
+
+    # DataFrame of aggregated means and stds for barplot
+    # rows_agg = []
+    # for base_model in MODELS:
+    #     pretty_name = prettify_model_name[base_model]
+    #     for patho in pathologies + ["Mean"]:
+    #         rows_agg.append({
+    #             "Model": pretty_name,
+    #             "Pathology": patho.capitalize(),
+    #             "Mean Accuracy": score_per_patho[base_model][patho] * 100,
+    #             "Std Accuracy":  std_per_patho[base_model][patho] * 100
+    #         })
+    rows_agg = []
+    for base_model in MODELS:
+        pretty_name = prettify_model_name[base_model]
+        for patho in pathologies + ["Mean"]:
+            for point in points_per_patho[base_model][patho]:
+                rows_agg.append({
+                    "Model": pretty_name,
+                    "Pathology": patho.capitalize(),
+                    "Accuracy": point * 100
+                })
+
+    df_agg = pd.DataFrame(rows_agg)
+
+    #DEBUG print all df_agg rows and columns
+    print(df_agg)
+
+    # -------------------------------------------------------------------
+    # 3) Create bar plot with error bars and overlay seed-level points
+    # -------------------------------------------------------------------
+
+    sns.set(style="whitegrid", font_scale=1.4)
+    plt.figure(figsize=(12, 4))
+
+    # #Reshape Std Accuracy to match (2,5)
+    # err_bars = np.zeros((len(MODELS), 5))
+    # for i, model in enumerate(MODELS):
+    #     for j, patho in enumerate(pathologies + ["Mean"]):
+    #         err_bars[i, j] = std_per_patho[model][patho] * 100
+
+    # bar_plot = sns.barplot(
+    #     data=df_agg,
+    #     x='Pathology',
+    #     y='Mean Accuracy',
+    #     hue='Model',
+    #     palette=color_map,       # Assuming you have color_map & intensity defined
+    #     saturation=intensity,    
+    #     edgecolor="black",
+    #     capsize=0.1,             # Add small caps on error bar
+    #     errcolor="black",
+    #     errwidth=1.5,
+    #     # If you prefer the new approach in Seaborn >= 0.12, you can do errorbar=("sd") or so,
+    #     # but here we supply our own "Std Accuracy"
+    #     ci=None, # Disable built-in intervals
+    #     yerr=df_agg["Std Accuracy"]  # Transpose to match the shape of the data
+    # )
+    
+    # Sort df_agg by Pathology and Model (same order as the plot)
+    # df_agg = df_agg.sort_values(by=['Pathology', 'Model'])
+
+    bar_plot = sns.barplot(
+        data=df_agg,
+        x='Pathology',
+        y='Accuracy',
+        hue='Model',
+        palette=color_map,
+        saturation=intensity,
+        edgecolor="white",
+        errorbar="sd",
+        estimator=np.mean,
+        capsize=0.1,
+        #Make the error bars black and thinner but visible and no caps
+        errcolor="gray",
+        errwidth=1,
+        # ci=None,
+    )
+
+    # for i, bar in enumerate(bar_plot.patches):
+    #     x = bar.get_x() + bar.get_width() / 2  # Center of the bar
+    #     y = bar.get_height()
+    #     err = df_agg["Std Accuracy"].iloc[i]  # Match error to bar index
+    #     plt.errorbar(x, y, yerr=err, fmt='none', color='black', 
+    #                 capsize=5, linewidth=1.5)
+
+    # Overlay individual seed points with a stripplot
+    # (so each bar’s seeds appear at the correct category)
+    sns.stripplot(
+        data=df_all_seeds,
+        x='Pathology',
+        y='Diagnostic Accuracy',
+        hue='Model',
+        palette=color_map,
+        dodge=True,      # ensures points are next to each other by hue
+        alpha=0.7,
+        edgecolor='gray',
+        linewidth=.5,
+        size=3.5,
+    )
+
+    # Because we now have two legends (one from barplot, one from stripplot),
+    # we can remove one of them:
+    plt.legend([],[], frameon=False)
+
+    # Then re-draw a single legend from the barplot
+    handles, labels = bar_plot.get_legend_handles_labels()
+    plt.legend(handles[:len(df_agg['Model'].unique())], 
+            labels[:len(df_agg['Model'].unique())], 
+            bbox_to_anchor=(0.8, 1.18), 
+            ncol=len(model_scores.keys()), 
+            frameon=False, 
+            fontsize=15)
+
+    # Optional vertical lines between pathologies
+    unique_patho = df_agg['Pathology'].unique()
+    for i in range(len(unique_patho) - 1):
+        bar_plot.axvline(x=i + 0.5, color='gray', linestyle='--', linewidth=1)
+
+    # Optional annotation of numeric values on top of bars
+    for p in bar_plot.patches:
+        height = p.get_height()
+        if height > 0:
+            bar_plot.annotate(
+                format(height, '.1f'), 
+                (p.get_x() + p.get_width() / 2., height),
+                ha='center', va='center',
+                xytext=(0, 9),
+                textcoords='offset points',
+                fontsize=14,
+            )
+
+    plt.title('')
+    plt.ylabel('Diagnostic Accuracy (%)')
+    plt.xlabel('')
+    plt.ylim(0, 100)
+
+    # Save the figure
+    # now = datetime.now()
+    # dt_string = now.strftime("%Y-%m-%d_%H-%M-%S")
+    os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+    plt.savefig(
+        os.path.join(OUTPUT_BASE, dt_string, f"DiagAccCDM_Fig3_seeded_{dt_string}.png"),
+        dpi=300, 
+        bbox_inches='tight'
+    )
+    plt.show()
+
+    #Create txt file with:
+		# - bartlett's test (or levene test) to check for equal variance
+		# - if no difference in variances student t test
+		# - if unequal variances, welch's t-test
+    from scipy.stats import bartlett, ttest_ind, levene, chi2
+    # from statsmodels.stats.contingency_tables import mcnemar
+    from statsmodels.stats.contingency_tables import StratifiedTable
+    #For each pathology points (and mean) between each two models
+    #Create txt "p_values_seeded.txt"
+    with open(os.path.join(OUTPUT_BASE, dt_string, f"p_values_seeded_{dt_string}.txt"), "w") as f:
+        for patho in pathologies + ["Mean"]:
+            for i, model1 in enumerate(MODELS):
+                for model2 in MODELS[i+1:]:
+                    if model1 == model2:
+                        continue
+                    points1 = points_per_patho[model1][patho]
+                    points2 = points_per_patho[model2][patho]
+
+                    # 1. Bartlett’s test for equal variance
+                    stat_b, p_bartlett = bartlett(points1, points2)
+                    print(f"Bartlett's test: {model1} vs {model2} ({patho}): statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
+
+                    # 1. Levene's test for equal variance
+                    stat_l, p_levene = levene(points1, points2)
+                    print(f"Levene's test: {model1} vs {model2} ({patho}): statistic={stat_l:.3f}, p-value={p_levene:.3f}")
+
+                    # 2. Student's t-test
+                    t_stat_s, p_value_s = ttest_ind(points1, points2, equal_var=True)
+                    print(f"Student's t-test: {model1} vs {model2} ({patho}): t-stat={t_stat_s:.3f}, raw p-value={p_value_s:.3f}")
+
+                    # 2. Welch’s two-sided t-test
+                    t_stat_w, p_value_w = ttest_ind(points1, points2, equal_var=False)
+                    print(f"Welch's t-test: {model1} vs {model2} ({patho}): t-stat={t_stat_w:.3f}, raw p-value={p_value_w:.3f}")
+
+                    # # Suppose this is one of several comparisons -> apply Bonferroni
+                    # m = 3  # or 5, depending on how many comparisons you do overall
+
+                    # p_value_corrected = min(1, p_value * m)
+                    # print(f"Bonferroni corrected p-value={p_value_corrected:.3f}")
+
+                    f.write(f"Pathology: {patho}\n")
+                    f.write(f"Model 1: {model1}, n points={len(points1)}\n")
+                    f.write(f"Model 2: {model2}, n points={len(points2)}\n")
+
+                    f.write(f"Bartlett's test: statistic={stat_b:.3f}, p-value={p_bartlett:.8f}\n")
+                    f.write(f"Levene's test: statistic={stat_l:.3f}, p-value={p_levene:.8f}\n")
+                    f.write(f"Student's t-test: t-stat={t_stat_s:.3f}, raw p-value={p_value_s:.8f}\n")
+                    f.write(f"Welch's t-test: t-stat={t_stat_w:.3f}, raw p-value={p_value_w:.8f}\n")
+                    f.write("\n")
+
+
+
+# --- End of Seeded run ---
+
+# # --- P-Values ---
+
+# import numpy as np
+# from scipy.stats import bartlett, ttest_ind, levene, chi2
+# # from statsmodels.stats.contingency_tables import mcnemar
+# from statsmodels.stats.contingency_tables import StratifiedTable
+# # Example per-disease accuracies for two models
+# # modelA = np.array([0.70, 0.78, 0.82, 0.75])  # 4 diseases
+# # modelB = np.array([0.65, 0.74, 0.79, 0.80])
+
+# # # 1. Bartlett’s test for equal variance
+# # stat_b, p_bartlett = bartlett(modelA, modelB)
+# # print(f"Bartlett's test: statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
+
+# # # 2. Welch’s two-sided t-test
+# # t_stat, p_value = ttest_ind(modelA, modelB, equal_var=False)
+# # print(f"Welch's t-test: t-stat={t_stat:.3f}, raw p-value={p_value:.3f}")
+
+# # # Suppose this is one of several comparisons -> apply Bonferroni
+# # m = 3  # or 5, depending on how many comparisons you do overall
+# # p_value_corrected = min(1, p_value * m)
+# # print(f"Bonferroni corrected p-value={p_value_corrected:.3f}")
+
+# """
+# 7. Interpreting the results
+
+#     Bartlett’s test: If p < 0.05, it suggests the groups have unequal variances → it justifies using Welch’s t-test.
+#     Welch’s t-test: If the final, Bonferroni-corrected p-value < 0.05, you conclude a statistically significant difference in the mean accuracies (i.e., per-disease accuracies) between the two groups/models.
+#     Effect size: Keep in mind a p-value does not show how big or meaningful the difference is. You might also want to look at the raw difference in the average accuracies (e.g., aˉ−bˉaˉ−bˉ) or compute confidence intervals.
+
+# 8. Additional notes
+
+#     Using per-disease accuracy as “sample points”: Strictly speaking, you only have 4 diseases, so your sample size for each group is n=4n=4. A t-test with 4 data points per group is quite small; interpret with caution. The original paper apparently does this (or something similar) due to the constraints mentioned.
+#     Bartlett vs. Levene test: In practice, many prefer Levene’s test over Bartlett’s test because Bartlett’s is sensitive to nonnormal data. But you should follow the paper’s methodology if that’s a requirement.
+#     Multiclass + single-class metrics: The paper highlights that “per-class accuracy … is the only metric that can be calculated without bias” given their constraints. That is why they focus on per-class accuracies rather than overall accuracy, sensitivity, specificity, etc., which might be misleading with a small or unrepresentative sample of diseases.
+
+# Final Takeaway
+
+#     To compute p-values in the same way as the paper:
+
+#         Compute per-disease (per-class) accuracies for each model/doctor.
+#         Check variance with Bartlett’s test.
+#         Use a two-sided Welch’s t-test (ttest_ind(..., equal_var=False)) for comparing means.
+#         Bonferroni correct the resulting p-values by multiplying each by the number of comparisons (5 or 3 as in the paper).
+
+#     This method gives you a single p-value per comparison (e.g., doctor vs. model or specialist vs. generalist), corrected for multiple testing.
+# """
+
+# no_rag_model = BASELINE_MODEL
+
+
+# # #Save model_evals to text file
+# # model_evals = experiment_evals[experiment]
+# # with open(os.path.join(OUTPUT_BASE, dt_string, f"model_evals_{dt_string}.txt"), "w") as f:
+# #     f.write(f"Experiment: {experiment}\n\n")
+# #     for model in model_evals.keys():
+# #         f.write(f"Model: {model}\n")
+# #         for patho in model_evals[model].keys():
+# #             f.write(f"Pathology: {patho}\n")
+# #             for _id in model_evals[model][patho].keys():
+# #                 f.write(f"ID: {_id}\n")
+# #                 f.write(f"Scores: {model_evals[model][patho][_id]}\n\n")
+# #         f.write("\n\n")
+
+# # #For each pathology in model_evals, order patients by ID
+# # for model in model_evals.keys():
+# #     for patho in model_evals[model].keys():
+# #         model_evals[model][patho] = dict(sorted(model_evals[model][patho].items()))
+
+# # model_scores_long = {}
+# # for model in model_evals.keys():
+# #     model_scores_long[model] = {}
+# #     for patho in model_evals[model].keys():
+# #         model_scores_long[model][patho] = []
+# #         for patient in model_evals[model][patho].keys():
+# #             model_scores_long[model][patho].append(model_evals[model][patho][patient]["scores"]["Diagnosis"])
+
+# # #Save model_scores_long to text file
+# # with open(os.path.join(OUTPUT_BASE, dt_string, f"model_scores_long_{dt_string}.txt"), "w") as f:
+# #     f.write(f"Experiment: {experiment}\n\n")
+# #     for model in model_scores_long.keys():
+# #         f.write(f"Model: {model}\n")
+# #         for patho in model_scores_long[model].keys():
+# #             f.write(f"Pathology: {patho}\n")
+# #             f.write(f"Scores: {model_scores_long[model][patho]}\n\n")
+# #         f.write("\n\n")
 
 
 
 
-#Keep only, model evals Scores
+# #Keep only, model evals Scores
 
-# for each other model, compare to no_rag_model
-for model in MODELS:
-    if model == no_rag_model:
-        continue
-    else:
-        # modelA = np.array([model_scores[no_rag_model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
-        # modelB = np.array([model_scores[model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+# # for each other model, compare to no_rag_model
+# for model in MODELS:
+#     if model == no_rag_model:
+#         continue
+#     else:
+#         # modelA = np.array([model_scores[no_rag_model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+#         # modelB = np.array([model_scores[model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
 
-        # modelA = np.array([model_scores_long[no_rag_model][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
-        # modelA = []
-        # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
-        #     modelA.extend(model_scores_long[no_rag_model][patho])
-        # modelA = np.array(modelA)
-        # # modelB = np.array([model_scores_long[model][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
-        # modelB = []
-        # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
-        #     modelB.extend(model_scores_long[model][patho])
-        # modelB = np.array(modelB)
+#         # modelA = np.array([model_scores_long[no_rag_model][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+#         # modelA = []
+#         # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+#         #     modelA.extend(model_scores_long[no_rag_model][patho])
+#         # modelA = np.array(modelA)
+#         # # modelB = np.array([model_scores_long[model][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+#         # modelB = []
+#         # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+#         #     modelB.extend(model_scores_long[model][patho])
+#         # modelB = np.array(modelB)
         
-        # #McNemar's test for paired data
-        # #contingency table
-        # n_11 = np.sum(np.logical_and(modelA > 0.5, modelB > 0.5))
-        # n_10 = np.sum(np.logical_and(modelA > 0.5, modelB <= 0.5))
-        # n_01 = np.sum(np.logical_and(modelA <= 0.5, modelB > 0.5))
-        # n_00 = np.sum(np.logical_and(modelA <= 0.5, modelB <= 0.5))
+#         # #McNemar's test for paired data
+#         # #contingency table
+#         # n_11 = np.sum(np.logical_and(modelA > 0.5, modelB > 0.5))
+#         # n_10 = np.sum(np.logical_and(modelA > 0.5, modelB <= 0.5))
+#         # n_01 = np.sum(np.logical_and(modelA <= 0.5, modelB > 0.5))
+#         # n_00 = np.sum(np.logical_and(modelA <= 0.5, modelB <= 0.5))
 
-        # #cochran-mantel-haenszel
-        # tables = []
-        # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
-        #     table = []
-        #     for patient in model_evals[model][patho].keys():
-        #         if patient in model_evals[no_rag_model][patho].keys():
-        #             table.append([model_evals[model][patho][patient]["scores"]["Diagnosis"], model_evals[no_rag_model][patho][patient]["scores"]["Diagnosis"]])
-        #     table = np.array(table)
+#         # #cochran-mantel-haenszel
+#         # tables = []
+#         # for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+#         #     table = []
+#         #     for patient in model_evals[model][patho].keys():
+#         #         if patient in model_evals[no_rag_model][patho].keys():
+#         #             table.append([model_evals[model][patho][patient]["scores"]["Diagnosis"], model_evals[no_rag_model][patho][patient]["scores"]["Diagnosis"]])
+#         #     table = np.array(table)
 
-        #     n_11 = np.sum(np.logical_and(table[:, 0] > 0.5, table[:, 1] > 0.5))
-        #     n_10 = np.sum(np.logical_and(table[:, 0] > 0.5, table[:, 1] <= 0.5))
-        #     n_01 = np.sum(np.logical_and(table[:, 0] <= 0.5, table[:, 1] > 0.5))
-        #     n_00 = np.sum(np.logical_and(table[:, 0] <= 0.5, table[:, 1] <= 0.5))
+#         #     n_11 = np.sum(np.logical_and(table[:, 0] > 0.5, table[:, 1] > 0.5))
+#         #     n_10 = np.sum(np.logical_and(table[:, 0] > 0.5, table[:, 1] <= 0.5))
+#         #     n_01 = np.sum(np.logical_and(table[:, 0] <= 0.5, table[:, 1] > 0.5))
+#         #     n_00 = np.sum(np.logical_and(table[:, 0] <= 0.5, table[:, 1] <= 0.5))
 
-        #     tables.append(np.array([[n_11, n_10], [n_01, n_00]]))
+#         #     tables.append(np.array([[n_11, n_10], [n_01, n_00]]))
 
-        # # Create the stratified table object
-        # st = StratifiedTable(tables)
+#         # # Create the stratified table object
+#         # st = StratifiedTable(tables)
 
-        # # Run the Cochran–Mantel–Haenszel test
-        # result = st.test_equal_odds()
+#         # # Run the Cochran–Mantel–Haenszel test
+#         # result = st.test_equal_odds()
 
-        # # The result is a 'ContrastResult' containing statistic, p-value, etc.
-        # print("CMH test statistic:", result.statistic)
-        # print("p-value:", result.pvalue)
-        # print("Common odds ratio estimate:", result.oddsratio)
+#         # # The result is a 'ContrastResult' containing statistic, p-value, etc.
+#         # print("CMH test statistic:", result.statistic)
+#         # print("p-value:", result.pvalue)
+#         # print("Common odds ratio estimate:", result.oddsratio)
         
-        # modelA = [92.7, 62.5, 68.5, 58.9]
-        modelA = [70.6]
-        modelA = np.array(modelA)
-        #Repeat each number 5 times
-        modelA = np.repeat(modelA, 3)
+#         # modelA = [92.7, 62.5, 68.5, 58.9]
+#         modelA = [70.6]
+#         modelA = np.array(modelA)
+#         #Repeat each number 5 times
+#         modelA = np.repeat(modelA, 3)
 
-        # modelB = [94.9, 93.9, 93.5, 92.2, 94.6, 
-        #           77.9, 72.8, 84.8, 74.9, 76.3,
-        #           75.5, 71.2, 72.8, 70.4, 76.3,
-        #           58.9, 66.4, 54.3, 49.6, 50.7]
-        modelB = [76.0, 76.3, 77.8]
-        modelB = np.array(modelB)
+#         # modelB = [94.9, 93.9, 93.5, 92.2, 94.6, 
+#         #           77.9, 72.8, 84.8, 74.9, 76.3,
+#         #           75.5, 71.2, 72.8, 70.4, 76.3,
+#         #           58.9, 66.4, 54.3, 49.6, 50.7]
+#         modelB = [76.0, 76.3, 77.8]
+#         modelB = np.array(modelB)
 
-        # modelA = np.array([model_scores[no_rag_model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
-        # modelB = np.array([model_scores[model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+#         # modelA = np.array([model_scores[no_rag_model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
+#         # modelB = np.array([model_scores[model][DIAG][patho] for patho in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']])
 
-        # modelA = [89,62,55,58,66]
-        # modelB = [100,68,50,76,73]
-        # modelA = np.array(modelA)
-        # modelB = np.array(modelB)
+#         # modelA = [89,62,55,58,66]
+#         # modelB = [100,68,50,76,73]
+#         # modelA = np.array(modelA)
+#         # modelB = np.array(modelB)
 
-        # # * 100 to get percentages
-        # modelA *= 100
-        # modelB *= 100
+#         # # * 100 to get percentages
+#         # modelA *= 100
+#         # modelB *= 100
 
-        m = 3
+#         m = 3
 
 
-        # Append array to itself m times to get m*4 data points
-        # modelA = np.tile(modelA, m)
-        # modelB = np.tile(modelB, m)
+#         # Append array to itself m times to get m*4 data points
+#         # modelA = np.tile(modelA, m)
+#         # modelB = np.tile(modelB, m)
 
-        # 1. Bartlett’s test for equal variance
-        stat_b, p_bartlett = bartlett(modelA, modelB)
-        print(f"Bartlett's test for {model} vs {no_rag_model}: statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
+#         # 1. Bartlett’s test for equal variance
+#         stat_b, p_bartlett = bartlett(modelA, modelB)
+#         print(f"Bartlett's test for {model} vs {no_rag_model}: statistic={stat_b:.3f}, p-value={p_bartlett:.3f}")
 
-        # 2. Welch’s two-sided t-test
-        ttest_res = ttest_ind(modelA, modelB, equal_var=False)
-        print(f"Welch's t-test for {model} vs {no_rag_model}: t-stat={ttest_res.statistic:.5f}, raw p-value={ttest_res.pvalue:.5f}")
-        # # Welch’s t-test for equal variance
-        # stat_w, p_welch = ttest_ind(modelA, modelB)
-        # print(f"Welch's test for {model} vs {no_rag_model}: statistic={stat_w:.3f}, p-value={p_welch:.3f}")
+#         # 2. Welch’s two-sided t-test
+#         ttest_res = ttest_ind(modelA, modelB, equal_var=False)
+#         print(f"Welch's t-test for {model} vs {no_rag_model}: t-stat={ttest_res.statistic:.5f}, raw p-value={ttest_res.pvalue:.5f}")
+#         # # Welch’s t-test for equal variance
+#         # stat_w, p_welch = ttest_ind(modelA, modelB)
+#         # print(f"Welch's test for {model} vs {no_rag_model}: statistic={stat_w:.3f}, p-value={p_welch:.3f}")
 
-        # Levene test for equal variance
-        stat_l, p_levene = levene(modelA, modelB, center='mean')
-        print(f"Levene's test for {model} vs {no_rag_model}: statistic={stat_l:.3f}, p-value={p_levene:.3f}")
+#         # Levene test for equal variance
+#         stat_l, p_levene = levene(modelA, modelB, center='mean')
+#         print(f"Levene's test for {model} vs {no_rag_model}: statistic={stat_l:.3f}, p-value={p_levene:.3f}")
 
-        # Bonferroni correction for k=5 comparisons
-        p_value_corrected = min(1, ttest_res.pvalue * m)
-        print(f"Bonferroni corrected p-value for {model} vs {no_rag_model}={p_value_corrected:.3f}")
+#         # Bonferroni correction for k=5 comparisons
+#         p_value_corrected = min(1, ttest_res.pvalue * m)
+#         print(f"Bonferroni corrected p-value for {model} vs {no_rag_model}={p_value_corrected:.3f}")
 
-        # No need to correct for multiple comparisons here, as we only do one comparison
-        #Save to text file
-        with open(os.path.join(OUTPUT_BASE, dt_string, f"p-values_{dt_string}.txt"), "a") as f:
-            #Write the modelA and modelB arrays first
-            f.write(f"Model: {model} vs {no_rag_model}\n")
-            f.write(f"{model} accuracies:\n{modelA}\n")
-            f.write(f"{no_rag_model} accuracies:\n{modelB}\n")
-            f.write(f"Bartlett's test for {model} vs {no_rag_model}:\nstatistic={stat_b:.7f}, p-value={p_bartlett:.7f}\n")
-            f.write(f"Levene's test for {model} vs {no_rag_model}:\nstatistic={stat_l:.7f}, p-value={p_levene:.7f}\n")
-            f.write(f"Welch's t-test for {model} vs {no_rag_model}:\nt-stat={ttest_res.statistic:.7f}, raw p-value={ttest_res.pvalue:.7f}\n")
-            # f.write(f"Bonferroni corrected p-value for {model} vs {no_rag_model}:\n{p_value_corrected:.7f}\n\n")
+#         # No need to correct for multiple comparisons here, as we only do one comparison
+#         #Save to text file
+#         with open(os.path.join(OUTPUT_BASE, dt_string, f"p-values_{dt_string}.txt"), "a") as f:
+#             #Write the modelA and modelB arrays first
+#             f.write(f"Model: {model} vs {no_rag_model}\n")
+#             f.write(f"{model} accuracies:\n{modelA}\n")
+#             f.write(f"{no_rag_model} accuracies:\n{modelB}\n")
+#             f.write(f"Bartlett's test for {model} vs {no_rag_model}:\nstatistic={stat_b:.7f}, p-value={p_bartlett:.7f}\n")
+#             f.write(f"Levene's test for {model} vs {no_rag_model}:\nstatistic={stat_l:.7f}, p-value={p_levene:.7f}\n")
+#             f.write(f"Welch's t-test for {model} vs {no_rag_model}:\nt-stat={ttest_res.statistic:.7f}, raw p-value={ttest_res.pvalue:.7f}\n")
+#             # f.write(f"Bonferroni corrected p-value for {model} vs {no_rag_model}:\n{p_value_corrected:.7f}\n\n")
 
-# --- P-Values End ---
+# # --- P-Values End ---
 
 
 
@@ -1738,7 +2076,21 @@ for model in models:
         if total_chunks > 0:
             model_is_rag = True
 
-        fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+        if not model_is_rag:
+            #If the model is not a RAG model, skip to the next pathology
+            continue
+
+        #####
+        import math
+        num_documents = len(pathology_retrievals.keys())
+        cols = 2
+        rows = math.ceil(num_documents / cols)
+
+        fig, axs = plt.subplots(rows, cols, figsize=(6 * cols, 4 * rows))
+        axs = axs.reshape(-1)  # Flatten to index easily
+        ######
+
+        # fig, axs = plt.subplots(2, 2, figsize=(12, 12))
         # fig.suptitle(f'{model} - {pathology.capitalize()}')
         fig.suptitle(f'{pathology.capitalize()}')
         #Alphabetically order keys in pathology_retrievals
@@ -1746,7 +2098,9 @@ for model in models:
 
         for j, document in enumerate(pathology_retrievals.keys()):
             document_retrievals = pathology_retrievals[document]
-            ax = axs[j//2, j%2]
+            # ax = axs[j//2, j%2]
+            ax = axs[j]
+
             #get document name
             document_name = document.split("/")[-1]
             #if length>25, end with ...
@@ -1761,8 +2115,11 @@ for model in models:
             #exponential scale for y axis (opposite of log)
             # ax.set_yscale('symlog')
             #remove y axis if not the first column
-            if j%2 != 0:
+            # if j%2 != 0:
+            #     ax.set_yticks([])
+            if j % cols != 0:
                 ax.set_yticks([])
+
 
             #total counts per document
             doc_counts = 0
@@ -1802,11 +2159,14 @@ for model in models:
 
     if model_is_rag:
         #Combine all last four plots into one big plot
-        fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+        # fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+        fig, axs = plt.subplots(rows, cols, figsize=(6 * cols, 4 * rows))
+        axs = axs.reshape(-1)  # Flatten to index easily
         fig.suptitle(f'{model_pretty_name}')
         #load the images
         for i, pathology in enumerate(['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']):
-            ax = axs[i//2, i%2]
+            # ax = axs[i//2, i%2]
+            ax = axs[j]
             #remove margins
             ax.margins(x=0)
             #load the image
@@ -1825,12 +2185,16 @@ for model in models:
     if model_is_rag:
         #Create a heatmap of the relative counts of chunks per document per pathology per model
         df_heatmap_count = pd.DataFrame(df_heatmap_dict)
+        #DEBUG: 
+        # print("DF HEATMAP SHAPE", df_heatmap_count.shape)
+        # print("DF HEATMAP HEAD", df_heatmap_count.head())
         #Transpose the dataframe
         df_heatmap_count = df_heatmap_count.T
         #save df_heatmap_count to csv
         # df_heatmap_count.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_{dt_string}.csv"))
         #create new plot
-        plt.figure(figsize=(12, 12))
+        # plt.figure(figsize=(12, 12))
+        plt.figure(figsize=(len(df_heatmap_count.columns) * 3, len(df_heatmap_count.index) * 3))
         sns.heatmap(df_heatmap_count, cmap='viridis', annot=True, cbar_kws={'label': 'Relative Retrieval Per Pathology'})
         #make the names be diagonal
         plt.xticks(rotation=45)
@@ -1850,7 +2214,8 @@ for model in models:
         #save df_heatmap_z to csv
         # df_heatmap_z.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_{dt_string}.csv"))
         #create new plot
-        plt.figure(figsize=(12, 12))
+        # plt.figure(figsize=(12, 12))
+        plt.figure(figsize=(len(df_heatmap_z.columns) * 3, len(df_heatmap_z.index) * 3))
         sns.heatmap(df_heatmap_z, cmap='coolwarm', annot=True, cbar_kws={'label': 'Z-Score Relative Retrieval Per Pathology'})
         #make the names be diagonal
         plt.xticks(rotation=45)

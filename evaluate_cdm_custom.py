@@ -9,6 +9,9 @@ from run import load_evaluator
 BASE_MIMIC = r"/container/data"
 
 EVAL_MISMATCH = False
+SEEDED = False
+# SEEDS = [110,891,484,1126,431,435,1246,1852,283,1370,1063,1945,887,567,950,1633,1496,728,1507,1508]
+SEEDS = [110,891,484,1126,431,435]
 
 def calculate_average(evals, field, pathology):
     average = 0
@@ -44,12 +47,13 @@ models = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
@@ -57,7 +61,23 @@ models = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_ablated",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_no_titles",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
 ]
+
+if SEEDED:
+    new_models = []
+    for model in models:
+        # new_models.append(model) #Add self to the models to evaluate
+        for seed in SEEDS:
+            new_models.append(f"{model}_SEED={seed}")
+    models = new_models
 
 experiment_results = {}
 experiment_evals = {}
@@ -65,7 +85,7 @@ experiment_scores = {}
 experiment_retrievals = {} #RAG: Per Experiment, Per Model, per Pathology, per Document, per Page, per Chunk Order, QTY of each Retrieved
 
 for experiment in [
-    # "CDM_VANILLA", 
+    # "CDM_VANILLA",
     # "CDM_NOSUMMARY"
     "BIN",
 ]:
@@ -102,7 +122,11 @@ for experiment in [
                 results_log_path = f"{BASE_MIMIC}/logs/{patho}_ZeroShot_{model}_*[0-9]/{patho}{run}"
             else:
                 results_log_path = f"{BASE_MIMIC}/logs/{patho}_ZeroShot_{model}_*_{experiment}/{patho}{run}"
-            
+
+            #if the model name contains "SEED" add "_seeded" after /logs/
+            if "_SEED=" in model:
+                results_log_path = results_log_path.replace("/logs/", "/logs/_seeded/")
+
             print(f"Loading {results_log_path}")
             #check if the path exists
             if len(glob.glob(results_log_path)) == 0:
