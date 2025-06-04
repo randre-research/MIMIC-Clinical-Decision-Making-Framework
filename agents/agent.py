@@ -1,5 +1,5 @@
 import pickle
-from typing import List, Tuple, Union, Dict, Any
+from typing import List, Tuple, Union, Dict, Any, Optional
 from hashlib import sha256
 import pandas as pd
 
@@ -35,6 +35,18 @@ from utils.nlp import calculate_num_tokens, truncate_text
 STOP_WORDS = ["Observation:", "Observations:", "observation:", "observations:"]
 
 
+REQUERY_PROMPT = PromptTemplate(
+    input_variables=["original_text"],
+    template="""\
+Rewrite the following reports into a concise question that allows retrieving the appropriate care plan, treatments, lab tests, or imaging for this patient:
+
+Original reports:
+{original_text}
+
+Rewritten question:
+""",
+)
+
 class TextSummaryCache:
     def __init__(self):
         self.cache = {}
@@ -62,7 +74,9 @@ class CustomZeroShotAgent(ZeroShotAgent):
     summarize: bool
     # --- RAG ---
     rag_retriever_agent: Any = None #RAG
+    rag_requery: bool = False #RAG
     retrieved_docs_per_step: Dict[int, List[Dict]] = {}
+    requery_chain: Optional[LLMChain] = None
     # step_counter: int = 0
     # --- End RAG ---
     # Added to store step-by-step data
@@ -75,6 +89,15 @@ class CustomZeroShotAgent(ZeroShotAgent):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.step_data = []
+
+        if self.rag_requery:
+            # Create a separate chain for requery/refinement
+            # using the same LLM but a simpler prompt
+            self.requery_chain = LLMChain(
+                llm=self.llm_chain.llm,   # re-use the same underlying LLM
+                prompt=REQUERY_PROMPT,
+                verbose=True      # if you want logs
+            )
 
     # Allow for multiple stop criteria instead of just taking the observation prefix string
     @property
@@ -121,6 +144,27 @@ class CustomZeroShotAgent(ZeroShotAgent):
 
         # Perform RAG retrieval if a retriever agent is available
         if self.rag_retriever_agent is not None:
+            if self.rag_requery:
+                # # Prompt the LLM to requery the question, and use this answer for RAG retrieval
+                # # Prompt the LLM to requery/refine the question
+                # # so it is more concise or relevant for retrieval
+                # requery_prompt = (
+                #     f"Rewrite the following reports into a question that allows to retrieve what care plan, treatments, lab tests or imaging would be appropriate for this patient:\n\n"
+                #     f"Original reports:\n{question}\n"
+                #     f"Rewritten question:"
+                # )
+                # refined_question = self.llm_chain.predict(
+                #     input=requery_prompt, stop=self._stop
+                # )
+                # question = refined_question.strip()
+                # print(f"Refined question for RAG retrieval: {question}")
+
+                # Call the separate requery chain
+                refined_question = self.requery_chain.predict(original_text=question, stop=self._stop)
+                question = refined_question.strip()
+                question = question.split("\n")[0].strip()
+                print(f"Refined question for RAG retrieval: {question}")
+
             retrieved_docs = self.rag_retriever_agent.retrieve(question)
             retrieved_docs_content = "\n".join(doc["content"] for doc in retrieved_docs)
             # Store retrieved documents using current_step as the key
@@ -160,6 +204,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
             'inputs_for_prompt': inputs_for_prompt,
             'prompt_text': prompt_text,
             'retrieved_docs_content': retrieved_docs_content,
+            'rag_query': question if self.rag_requery is not None else "Patient reports",
             # You can add more fields here if needed
         })
         # --- End of added code ---
@@ -453,6 +498,7 @@ def build_agent_executor_ZeroShot(
     summarize,
     model_stop_words,
     rag_retriever_agent=None, #RAG
+    rag_requery=False, #RAG
 ):
     with open(lab_test_mapping_path, "rb") as f:
         lab_test_mapping_df = pickle.load(f)
@@ -527,6 +573,7 @@ def build_agent_executor_ZeroShot(
         lab_test_mapping_df=lab_test_mapping_df,
         summarize=summarize,
         rag_retriever_agent=rag_retriever_agent, #RAG
+        rag_requery=rag_requery, #RAG
     )
 
     # Init agent executor

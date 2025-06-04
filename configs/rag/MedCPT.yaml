@@ -2,29 +2,43 @@
 defaults:
   - _self_
 
-rag_name: MedCPT_md_k4_context_large
+rag_name: MedCPT_pdf_requery
 # rag_embedding_model: MedCPT-Cross-Encoder
 rag_embedding_model: MedCPT-Article-Encoder
 rag_query_embedding_model: MedCPT-Query-Encoder
 
 #Embedding model parameters
 rag_chunk_size: 252
-rag_chunk_overlap: 0
+rag_chunk_overlap: 16
 
 rag_smart_chunking: True #For markdown
 
 rag_embed_max_length: 512
 
+rag_requery: True
+
 #Retrieval parameters
-rag_top_k: 4
-rag_re_rank: True
+rag_top_k: 8
+rag_re_rank: False
+rag_top_k_rerank: 8
 rag_prompt_name: "None"
 
 # Document paths for retrieval
 rag_documents:
-  - /markdown/cdm_appendicitis_s13017-020-00306-3_edited.md
-  - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
-  - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
-  - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
-
+  - /pdf/cdm_appendicitis_s13017-020-00306-3.pdf
+  - /pdf/cdm_cholecystitis_s13017-020-00336-x.pdf
+  - /pdf/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf
+  - /pdf/cdm_pancreatitis_s13017-019-0247-0.pdf
+  # - /markdown/cdm_appendicitis_s13017-020-00306-3_edited.md
+  # - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
+  # - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
+  # - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
+  # - /markdown_backup/cdm_appendicitis_s13017-020-00306-3.md
+  # - /markdown_backup/cdm_cholecystitis_s13017-020-00336-x.md
+  # - /markdown_backup/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
+  # - /markdown_backup/cdm_pancreatitis_s13017-019-0247-0.md
+  # - /markdown_with_refs/cdm_appendicitis_s13017-020-00306-3_edited.md
+  # - /markdown_with_refs/cdm_cholecystitis_s13017-020-00336-x.md
+  # - /markdown_with_refs/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6_brackets.md
+  # - /markdown_with_refs/cdm_pancreatitis_s13017-019-0247-0.md
 # RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard

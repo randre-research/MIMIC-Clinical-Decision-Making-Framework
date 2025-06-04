@@ -104,6 +104,20 @@ def run(args: DictConfig):
         )
         embedding_model_container.load_model(args.base_models)
 
+        #DEBUG:Special experiment; for each pathology remove one specific document
+        # if args.pathology == "appendicitis":
+        #     #Remove cholecystis document
+        #     args.rag_documents = [doc for doc in args.rag_documents if "cholecystitis" not in doc]
+        # elif args.pathology == "cholecystitis":
+        #     #Remove appendicitis document
+        #     args.rag_documents = [doc for doc in args.rag_documents if "appendicitis" not in doc]
+        # elif args.pathology == "diverticulitis":
+        #     #Remove cholecystis document
+        #     args.rag_documents = [doc for doc in args.rag_documents if "cholecystitis" not in doc]
+        # elif args.pathology == "pancreatitis":
+        #     #Remove cholecystis document
+        #     args.rag_documents = [doc for doc in args.rag_documents if "cholecystitis" not in doc]
+
         # Prepare document paths
         document_paths = [
             os.path.join(args.base_rag_documents, doc.lstrip('/'))
@@ -191,6 +205,9 @@ def run(args: DictConfig):
     # Set LangSmith project name (optional)
     # os.environ["LANGCHAIN_PROJECT"] = run_name
 
+    #DEBUG: run only for 50 patients
+    # hadm_info_clean = dict(list(hadm_info_clean.items())[:50])
+
     # Predict for all patients
     first_patient_seen = False
     # for _id in hadm_info_clean.keys():
@@ -218,6 +235,7 @@ def run(args: DictConfig):
             summarize=args.summarize,
             model_stop_words=args.stop_words,
             rag_retriever_agent=retriever if args.use_rag else None,  # RAG
+            rag_requery=args.rag_requery if hasattr(args, 'rag_requery') else False,  # RAG
         )
 
         # Prepare the input for the agent executor

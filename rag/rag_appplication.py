@@ -182,13 +182,16 @@ class EmbeddingModelContainer:
             # )
 
             # Each query needs to be accompanied by an corresponding instruction describing the task.
-            task_name_to_instruct = {"example": "Given the patient's information, retrieve relevant passages to treat them",}
+            task_name_to_instruct = {"example": "Given the patient's information, retrieve relevant passages to treat them",
+                                     "requery": "Retrieve medical guidelines passages to answer this question.",
+            }
 
-            query_prefix = "Instruct: "+task_name_to_instruct["example"]+"\nQuery: "
+            # query_prefix = "Instruct: "+task_name_to_instruct["example"]+"\nQuery: "
+            query_prefix = "Instruct: "+task_name_to_instruct["requery"]+"\nQuestion: "
             queries = [
                 query,
                 ]
-            
+
             # get the embeddings
             max_length = self.embed_max_length
             query_embeddings = self.embedding_model.encode(queries, instruction=query_prefix, max_length=max_length)
