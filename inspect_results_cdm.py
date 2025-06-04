@@ -58,6 +58,7 @@ MODELS = [
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
     ]
 
@@ -104,6 +105,7 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery": "Llama3 70B 4.0bpw + MedCPT (requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery": "Llama3 70B 4.0bpw + MedCPT (raw md, requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery": "Llama3 70B 4.0bpw + MedCPT (ref md, requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery": "Llama3 70B 4.0bpw + MedCPT (pdf, requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext": "Llama3 70B 4.0bpw + NV-Embed-v2 (requery)",
 }
 
@@ -143,6 +145,7 @@ color_map = {
     "Llama3 70B 4.0bpw + MedCPT (requery)": "#AD57AC",
     "Llama3 70B 4.0bpw + MedCPT (raw md, requery)": "#6A2276",
     "Llama3 70B 4.0bpw + MedCPT (ref md, requery)": "#F9F871",
+    "Llama3 70B 4.0bpw + MedCPT (pdf, requery)": "#943199",
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",

@@ -2,18 +2,21 @@
 defaults:
   - _self_
 
-rag_name: stella_en_400M_v5
+rag_name: stella_en_400M_v5_noise
 rag_embedding_model: stella_en_400M_v5
 
 #Embedding model parameters
 rag_chunk_size: 252
 rag_chunk_overlap: 0
 
-rag_smart_chunking: True #For markdown
+rag_smart_chunking: False #For markdown
+
+rag_embed_max_length: 256 #for nv embed if i remember correctly
 
 #Retrieval parameters
-rag_top_k: 4
+rag_top_k: 8
 rag_re_rank: True
+rag_top_k_rerank: 8
 rag_prompt_name: "s2p_query" # or "s2s_query" s2p = (short query to long passage)
 
 # Document paths for retrieval
@@ -30,5 +33,16 @@ rag_documents:
   # - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
   # - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
   # - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
+  - /pdf/noise/Abdominal_Aortic_Aneurysm_ESVS-2024-AAA-Guidelines.pdf
+  - /pdf/noise/Acute_mesenteric_ischemia_s13017-022-00443-x.pdf
+  - /pdf/noise/BJOG - 2016 - - Diagnosis and Management of Ectopic Pregnancy.pdf
+  - /pdf/noise/Cholangitis_piis0016510720351117.pdf
+  - /pdf/noise/EAU-Guidelines-on-Urolithiasis-2025.pdf
+  - /pdf/noise/Gastroenteritis_0086IC_ic-51-217.pdf
+  - /pdf/noise/Ischaemic_colitis_flgastro-2019-101204.pdf
+  - /pdf/noise/Pelvic_Inflammatory_Disease_tcrm-19-183.pdf
+  # - /pdf/noise/Peptic_Ulcer_CPGUlcerEN.pdf
+  - /pdf/noise/Pyelonephritis_acute_antimicrobial_prescribing.pdf
+  - /pdf/noise/Small_Bowel_Obstruction_s13017-018-0185-2.pdf
 
 # RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard

@@ -264,6 +264,8 @@ class VectorStore:
             elif path.lower().endswith('.pdf'):
                 # Handle PDF documents
                 loader = PyPDFLoader(path)
+                # Debug print name of the PDF file being loaded
+                print(f"Loading PDF file: {path}")
                 docs.extend(loader.load())
             elif path.lower().endswith('.md'):
                 # Handle Markdown documents

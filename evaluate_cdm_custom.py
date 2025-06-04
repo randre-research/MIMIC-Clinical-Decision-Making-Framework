@@ -67,7 +67,8 @@ models = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
 ]
 
