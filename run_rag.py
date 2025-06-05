@@ -131,6 +131,7 @@ def run(args: DictConfig):
             chunk_size=args.rag_chunk_size,
             chunk_overlap=args.rag_chunk_overlap,
             smart_chunking=args.rag_smart_chunking,
+            pre_embed_path=os.path.join(args.base_rag_documents, args.rag_pre_embed_path) if hasattr(args, 'rag_pre_embed_path') else None,
         )
 
         # --- IF USING MEDCPT: DOCUMENTS EMBEDDER DIFFERENT FROM QUERY EMBEDDER ---

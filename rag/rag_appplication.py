@@ -232,7 +232,7 @@ class EmbeddingModelContainer:
 
 class VectorStore:
     def __init__(
-        self, document_paths, embedding_model_container, chunk_size=250, chunk_overlap=0, smart_chunking=False
+        self, document_paths, embedding_model_container, chunk_size=250, chunk_overlap=0, smart_chunking=False, pre_embed_path=None
     ):
         """
         Initialize the vector store with documents and embeddings.
@@ -251,7 +251,7 @@ class VectorStore:
         # Split documents into chunks
         self.doc_chunks = self.split_documents(self.docs)
         # Create vector store
-        self.index, self.doc_chunks = self.create_vector_store(self.doc_chunks)
+        self.index, self.doc_chunks = self.create_vector_store(self.doc_chunks, pre_embed_path=pre_embed_path)
 
     def load_documents(self, document_paths):
         """
@@ -264,6 +264,9 @@ class VectorStore:
             if "chunkr" in path.lower():
                 # Handle JSON chunkr files
                 docs.extend(self.load_chunkr_file(path))
+            elif "medcpt" in path.lower():
+                # Handle MedCPT JSON and npy files
+                docs.extend(self.load_json_file(path))
             elif path.lower().endswith('.pdf'):
                 # Handle PDF documents
                 loader = PyPDFLoader(path)
@@ -296,6 +299,31 @@ class VectorStore:
             }
         )
         return [doc]
+    
+    def load_json_file(self, path):
+        """
+        Load a JSON file and create Document objects from it.
+        :param path: Path to the JSON file.
+        :return: List of Document objects.
+        """
+        with open(path, 'r', encoding='utf-8') as file:
+            data = json.load(file)
+
+        #data = dict {key, chunk}         
+        docs = []
+        for key, chunk in data.items():
+            content = chunk.get("a", "")
+            metadata = {
+                "chunk_id": key,
+                "source": chunk.get("t", "unknown"),
+                "format": "medcpt",
+            }
+            if content == "":
+                # Skip empty chunks
+                continue
+            doc = Document(page_content=content, metadata=metadata)
+            docs.append(doc)
+        return docs
 
     def load_chunkr_file(self, path):
         """
@@ -398,6 +426,9 @@ class VectorStore:
                     chunk.metadata['chunk_title'] = chunk_title
                     
                     doc_chunks.append(chunk)
+            elif doc.metadata.get('format') == 'medcpt':
+                # --- MedCPT: It's already chunks, and we already have the embeddings saved somewhere else so we don't need to tokenize ---
+                doc_chunks.append(doc)
             else:
                 text = doc.page_content
                 tokens = tokenizer.encode(text, add_special_tokens=False)
@@ -417,24 +448,41 @@ class VectorStore:
                     doc_chunks.append(chunk)
         return doc_chunks
 
-    def create_vector_store(self, doc_chunks):
+    def create_vector_store(self, doc_chunks, pre_embed_path=None):
         """
         Create the vector store from document chunks and embeddings.
         :param doc_chunks: List of Document chunks.
         :return: A FAISS index and corresponding documents.
         """
-        texts = [doc.page_content for doc in doc_chunks]
-        embeddings = self.embedding_model.embed(texts)
-        embeddings = np.array(embeddings).astype('float32')
+        if pre_embed_path is None:
+            texts = [doc.page_content for doc in doc_chunks]
+            embeddings = self.embedding_model.embed(texts)
+            embeddings = np.array(embeddings).astype('float32')
 
-        for doc, emb in zip(doc_chunks, embeddings):
-            doc.metadata['embedding'] = emb
+            for doc, emb in zip(doc_chunks, embeddings):
+                doc.metadata['embedding'] = emb
 
-        dimension = embeddings.shape[1]
-        index = faiss.IndexFlatL2(dimension)
-        # index = faiss.IndexFlatIP(dimension)
-        index.add(embeddings)
-        return index, doc_chunks
+            dimension = embeddings.shape[1]
+            index = faiss.IndexFlatL2(dimension)
+            # index = faiss.IndexFlatIP(dimension)
+            index.add(embeddings)
+            return index, doc_chunks
+        else:
+            # Pre_embed path is a .npy file with pre-computed embeddings
+            embeds = np.load(pre_embed_path)
+            #DEBUG: Print Embed shape
+            print(f"Pre-computed embeddings shape: {embeds.shape}")
+            #DEBUG: Print size of doc_chunks
+            print(f"Document chunks size: {len(doc_chunks)}")
+            #Shape should be (num_chunks, embedding_dim), ordered in chunk order
+            # for doc, emb in zip(doc_chunks, embeds):
+            #     doc.metadata['embedding'] = emb.astype('float32')
+            dimension = embeds.shape[1]
+            index = faiss.IndexFlatL2(dimension)
+            # index = faiss.IndexFlatIP(dimension)
+            index.add(embeds.astype('float32'))
+            return index, doc_chunks
+
 
     def get_vector_store(self):
         """
