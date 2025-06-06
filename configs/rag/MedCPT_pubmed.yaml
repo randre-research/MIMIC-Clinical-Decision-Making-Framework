@@ -41,7 +41,7 @@ rag_documents:
   # - /markdown_with_refs/cdm_cholecystitis_s13017-020-00336-x.md
   # - /markdown_with_refs/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6_brackets.md
   # - /markdown_with_refs/cdm_pancreatitis_s13017-019-0247-0.md
-  - /MedCPT/_pubmed_combined.json
+  - /MedCPT/acute_abdpain_subset/_pubmed_combined.json
 # RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard
 
-rag_pre_embed_path: /MedCPT/acute_abdpain_vectors.npy
+rag_pre_embed_path: /MedCPT/acute_abdpain_subset/acute_abdpain_vectors.npy
