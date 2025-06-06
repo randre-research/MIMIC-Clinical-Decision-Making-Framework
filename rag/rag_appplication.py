@@ -317,6 +317,7 @@ class VectorStore:
                 "chunk_id": key,
                 "source": chunk.get("t", "unknown"),
                 "format": "medcpt",
+                "tags": chunk.get("m", ""),
             }
             if content == "":
                 # Skip empty chunks
