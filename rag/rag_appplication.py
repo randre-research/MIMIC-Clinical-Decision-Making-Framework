@@ -315,13 +315,15 @@ class VectorStore:
             content = chunk.get("a", "")
             metadata = {
                 "chunk_id": key,
+                "document_id": chunk.get("d", "unknown"),
                 "source": chunk.get("t", "unknown"),
                 "format": "medcpt",
                 "tags": chunk.get("m", ""),
             }
-            if content == "":
-                # Skip empty chunks
-                continue
+            # DEBUG: Don't skip chunks, if you skip chunks the shape don't match the pre-embeds list anymore
+            # if content == "":
+            #     # Skip empty chunks
+            #     continue
             doc = Document(page_content=content, metadata=metadata)
             docs.append(doc)
         return docs
