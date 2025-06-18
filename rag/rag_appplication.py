@@ -678,12 +678,52 @@ class Retriever:
 
     def _format_results(self, documents):
         """Uniform result formatting"""
-        return [{
-            'chunk_id': doc.metadata.get('chunk_id'),
-            'document_reference': doc.metadata.get('document_reference'),
-            'page_number': doc.metadata.get('page_number'),
-            'token_size': doc.metadata.get('token_size'),
-            'order_in_document': doc.metadata.get('order_in_document'),
-            'content': doc.page_content,
-            'score': doc.metadata.get('rerank_score', 0)  # Track scoring
-        } for doc in documents]
+            #     format = doc.metadata.get('format', 'unknown')
+            # if format == 'medcpt':
+            # else:    
+            #     chunk_info = {
+            #         'chunk_id': doc.metadata.get('chunk_id'),
+            #         'document_reference': doc.metadata.get('document_reference'),
+            #         'page_number': doc.metadata.get('page_number'),
+            #         'token_size': doc.metadata.get('token_size'),
+            #         'order_in_document': doc.metadata.get('order_in_document'),
+            #         'content': doc.page_content
+            #     } #FIX THIS!!!
+        results = []
+        for doc in documents:
+            format = doc.metadata.get('format', 'unknown')
+            if format == 'medcpt':
+                # For MedCPT, we can directly use the metadata
+                results.append({
+                    'chunk_id': doc.metadata.get('chunk_id'),
+                    'document_reference': doc.metadata.get('source'),
+                    'document_id': doc.metadata.get('document_id'),
+                    'tags': doc.metadata.get('tags'),
+                    'content': doc.page_content,
+                    'score': doc.metadata.get('rerank_score', 0),  # Track scoring
+                    'format': format
+                })
+            else:
+                # For other formats, ensure content is included in metadata
+                results.append({
+                    'chunk_id': doc.metadata.get('chunk_id'),
+                    'document_reference': doc.metadata.get('document_reference'),
+                    'page_number': doc.metadata.get('page_number'),
+                    'token_size': doc.metadata.get('token_size'),
+                    'order_in_document': doc.metadata.get('order_in_document'),
+                    'content': doc.page_content,
+                    'score': doc.metadata.get('rerank_score', 0),  # Track scoring
+                    'format': format
+                })
+
+        return results
+
+        # return [{
+        #     'chunk_id': doc.metadata.get('chunk_id'),
+        #     'document_reference': doc.metadata.get('document_reference'),
+        #     'page_number': doc.metadata.get('page_number'),
+        #     'token_size': doc.metadata.get('token_size'),
+        #     'order_in_document': doc.metadata.get('order_in_document'),
+        #     'content': doc.page_content,
+        #     'score': doc.metadata.get('rerank_score', 0)  # Track scoring
+        # } for doc in documents]

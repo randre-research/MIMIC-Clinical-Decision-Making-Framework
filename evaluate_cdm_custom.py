@@ -68,8 +68,9 @@ models = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
 ]
 
 if SEEDED:
@@ -182,24 +183,70 @@ for experiment in [
                 # --- RAG: Count the number of retrieved chunks ---
 
                 #Chunk properties: chunk_id, document_reference, page_number, token_size, order_in_document, content
+                #Chunk medcpt json properties: chunk_id, document_id, source, format, tags
                 if retrieved_chunks is not None:
                     for step in retrieved_chunks:
                         for chunk in retrieved_chunks[step]:
-                            if chunk["document_reference"] not in all_retrievals[patho]:
-                                all_retrievals[patho][chunk["document_reference"]] = {}
+                            # document_id
+                            #get chunk format
+                            chunk_format = chunk.get("format", "unknown")  # Default to unknown if not present
+                            print(f"Processing chunk format: {chunk_format}")
+                            # print("keys in chunk:", chunk.keys())
+                            #keys in chunk: dict_keys(['chunk_id', 'document_reference', 'page_number', 'token_size', 'order_in_document', 'content', 'score'])
+                            print("document_reference:", chunk.get("document_reference", "N/A"))
 
-                            if chunk["page_number"] not in all_retrievals[patho][chunk["document_reference"]]:
-                                all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]] = {}
+                            if chunk_format == "medcpt":
+                                print(f"Processing MedCPT chunk: {chunk}")
+                                doc_ref = chunk["document_id"]
+                                doc_name = chunk["source"]
+                                tags = chunk.get("tags", "").lower()  # Convert tags to lowercase for consistency
+                                #since there are too many documents in medcpt pubmed set, instead of using document_reference, we use the pathologies they refer to
+                                #but since we have no page number, we use the page_number for the document name
+                                pathologies = []
+                                if "appendicitis" in tags:
+                                    pathologies.append("appendicitis")
+                                if "cholecystitis" in tags:
+                                    pathologies.append("cholecystitis")
+                                if "diverticulitis" in tags:
+                                    pathologies.append("diverticulitis")
+                                if "pancreatitis" in tags:
+                                    pathologies.append("pancreatitis")
+                                if len(pathologies) == 0:
+                                    pathologies = ["other"]
 
-                            if chunk["order_in_document"] not in all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]]:
-                                all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]][chunk["order_in_document"]] = {
-                                    "id": chunk["chunk_id"],
-                                    "count": 0,
-                                    "content": chunk["content"],
-                                }
+                                for pathology_tag in pathologies:
+                                    if doc_ref not in all_retrievals[patho]:
+                                        all_retrievals[patho][pathology_tag] = {}
 
-                            #Add count
-                            all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]][chunk["order_in_document"]]["count"] += 1
+                                    if doc_name not in all_retrievals[patho][pathology_tag]:
+                                        all_retrievals[patho][pathology_tag][doc_name] = {}
+
+                                    #use chunk_id instead of order_in_document for medcpt
+                                    if chunk.get("chunk_id", "0") not in all_retrievals[patho][pathology_tag][doc_name]:
+                                        all_retrievals[patho][pathology_tag][doc_name][chunk.get("chunk_id", "0")] = {
+                                            "id": chunk.get("chunk_id", "0"),
+                                            "count": 0,
+                                            "content": chunk.get("content", ""),  # Use get to avoid KeyError if content is missing
+                                        }
+                                    
+                                    #Add count
+                                    all_retrievals[patho][pathology_tag][doc_name][chunk.get("chunk_id", "0")]["count"] += 1
+                            else:
+                                if chunk["document_reference"] not in all_retrievals[patho]:
+                                    all_retrievals[patho][chunk["document_reference"]] = {}
+
+                                if chunk["page_number"] not in all_retrievals[patho][chunk["document_reference"]]:
+                                    all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]] = {}
+
+                                if chunk["order_in_document"] not in all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]]:
+                                    all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]][chunk["order_in_document"]] = {
+                                        "id": chunk["chunk_id"],
+                                        "count": 0,
+                                        "content": chunk.get("content", ""),  # Use get to avoid KeyError if content is missing
+                                    }
+
+                                #Add count
+                                all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]][chunk["order_in_document"]]["count"] += 1
                 # --- RAG END ---
 
         model_evals[model] = all_evals
