@@ -13,36 +13,58 @@ rag_smart_chunking: False #For markdown
 
 rag_embed_max_length: 256 #for nv embed if i remember correctly
 
+rag_requery: True
+
 #Retrieval parameters
-rag_top_k: 8
+rag_top_k: 16
 rag_re_rank: True
-rag_top_k_rerank: 8
+rag_top_k_rerank: 16
 rag_prompt_name: "s2p_query" # or "s2s_query" s2p = (short query to long passage)
 
 # Document paths for retrieval
 rag_documents:
-  - /pdf/cdm_appendicitis_s13017-020-00306-3.pdf
-  - /pdf/cdm_cholecystitis_s13017-020-00336-x.pdf
-  - /pdf/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf
-  - /pdf/cdm_pancreatitis_s13017-019-0247-0.pdf
-  # - /chunkr/cdm_appendicitis_s13017-020-00306-3.json
-  # - /chunkr/cdm_cholecystitis_s13017-020-00336-x.json
-  # - /chunkr/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.json
-  # - /chunkr/cdm_pancreatitis_s13017-019-0247-0.json
-  # - /markdown/cdm_appendicitis_s13017-020-00306-3_edited.md
-  # - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
-  # - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
-  # - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
-  - /pdf/noise/Abdominal_Aortic_Aneurysm_ESVS-2024-AAA-Guidelines.pdf
-  - /pdf/noise/Acute_mesenteric_ischemia_s13017-022-00443-x.pdf
-  - /pdf/noise/BJOG - 2016 - - Diagnosis and Management of Ectopic Pregnancy.pdf
-  - /pdf/noise/Cholangitis_piis0016510720351117.pdf
-  - /pdf/noise/EAU-Guidelines-on-Urolithiasis-2025.pdf
-  - /pdf/noise/Gastroenteritis_0086IC_ic-51-217.pdf
-  - /pdf/noise/Ischaemic_colitis_flgastro-2019-101204.pdf
-  - /pdf/noise/Pelvic_Inflammatory_Disease_tcrm-19-183.pdf
-  # - /pdf/noise/Peptic_Ulcer_CPGUlcerEN.pdf
-  - /pdf/noise/Pyelonephritis_acute_antimicrobial_prescribing.pdf
-  - /pdf/noise/Small_Bowel_Obstruction_s13017-018-0185-2.pdf
+  # - /pdf/cdm_appendicitis_s13017-020-00306-3.pdf
+  # - /pdf/cdm_cholecystitis_s13017-020-00336-x.pdf
+  # - /pdf/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf
+  # - /pdf/cdm_pancreatitis_s13017-019-0247-0.pdf
+  # # - /chunkr/cdm_appendicitis_s13017-020-00306-3.json
+  # # - /chunkr/cdm_cholecystitis_s13017-020-00336-x.json
+  # # - /chunkr/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.json
+  # # - /chunkr/cdm_pancreatitis_s13017-019-0247-0.json
+  # # - /markdown/cdm_appendicitis_s13017-020-00306-3_edited.md
+  # # - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
+  # # - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
+  # # - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
+  # - /pdf/noise/Abdominal_Aortic_Aneurysm_ESVS-2024-AAA-Guidelines.pdf
+  # - /pdf/noise/Acute_mesenteric_ischemia_s13017-022-00443-x.pdf
+  # - /pdf/noise/BJOG - 2016 - - Diagnosis and Management of Ectopic Pregnancy.pdf
+  # - /pdf/noise/Cholangitis_piis0016510720351117.pdf
+  # - /pdf/noise/EAU-Guidelines-on-Urolithiasis-2025.pdf
+  # - /pdf/noise/Gastroenteritis_0086IC_ic-51-217.pdf
+  # - /pdf/noise/Ischaemic_colitis_flgastro-2019-101204.pdf
+  # - /pdf/noise/Pelvic_Inflammatory_Disease_tcrm-19-183.pdf
+  # # - /pdf/noise/Peptic_Ulcer_CPGUlcerEN.pdf
+  # - /pdf/noise/Pyelonephritis_acute_antimicrobial_prescribing.pdf
+  # - /pdf/noise/Small_Bowel_Obstruction_s13017-018-0185-2.pdf
+  - /pdf/john/Abdominal_Aortic_Aneurysm_ESVS-2024-AAA-Guidelines.pdf
+  - /pdf/john/Acute_mesenteric_ischemia_s13017-022-00443-x.pdf
+  - /pdf/john/BJOG - 2016 - - Diagnosis and Management of Ectopic Pregnancy.pdf
+  - /pdf/john/cdm_appendicitis_s13017-020-00306-3.pdf
+  - /pdf/john/cdm_cholecystitis_s13017-020-00336-x.pdf
+  - /pdf/john/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf
+  - /pdf/john/cdm_pancreatitis_s13017-019-0247-0.pdf
+  - /pdf/john/Cholangitis_piis0016510720351117.pdf
+  - /pdf/john/Clostridioides_difficile_nfection_dkac404.pdf
+  - /pdf/john/Diabetic_ketoacidosis_JBDS_02_DKA_Guideline_with_QR_code_March_2023.pdf
+  - /pdf/john/EAU-Guidelines-on-Urolithiasis-2025.pdf
+  - /pdf/john/Gastroenteritis_0086IC_ic-51-217.pdf
+  - /pdf/john/Ischaemic_colitis_flgastro-2019-101204.pdf
+  - /pdf/john/Pelvic_Inflammatory_Disease_tcrm-19-183.pdf
+  - /pdf/john/Peptic_Ulcer_CPGUlcerEN.pdf
+  - /pdf/john/Pyelonephritis_acute_antimicrobial_prescribing.pdf
+  - /pdf/john/Small_Bowel_Obstruction_s13017-018-0185-2.pdf
+  - /pdf/john/Spontaneous_Bacterial_Peritonitis_PIIS0168827810004782.pdf
+  - /pdf/john/Testicular_Torsion_p835.pdf
+  - /pdf/john/Ulcerative_colitis_PIIS001650852405563X.pdf
 
 # RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard

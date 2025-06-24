@@ -55,11 +55,14 @@ MODELS = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_ablated",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_no_titles",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
+
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
+
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
     ]
 
 BASELINE_MODEL = MODELS[0]
@@ -107,6 +110,7 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery": "Llama3 70B 4.0bpw + MedCPT (ref md, requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery": "Llama3 70B 4.0bpw + MedCPT (pdf, requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext": "Llama3 70B 4.0bpw + NV-Embed-v2 (requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery": "Llama3 70B 4.0bpw + MedCPT (PubMed, requery)",
 }
 
 color_map = {
@@ -146,6 +150,10 @@ color_map = {
     "Llama3 70B 4.0bpw + MedCPT (raw md, requery)": "#6A2276",
     "Llama3 70B 4.0bpw + MedCPT (ref md, requery)": "#F9F871",
     "Llama3 70B 4.0bpw + MedCPT (pdf, requery)": "#943199",
+
+    "Llama3 70B 4.0bpw + MedCPT (PubMed, requery)": "#6d1d7b",
+
+
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
@@ -409,10 +417,11 @@ def load_scores(experiments, difficulty="first_diag", fields=['Diagnosis'], mode
                 for _id in id_difficulty[patho][difficulty]:
                     if _id not in all_evals[patho]:
                         # Manually tested and all were correct
-                        if _id == 21285450:
-                            selected_evals[_id] = {'scores': {'Diagnosis': 1.0, "Gracious Diagnosis": 1.0, "Action Parsing": 0, "Treatment Parsing": 0, "Diagnosis Parsing": 0, 'Invalid Tools': 0}}
-                        else:
-                            print(f"For experiment {experiment} and model {model}, {_id} not in {patho}")
+                        # if _id == 21285450:
+                        #     selected_evals[_id] = {'scores': {'Diagnosis': 1.0, "Gracious Diagnosis": 1.0, "Action Parsing": 0, "Treatment Parsing": 0, "Diagnosis Parsing": 0, 'Invalid Tools': 0}}
+                        # else:
+                        #     print(f"For experiment {experiment} and model {model}, {_id} not in {patho}")
+                        print(f"For experiment {experiment} and model {model}, {_id} not in {patho}")
                         continue
                     selected_evals[_id] = all_evals[patho][_id]
                     selected_results[_id] = all_results[patho][_id]
@@ -1566,6 +1575,13 @@ for model in model_evals:
     for pathology in model_evals[model]:
         treatment_required_counts[pathology] = {}
         for patient_id in model_evals[model][pathology]:
+            #DEBUG: If 'answers' key is missing, skip this patient
+            if 'answers' not in model_evals[model][pathology][patient_id]:
+                print(f"Skipping patient {patient_id} in model {model} for pathology {pathology} due to missing 'answers' key.")
+                #Remove this specific patient from all the data
+                model_evals[model][pathology].pop(patient_id, None)
+                continue
+
             treatment_requested = model_evals[model][pathology][patient_id]['answers'].get('Treatment Requested', {})
             treatment_required = model_evals[model][pathology][patient_id]['answers'].get('Treatment Required', {})
             correctly_diagnosed = model_evals[model][pathology][patient_id]['scores'][DIAG]
@@ -1634,7 +1650,16 @@ for i, pathology in enumerate(unique_pathologies):
     bar_plot.set_xlabel('')
     bar_plot.set_ylabel('Treatment Requested (%)')
     bar_plot.set_title(f'{pathology.capitalize()} Treatment')
-    label_with_count = lambda x: f"\n{colo_replace(x)}\n(n={treatment_required_counts[pathology][x]})"
+
+    # label_with_count = lambda x: f"\n{colo_replace(x)}\n(n={treatment_required_counts[pathology][x]})"
+    #DEBUG: Skip missing Labels completely
+    def label_with_count(x):
+        try:
+            count = treatment_required_counts[pathology][x]
+            return f"\n{colo_replace(x)}\n(n={count})"
+        except KeyError:
+            return f"\n{colo_replace(x)}\n(n=?)"  # Or just return x
+
     tick_positions = range(len(df_filtered['Treatment'].unique()))
     bar_plot.xaxis.set_major_locator(FixedLocator(tick_positions))
     bar_plot.set_xticklabels([label_with_count(tick.get_text()) for tick in bar_plot.get_xticklabels()])
@@ -2068,13 +2093,19 @@ for model in models:
 
         pathology_retrievals = model_retrievals[pathology]
         #Example of where to find the count per chunk: all_retrievals[patho][chunk["document_reference"]][chunk["page_number"]][chunk["order_in_document"]]["count"] += 1
+        
+        #Print which experiment and model we are plotting
+        # print(f"Plotting {experiment} - {model_pretty_name} - {pathology.capitalize()}")
 
         #Count total number of chunks per pathology
         total_chunks = 0
         for document in pathology_retrievals.keys():
+            # print(f"Processing document: {document}")
             for page in pathology_retrievals[document].keys():
                 for order in pathology_retrievals[document][page]:
+                    # print("count in "f"{document} - {page} - {order}: {pathology_retrievals[document][page][order]['count']}")
                     total_chunks += pathology_retrievals[document][page][order]["count"]
+        # print(f"Total chunks for {pathology.capitalize()}: {total_chunks}")
 
         if total_chunks > 0:
             model_is_rag = True
@@ -2105,7 +2136,12 @@ for model in models:
             ax = axs[j]
 
             #get document name
-            document_name = document.split("/")[-1]
+            #skip if nonetype
+            # if document is None or document == "None":
+            #     continue
+            # print("DOCUMENT: ", document)
+            
+            document_name = document.split("/")[-1] if isinstance(document, str) else document
             #if length>25, end with ...
             if len(document_name) > 20:
                 document_name = document_name[:25] + "..."
@@ -2132,6 +2168,10 @@ for model in models:
                 counts = 0
                 for order in document_retrievals[page]:
                     counts += document_retrievals[page][order]["count"]
+                doc_counts += counts
+                #DEBUG: Fill this graph only if page is a number
+                if not isinstance(page, (int, float)):
+                    continue
 
                 #Create one bar per page, make bar the color of the model
                 if counts/total_chunks > .05:
@@ -2140,8 +2180,6 @@ for model in models:
                     ax.text(page, counts/total_chunks, str(page), ha='center', va='bottom')
                 else:
                     ax.bar(page, counts/total_chunks, color=color_map[model_pretty_name])
-
-                doc_counts += counts
 
             df_heatmap_dict[pathology][document_name] = doc_counts/total_chunks
 
@@ -2194,7 +2232,8 @@ for model in models:
         #Transpose the dataframe
         df_heatmap_count = df_heatmap_count.T
         #save df_heatmap_count to csv
-        # df_heatmap_count.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_{dt_string}.csv"))
+        print("saving heatmap")
+        df_heatmap_count.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_{dt_string}.csv"))
         #create new plot
         # plt.figure(figsize=(12, 12))
         plt.figure(figsize=(len(df_heatmap_count.columns) * 3, len(df_heatmap_count.index) * 3))

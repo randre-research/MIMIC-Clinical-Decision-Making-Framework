@@ -86,6 +86,52 @@ experiment_evals = {}
 experiment_scores = {}
 experiment_retrievals = {} #RAG: Per Experiment, Per Model, per Pathology, per Document, per Page, per Chunk Order, QTY of each Retrieved
 
+
+#DEBUG GET TAGS PER DOCUS PER CHUNK_IDS
+PUBMED_COMBINED_PATH = r"/container/guidelines/MedCPT/acute_abdpain_subset/_pubmed_combined.json"
+#Structure of the json: 
+# {"122": {"d": "19751001", "t": "Meso-appendicular testis.", "a": "", "m": "adult!|appendicitis!|appendicitis!complications|appendicitis!complications*|appendix!|appendix!abnormalities|appendix!abnormalities*|cryptorchidism!|humans!|male!|"}, "749": {"d": "19750101", "t": "Biochemical and biophysical changes in guinea pigs after acute head injury.", "a": "Animal experiments were set up mainly to derive additional diagnostic data from the study of biochemical changes after acute head injury. In standardized experiments guinea pigs were subjected in groups of 20 to three identical head injuries, each of either 1.0 J or 1.5 J intensity. The trauma was likely to result in a concussion or contusion syndrome similar to that found in man; 40 animals served as controls. During the 60 min after injury observation and measurement of body functions did not reveal signs of a shock-like condition or hypoxaemia in the traumatized animals compared with control animals. Superficial anaesthesia probably did not influence the findings. Temperature and respiration were altered significantly in all the animals receiving head injuries. Blood gas analysis showed a decrease of standard bicarbonate only after the 1.5 J injury but even though hypoxaemia was not present 2,3-diphosphoglycerate values and P50 increased, compared with the control animals. The fall of plasma lipid concentrations reported probably had to be seen as a sympathomimetic effect of the minor (1.0 J) trauma. Of special significance was the increased activity of malate dehydrogenase and aldolase, found only in the blood of severely traumatized animals, as this could serve as an early diagnostic aid for evaluating head injuries.", "m": "alanine transaminase!|alanine transaminase!blood|animals!|aspartate aminotransferases!|aspartate aminotransferases!blood|blood glucose!|blood glucose!analysis|body temperature!|body temperature*|brain!|brain!physiopathology|carbon dioxide!|carbon dioxide!blood|carbon dioxide!blood*|cholinesterases!|cholinesterases!blood|craniocerebral trauma!|craniocerebral trauma*|craniocerebral trauma!enzymology|craniocerebral trauma!metabolism|craniocerebral trauma!physiopathology|creatine kinase!|creatine kinase!blood|diphosphoglyceric acids!|diphosphoglyceric acids!blood|diphosphoglyceric acids!blood*|female!|fructose-bisphosphate aldolase!|fructose-bisphosphate aldolase!blood|fructose-bisphosphate aldolase!blood*|guinea pigs!|heart rate!|hydrogen-ion concentration!|hydrogen-ion concentration*|ketone bodies!|ketone bodies!blood|lactates!|lactates!blood|lipids!|lipids!blood|lipids!blood*|malate dehydrogenase!|malate dehydrogenase!blood|malate dehydrogenase!blood*|male!|oxygen!|oxygen!blood|oxygen!blood*|phosphates!|phosphates!blood|pyruvates!|pyruvates!blood|respiration!|respiration*|shock, traumatic!|"}, "762": {"d": "19750301", "t": "[Duodenal dyskinesia (duodenal stasis) and modifiers of digestive tract behavior (atropine, insulin, metoclopramide)].", "a": "", "m": "atropine!|atropine!therapeutic use|atropine!therapeutic use*|duodenal diseases!|duodenal diseases!drug therapy|duodenal diseases!drug therapy*|gastrointestinal motility!|gastrointestinal motility!drug effects|gastrointestinal motility!drug effects*|humans!|insulin!|insulin!therapeutic use|insulin!therapeutic use*|metoclopramide!|metoclopramide!therapeutic use|metoclopramide!therapeutic use*|"}, "763": {"d": "19750501", "t": "[Problems in the treatment of the operated stomach].", "a": "", "m": "anemia, hypochromic!|anemia, hypochromic!therapy|anemia, megaloblastic!|anemia, megaloblastic!therapy|celiac disease!|celiac disease!therapy|humans!|osteomalacia!|osteomalacia!therapy|osteoporosis!|osteoporosis!therapy|postgastrectomy syndromes!|postgastrectomy syndromes!prevention & control|postgastrectomy syndromes!therapy|postgastrectomy syndromes!therapy*|recurrence!|"}, "766": {"d": "19750501", "t": "[Treatment of chronic pancreatitis].", "a": "", "m": "analgesics!|analgesics!therapeutic use|celiac disease!|celiac disease!drug therapy|chronic disease!|diabetes mellitus!|diabetes mellitus!therapy|humans!|pancreatectomy!|pancreatic extracts!|pancreatic extracts!therapeutic use|pancreatitis!|pancreatitis!etiology|pancreatitis!surgery|pancreatitis!therapy|pancreatitis!therapy*|parasympatholytics!|parasympatholytics!therapeutic use|splanchnic nerves!|splanchnic nerves!surgery|"}, "783": {"d": "19751101", "t": "The effect of pH upon fluoride uptake in intact enamel.", "a": "The relationship between pH and fluoride uptake in intact enamel of permanent premolars was investigated by using: (1) a sodium fluoride dentifrice, (2) a potassium fluoride + manganese chloride dentifrice, and (3) a sodium fluoride solution of the same fluoride concentration. The first part of this paper deals with the in vitro uptake of fluoride from dentifrice slurries and from sodium fluoride solutions of different pH ranging from 7.1 to 4.5. This investigation showed that there was no significant difference between the agents but that the effect of the pH was significant. The uptake of fluoride in the form of fluorapatite was more than five times larger at the lower pH level. The second part of the paper deals with the rate of fluoride uptake (increase in fluoride content) from dentifrices in the same pH range. It was shown that the three agents gave the same initial rate of fluoride uptake (about 50 parts/10(6)/min) at pH 6 and that the rate of fluoride uptake in the outer layer of the enamel was proportional to the hydrogen ion activity.", "m": "child!|dental enamel!|dental enamel!metabolism|dental enamel!metabolism*|dental enamel permeability!|dentifrices!|fluorides, topical!|fluorides, topical!metabolism|fluorides, topical!metabolism*|humans!|hydrogen-ion concentration!|hydrogen-ion concentration*|time factors!|"}, "784": {"d": "19751101", "t": "Determination of inorganic pyrophosphatase in rat odontoblast layer by a radiochemical method.", "a": "The enzyme inorganic pyrophosphatase (PPiase, EC 3.6.1.1) from the odontoblastic layer of rat incisors has been studied by means of a radiochemical micromethod. The enzyme was incubated with 32P-pyrophosphate in tris-HCl buffer at 37 degrees C. The reaction was linear with time for at least 45 min, and the pH optimum was found to be 8.8, independent of the amount of pyrophosphate present. Heating the enzyme at 56 degrees C inhibited the enzyme activity rapidly, Mg2+ ions activated the enzyme by 15% at an ion concentration of 4 mM, while higher concentrations were inhibitory. Ca2+ ions and PO43-ions inhibited the enzyme at all concentrations. F- ions did not affect the PPiase at concentrations below 8 mM, whereas higher concentrations had an inhibiting effect. Urea was found to inhibit the enzyme at concentrations above 1.5 M, while EDTA was a strong inhibitor at very low concentrations. The characteristics of PPiase agree well with the properties of the enzyme nonspecific alkaline phosphatase (EC 3.1.3.1.) studied earlier.", "m": "animals!|hydrogen-ion concentration!|incisor!|incisor!enzymology|male!|odontoblasts!|odontoblasts!enzymology|odontoblasts!enzymology*|pyrophosphatases!|pyrophosphatases!metabolism|pyrophosphatases!metabolism*|rats!|time factors!|"}, "840": {"d": "19751001", "t": "[Incarcerated gallbladder in cholecystitis].", "a": "Among 206 examined patients with cholecystitis and similar diseases in 112 (65%) cases, as evidenced by the authors' findings, the gallbladder proved to be non-functioning. Its escape in the biliary system was functional (indirect) or organic (absolute). The main causes of a direct organic escape of the gallbladder are as follows: destructive changes in its walls, strictures, strangulated gall stones, shrinkage or hydropsy. The reliable preoperative diagnosis of an escaped gallbladder by means of accelerated chromoduodenal catheterization, intravenous (infusion-drip) or associated (intravenous-peroral) cholecystocholangiography, correlated with the anamnesis data and clinical signs, rather speaks in favour of cholecystectomy on absolute indications.", "m": "acute disease!|bile!|bile!analysis|cholecystitis!|cholecystitis!diagnosis|cholecystitis!physiopathology|cholecystitis!physiopathology*|cholecystography!|cholecystography!methods|cholestasis!|cholestasis!diagnosis|chronic disease!|diagnosis, differential!|endoscopy!|endoscopy!methods|gallbladder!|gallbladder!physiopathology|gallbladder!physiopathology*|humans!|hydrogen-ion concentration!|organ size!|pancreatitis!|pancreatitis!diagnosis|"}, "963": {"d": "19751201", "t": "Aminoacylation of Escherichia coli cysteine tRNA by selenocysteine.", "a": "", "m": "amino acyl-trna synthetases!|amino acyl-trna synthetases!metabolism|cysteine!|cysteine*|cysteine!analogs & derivatives|escherichia coli!|escherichia coli!enzymology|escherichia coli!enzymology*|hydrogen-ion concentration!|kinetics!|rna, bacterial!|rna, bacterial!isolation & purification|rna, bacterial!metabolism|rna, bacterial!metabolism*|rna, transfer!|rna, transfer!isolation & purification|rna, transfer!metabolism|rna, transfer!metabolism*|selenium!|selenium*|"}, "1016": {"d": "19751103", "t": "A comparison of the substrate specificities of endo-beta-N-acetylglucosaminidases from Streptomyces griseus and Diplococcus Pneumoniae.", "a": "", "m": "acetylglucosaminidase!|acetylglucosaminidase!metabolism|acetylglucosaminidase!metabolism*|fucose!|hexosaminidases!|hexosaminidases!metabolism|hexosaminidases!metabolism*|kinetics!|oligosaccharides!|species specificity!|streptococcus pneumoniae!|streptococcus pneumoniae!enzymology|streptococcus pneumoniae!enzymology*|streptomyces griseus!|streptomyces griseus!enzymology|streptomyces griseus!enzymology*|structure-activity relationship!|"}, "1107": {"d": "19750501", "t": "[Modification of pancreatic ribonuclease activity in complexes with polyanions].", "a": "Carboxymethylcellulose, carboxymethylchitin,
+# {"chunk_id":
+#    {"d": "document_id",
+#     "t": ...
+# }
+DOCS_TAGS_PATH = r"/container/guidelines/MedCPT/acute_abdpain_subset/_docs_tags_detailed.json"
+#Structure of the json:
+# {"docs_id":
+#    ["appendicitis", "cholecystitis", "diverticulitis", ...],
+# ...
+#}
+CHUNKS_TAGS_PATH = r"/container/guidelines/MedCPT/acute_abdpain_subset/_chunks_tags.json"
+
+#We want to create a dictionary that maps each chunk_id to its tags
+#Load both json
+import json
+from os.path import join
+import pickle
+
+pubmed_combined = json.load(open(PUBMED_COMBINED_PATH, "r", encoding="utf-8"))
+docs_tags = json.load(open(DOCS_TAGS_PATH, "r", encoding="utf-8"))
+chunks_tags = json.load(open(CHUNKS_TAGS_PATH, "r", encoding="utf-8"))
+chunk_tags = {}
+chunk_docs = {}
+for chunk_id, doc_info in pubmed_combined.items():
+    # if chunk_id not in docs_tags:
+    #     print(f"Chunk {chunk_id} not found in docs_tags")
+    #     continue
+    if chunk_id in chunk_tags:
+        print(f"Chunk {chunk_id} already exists in chunk_tags")
+        continue
+    else:
+        doc_id = doc_info["d"]
+        # tags = docs_tags[doc_id] if doc_id in docs_tags else ["other"]
+        # if len(tags) == 0:
+        #     tags = ["other"]
+        tags = chunks_tags[chunk_id] if chunk_id in chunks_tags else ["other"]
+        if len(tags) == 0:
+            tags = ["other"]
+        chunk_tags[chunk_id] = tags
+        chunk_docs[chunk_id] = doc_id
+
 for experiment in [
     # "CDM_VANILLA",
     # "CDM_NOSUMMARY"
@@ -190,15 +236,26 @@ for experiment in [
                             # document_id
                             #get chunk format
                             chunk_format = chunk.get("format", "unknown")  # Default to unknown if not present
-                            print(f"Processing chunk format: {chunk_format}")
+                            # print("CHUNK FORMAT :", chunk_format)
+                            # print(f"Processing chunk format: {chunk_format}")
                             # print("keys in chunk:", chunk.keys())
                             #keys in chunk: dict_keys(['chunk_id', 'document_reference', 'page_number', 'token_size', 'order_in_document', 'content', 'score'])
-                            print("document_reference:", chunk.get("document_reference", "N/A"))
-
+                            # print("document_reference:", chunk.get("document_reference", "N/A"))
+                            # print("chunk_id:", chunk.get("chunk_id", "N/A"))
                             if chunk_format == "medcpt":
-                                print(f"Processing MedCPT chunk: {chunk}")
-                                doc_ref = chunk["document_id"]
-                                doc_name = chunk["source"]
+                            # if "pubmed" in model:
+                                #match chunk id to 
+
+                                # print(f"Processing MedCPT chunk: {chunk}")
+                                # doc_ref = chunk["document_id"]
+                                # doc_name = chunk["source"]
+                                # chunk_id = chunk["chunk_id"]
+                                # doc_ref = chunk.get("document_reference", "N/A")  # Use get to avoid KeyError if not present
+                                doc_ref = chunk.get("document_id", "N/A")  # Use get to avoid KeyError if not present
+                                chunk_id = chunk.get("chunk_id", "0")  # Use get to avoid KeyError if not present
+                                # doc_name = chunk_docs[chunk_id]
+                                doc_name = chunk.get("document_reference", "N/A")  # Use get to avoid KeyError if not present
+
                                 tags = chunk.get("tags", "").lower()  # Convert tags to lowercase for consistency
                                 #since there are too many documents in medcpt pubmed set, instead of using document_reference, we use the pathologies they refer to
                                 #but since we have no page number, we use the page_number for the document name
@@ -213,9 +270,11 @@ for experiment in [
                                     pathologies.append("pancreatitis")
                                 if len(pathologies) == 0:
                                     pathologies = ["other"]
+                                # pathologies = chunk_tags[chunk_id] if chunk_id in chunk_tags else ["other"]
+                                # print(f"Processing MedCPT chunk: {chunk_id} | {doc_ref} | {doc_name} | {pathologies}")
 
                                 for pathology_tag in pathologies:
-                                    if doc_ref not in all_retrievals[patho]:
+                                    if pathology_tag not in all_retrievals[patho]:
                                         all_retrievals[patho][pathology_tag] = {}
 
                                     if doc_name not in all_retrievals[patho][pathology_tag]:
