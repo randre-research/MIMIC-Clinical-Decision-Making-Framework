@@ -203,6 +203,11 @@ def run(args: DictConfig):
     logger.add(log_path, enqueue=True, backtrace=True, diagnose=True)
     langchain.debug = True
 
+    # Save all the arguments/hydra parameters in a single file in the logs folder
+    args_path = join(run_dir, f"{run_name}_args.yaml")
+    with open(args_path, "w") as f:
+        f.write(str(args))
+
     # Set LangSmith project name (optional)
     # os.environ["LANGCHAIN_PROJECT"] = run_name
 
