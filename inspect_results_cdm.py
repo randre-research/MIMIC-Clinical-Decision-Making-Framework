@@ -39,8 +39,8 @@ MODELS = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
@@ -58,8 +58,11 @@ MODELS = [
 
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
+
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery",
 
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
@@ -111,6 +114,8 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery": "Llama3 70B 4.0bpw + MedCPT (pdf, requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext": "Llama3 70B 4.0bpw + NV-Embed-v2 (requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery": "Llama3 70B 4.0bpw + MedCPT (PubMed, requery)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise": "Llama3 70B 4.0bpw + stella5 400M (noise dataset)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery": "Llama3 70B 4.0bpw + MedCPT (noise dataset)",
 }
 
 color_map = {
@@ -153,6 +158,8 @@ color_map = {
 
     "Llama3 70B 4.0bpw + MedCPT (PubMed, requery)": "#6d1d7b",
 
+    "Llama3 70B 4.0bpw + stella5 400M (noise dataset)": "#D6523B",
+    "Llama3 70B 4.0bpw + MedCPT (noise dataset)": "#8E8E06",
 
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
