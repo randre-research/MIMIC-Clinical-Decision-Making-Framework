@@ -90,7 +90,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
         super().__init__(**kwargs)
         self.step_data = []
 
-        if self.rag_requery:
+        if self.rag_requery and self.rag_retriever_agent is not None:
             # Create a separate chain for requery/refinement
             # using the same LLM but a simpler prompt
             self.requery_chain = LLMChain(
