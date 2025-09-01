@@ -4,7 +4,7 @@ defaults:
 
 openai_api_key:
 model_name: Qwen3-30B-A3B-exl2-4.0bpw
-max_context_length: 4096
+max_context_length: 16384
 exllama: True
 
 system_tag_start: "<|im_start|>system\n"

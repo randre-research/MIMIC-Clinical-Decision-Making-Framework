@@ -72,8 +72,42 @@ models = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery",
+
+    # --- ALL SMALL MODELS ---
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "gemma-2-9b-it-exl2-4.0bpw",
+    # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
+
+    # --- ALL MEDIUM MODELS ---
+    # "gemma-3-27b-it-exl2-4.0bpw",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    "Qwen3-30B-A3B-exl2-4.0bpw",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
 ]
+
+path_override = {
+    # --- ALL SMALL MODELS ---
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "logs_small_models",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    
+    # --- ALL MEDIUM MODELS ---
+    "gemma-3-27b-it-exl2-4.0bpw": "logs_medium_models",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_medium_models",
+    "Qwen3-30B-A3B-exl2-4.0bpw": "logs_medium_models",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_medium_models",
+}
 
 if SEEDED:
     new_models = []
@@ -176,6 +210,8 @@ for experiment in [
             #if the model name contains "SEED" add "_seeded" after /logs/
             if "_SEED=" in model:
                 results_log_path = results_log_path.replace("/logs/", "/logs/_seeded/")
+            elif model in path_override:
+                results_log_path = results_log_path.replace("/logs/", f"/{path_override[model]}/")
 
             print(f"Loading {results_log_path}")
             #check if the path exists

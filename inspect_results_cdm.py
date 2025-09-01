@@ -1,3 +1,11 @@
+# # NumPy pickle compatibility shim (load NumPy>=2 pickles on NumPy 1.x)
+# import sys, numpy as _np
+# try:
+#     import numpy._core
+# except ModuleNotFoundError:
+#     sys.modules['numpy._core'] = _np.core
+
+
 # Constants for paths
 MIMIC_BASE = '/container/data'
 EXPERIMENTS_BASE = '/container/data/logs/analysis'
@@ -22,6 +30,7 @@ from matplotlib.colors import ListedColormap
 import pandas as pd
 import numpy as np
 
+
 EVAL_MISMATCH = False
 
 EXPERIMENTS = [
@@ -30,42 +39,58 @@ EXPERIMENTS = [
 ]
 
 MODELS = [
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw", 
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_chunkr",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
-    # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
-    # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_requery",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_ablated",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_no_titles",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_full",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_1.5B_v5",
+    # # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_k12_8k",
+    # # "Llama-3.1-70B-Instruct-exl2-2.5bpw_stella_en_1.5B_v5_k12_8k",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_full",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_k8",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_ablated",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_no_titles",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery",
 
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_md_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_badmd_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_refmd_requery",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pdf_requery",
 
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery",
 
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
+    # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
+
+    # --- ALL SMALL MODELS ---
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "gemma-2-9b-it-exl2-4.0bpw",
+    # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
+
+    # --- ALL MEDIUM MODELS ---
+    "gemma-3-27b-it-exl2-4.0bpw",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    "Qwen3-30B-A3B-exl2-4.0bpw",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
     ]
 
 BASELINE_MODEL = MODELS[0]
@@ -116,6 +141,23 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery": "Llama3 70B 4.0bpw + MedCPT (PubMed, requery)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise": "Llama3 70B 4.0bpw + stella5 400M (noise dataset)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery": "Llama3 70B 4.0bpw + MedCPT (noise dataset)",
+
+    # --- ALL SMALL MODELS ---
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "LLM (Mistral-7B-instruct-v0.3 4.0bpw)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M)",
+    "gemma-2-9b-it-exl2-4.0bpw": "LLM (gemma-2-9b-it 4.0bpw)",
+    "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw": "LLM (Llama-3.1-8B-Instruct 4.0bpw)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)",
+
+    # --- ALL MEDIUM MODELS ---
+    "gemma-3-27b-it-exl2-4.0bpw": "LLM (gemma-3-27b-it 4.0bpw)",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M)",
+    "Qwen3-30B-A3B-exl2-4.0bpw": "LLM (Qwen3-30B-A3B 4.0bpw)",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M)",
+    
 }
 
 color_map = {
@@ -164,6 +206,22 @@ color_map = {
 
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
+
+    # --- ALL SMALL MODELS ---
+    "LLM (Mistral-7B-instruct-v0.3 4.0bpw)": "#0077B6",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M)": "#00B8D8",
+    "LLM (gemma-2-9b-it 4.0bpw)": "#169039",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M)": "#4dc280",
+    "LLM (Llama-3.1-8B-Instruct 4.0bpw)": "#943199",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)": "#C157B8",
+    "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)": "#BB2424",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)": "#B75555",
+
+    # --- ALL MEDIUM MODELS ---
+    "LLM (gemma-3-27b-it 4.0bpw)": "#169039",
+    "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M)": "#4dc280",
+    "LLM (Qwen3-30B-A3B 4.0bpw)": "#943199",
+    "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M)": "#C157B8",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",

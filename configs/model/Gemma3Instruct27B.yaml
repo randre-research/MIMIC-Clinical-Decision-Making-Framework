@@ -4,7 +4,7 @@ defaults:
 
 openai_api_key:
 model_name: gemma-3-27b-it-exl2-4.0bpw
-max_context_length: 4096
+max_context_length: 16384
 exllama: True
 
 system_tag_start: "" # Gemma3 has no system role

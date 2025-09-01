@@ -16,9 +16,9 @@ rag_embed_max_length: 256 #for nv embed if i remember correctly
 rag_requery: False
 
 #Retrieval parameters
-rag_top_k: 8
+rag_top_k: 16
 rag_re_rank: True
-rag_top_k_rerank: 8
+rag_top_k_rerank: 16
 rag_prompt_name: "s2p_query" # or "s2s_query" s2p = (short query to long passage)
 
 # Document paths for retrieval
