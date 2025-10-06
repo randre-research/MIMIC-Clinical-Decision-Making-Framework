@@ -187,7 +187,12 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 # question = refined_question.strip()
                 # question = question.split("\n")[0].strip()
                 refined = self.requery_chain.predict(original_text=question, stop=[REQUERY_EOS] + self.stop)
-                question = refined.split(REQUERY_EOS)[0].splitlines()[0].strip()
+                question_lines = refined.split(REQUERY_EOS)[0].splitlines()
+                # Find the line that contains the actual question (question mark) or longest line if no question mark
+                if any('?' in line for line in question_lines):
+                    question = next(line for line in question_lines if '?' in line).strip()
+                else:
+                    question = max(question_lines, key=len).strip()
                 print(f"Refined question for RAG retrieval: {question}")
 
             retrieved_docs = self.rag_retriever_agent.retrieve(question)
