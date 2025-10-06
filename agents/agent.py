@@ -33,18 +33,30 @@ from tools.utils import action_input_pretty_printer
 from utils.nlp import calculate_num_tokens, truncate_text
 
 STOP_WORDS = ["Observation:", "Observations:", "observation:", "observations:"]
+REQUERY_EOS = "<END_QUESTION>"
 
+# REQUERY_PROMPT = PromptTemplate(
+#     input_variables=["original_text"],
+#     template="""\
+# Rewrite the following reports into a concise question that allows retrieving the appropriate care plan, treatments, lab tests, or imaging for this patient:
+
+# Original reports:
+# {original_text}
+
+# Rewritten question:
+# """,
+# )
 
 REQUERY_PROMPT = PromptTemplate(
     input_variables=["original_text"],
-    template="""\
-Rewrite the following reports into a concise question that allows retrieving the appropriate care plan, treatments, lab tests, or imaging for this patient:
-
-Original reports:
-{original_text}
-
-Rewritten question:
-""",
+    template=(
+        "Rewrite the following reports into a single, concise search question.\n"
+        "- Output ONLY the question on one line.\n"
+        "- No explanations, no quotes, no bullets.\n"
+        f"- End your answer with {REQUERY_EOS}.\n\n"
+        "Original reports:\n{original_text}\n\n"
+        "Question:"
+    ),
 )
 
 class TextSummaryCache:
@@ -93,8 +105,19 @@ class CustomZeroShotAgent(ZeroShotAgent):
         if self.rag_requery and self.rag_retriever_agent is not None:
             # Create a separate chain for requery/refinement
             # using the same LLM but a simpler prompt
+            # self.requery_chain = LLMChain(
+            #     llm=self.llm_chain.llm,   # re-use the same underlying LLM
+            #     prompt=REQUERY_PROMPT,
+            #     verbose=True      # if you want logs
+            # )
+            requery_llm = self.llm_chain.llm.bind(
+                max_tokens=512,  # Limit tokens for requery
+                temperature=0.1,  # Slightly higher temp for diversity
+                stop=[REQUERY_EOS] + self.stop  # Stop at end token or usual stops
+            )
+
             self.requery_chain = LLMChain(
-                llm=self.llm_chain.llm,   # re-use the same underlying LLM
+                llm=requery_llm,   # re-use the same underlying LLM
                 prompt=REQUERY_PROMPT,
                 verbose=True      # if you want logs
             )
@@ -160,9 +183,11 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 # print(f"Refined question for RAG retrieval: {question}")
 
                 # Call the separate requery chain
-                refined_question = self.requery_chain.predict(original_text=question, stop=self._stop)
-                question = refined_question.strip()
-                question = question.split("\n")[0].strip()
+                # refined_question = self.requery_chain.predict(original_text=question, stop=self._stop)
+                # question = refined_question.strip()
+                # question = question.split("\n")[0].strip()
+                refined = self.requery_chain.predict(original_text=question)
+                question = refined.split(REQUERY_EOS)[0].splitlines()[0].strip()
                 print(f"Refined question for RAG retrieval: {question}")
 
             retrieved_docs = self.rag_retriever_agent.retrieve(question)
