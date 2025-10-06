@@ -47,17 +47,36 @@ REQUERY_EOS = "<END_QUESTION>"
 # """,
 # )
 
-REQUERY_PROMPT = PromptTemplate(
-    input_variables=["original_text"],
-    template=(
-        "Rewrite the following reports into a single, concise search question.\n"
-        "- Output ONLY the question on one line.\n"
-        "- No explanations, no quotes, no bullets.\n"
-        f"- End your answer with {REQUERY_EOS}.\n\n"
-        "Original reports:\n{original_text}\n\n"
-        "Question:"
-    ),
-)
+# REQUERY_PROMPT = PromptTemplate(
+#     input_variables=["original_text"],
+#     template=(
+#         "Rewrite the following reports into a single, concise search question.\n"
+#         "- Output ONLY the question on one line.\n"
+#         "- No explanations, no quotes, no bullets.\n"
+#         f"- End your answer with {REQUERY_EOS}.\n\n"
+#         "Original reports:\n{original_text}\n\n"
+#         "Rewritten search question: "
+#     ),
+# )
+
+# REQUERY_PROMPT = PromptTemplate(
+#     input_variables=["original_text"],
+#     partial_variables={
+#     "system_tag_start": tags["system_tag_start"],
+#     "system_tag_end": tags["system_tag_end"],
+#     "user_tag_start": tags["user_tag_start"],
+#     "user_tag_end": tags["user_tag_end"],
+#     "ai_tag_start": tags["ai_tag_start"],
+#     "ai_tag_end": tags["ai_tag_end"],
+#     },
+#     template=(
+# """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for retrieving relevant medical information from guidelines to diagnose and treat them.{system_tag_end}
+
+# {user_tag_start} Rewrite the following reports into a single, concise search question. Output ONLY the question on one line. No explanations, no quotes, no bullets. End your answer with {REQUERY_EOS}.
+
+# Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+# ),
+# )
 
 class TextSummaryCache:
     def __init__(self):
@@ -105,9 +124,11 @@ class CustomZeroShotAgent(ZeroShotAgent):
         if self.rag_requery and self.rag_retriever_agent is not None:
             # Create a separate chain for requery/refinement
             # using the same LLM but a simpler prompt
+            prompt_requery = create_prompt_requery(self.tags)
+
             self.requery_chain = LLMChain(
                 llm=self.llm_chain.llm,   # re-use the same underlying LLM
-                prompt=REQUERY_PROMPT,
+                prompt=prompt_requery,
                 verbose=True      # if you want logs
             )
             # requery_llm = self.llm_chain.llm.bind(
@@ -512,6 +533,29 @@ def create_prompt_rag(
     )
     return template
 
+def create_prompt_requery(
+    tags
+) -> PromptTemplate:
+    REQUERY_PROMPT=(
+"""{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for retrieving relevant medical information from guidelines to diagnose and treat them.{system_tag_end}
+
+{user_tag_start} Rewrite the following reports into a single, concise search question. Output ONLY the question on one line. No explanations, no quotes, no bullets. End your answer with {REQUERY_EOS}.
+
+Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+    )
+    template = PromptTemplate(
+        template=REQUERY_PROMPT,
+        input_variables=["original_text"],
+        partial_variables={
+            "system_tag_start": tags["system_tag_start"],
+            "system_tag_end": tags["system_tag_end"],
+            "user_tag_start": tags["user_tag_start"],
+            "user_tag_end": tags["user_tag_end"],
+            "ai_tag_start": tags["ai_tag_start"],
+            "ai_tag_end": tags["ai_tag_end"],
+        },
+    )
+    return template
 
 
 def build_agent_executor_ZeroShot(
