@@ -105,22 +105,22 @@ class CustomZeroShotAgent(ZeroShotAgent):
         if self.rag_requery and self.rag_retriever_agent is not None:
             # Create a separate chain for requery/refinement
             # using the same LLM but a simpler prompt
-            # self.requery_chain = LLMChain(
-            #     llm=self.llm_chain.llm,   # re-use the same underlying LLM
-            #     prompt=REQUERY_PROMPT,
-            #     verbose=True      # if you want logs
-            # )
-            requery_llm = self.llm_chain.llm.bind(
-                max_tokens=512,  # Limit tokens for requery
-                temperature=0.1,  # Slightly higher temp for diversity
-                stop=[REQUERY_EOS] + self.stop  # Stop at end token or usual stops
-            )
-
             self.requery_chain = LLMChain(
-                llm=requery_llm,   # re-use the same underlying LLM
+                llm=self.llm_chain.llm,   # re-use the same underlying LLM
                 prompt=REQUERY_PROMPT,
                 verbose=True      # if you want logs
             )
+            # requery_llm = self.llm_chain.llm.bind(
+            #     max_tokens=512,  # Limit tokens for requery
+            #     temperature=0.1,  # Slightly higher temp for diversity
+            #     stop=[REQUERY_EOS] + self.stop  # Stop at end token or usual stops
+            # )
+
+            # self.requery_chain = LLMChain(
+            #     llm=requery_llm,   # re-use the same underlying LLM
+            #     prompt=REQUERY_PROMPT,
+            #     verbose=True      # if you want logs
+            # )
 
     # Allow for multiple stop criteria instead of just taking the observation prefix string
     @property
@@ -186,7 +186,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 # refined_question = self.requery_chain.predict(original_text=question, stop=self._stop)
                 # question = refined_question.strip()
                 # question = question.split("\n")[0].strip()
-                refined = self.requery_chain.predict(original_text=question)
+                refined = self.requery_chain.predict(original_text=question, stop=[REQUERY_EOS] + self.stop)
                 question = refined.split(REQUERY_EOS)[0].splitlines()[0].strip()
                 print(f"Refined question for RAG retrieval: {question}")
 
