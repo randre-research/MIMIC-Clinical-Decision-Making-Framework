@@ -208,6 +208,8 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 # question = refined_question.strip()
                 # question = question.split("\n")[0].strip()
                 refined = self.requery_chain.predict(original_text=question, stop=[REQUERY_EOS] + self.stop)
+                #first remove everything that is before </think>
+                refined = refined.split("</think>")[-1]
                 question_lines = refined.split(REQUERY_EOS)[0].splitlines()
                 # Find the line that contains the actual question (question mark) or longest line if no question mark
                 if any('?' in line for line in question_lines):
