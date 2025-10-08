@@ -539,7 +539,7 @@ def create_prompt_requery(
     REQUERY_PROMPT=(
 """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for retrieving relevant medical information from guidelines to diagnose and treat them.{system_tag_end}
 
-{user_tag_start} Rewrite the following reports into a single, concise search question. Output ONLY the question on one line. No explanations, no quotes, no bullets. End your answer with {REQUERY_EOS}.
+{user_tag_start} Rewrite the following reports into a single, concise search question. Output ONLY the question on one line. No explanations, no quotes, no bullets. End your answer with {requery_eos}.
 
 Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
     )
@@ -553,6 +553,7 @@ Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search que
             "user_tag_end": tags["user_tag_end"],
             "ai_tag_start": tags["ai_tag_start"],
             "ai_tag_end": tags["ai_tag_end"],
+            "requery_eos": REQUERY_EOS,
         },
     )
     return template
