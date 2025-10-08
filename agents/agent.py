@@ -552,7 +552,6 @@ Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search que
             "user_tag_start": tags["user_tag_start"],
             "user_tag_end": tags["user_tag_end"],
             "ai_tag_start": tags["ai_tag_start"],
-            "ai_tag_end": tags["ai_tag_end"],
             "requery_eos": REQUERY_EOS,
         },
     )
