@@ -214,8 +214,10 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 # Find the line that contains the actual question (question mark) or longest line if no question mark
                 if any('?' in line for line in question_lines):
                     question = next(line for line in question_lines if '?' in line).strip()
-                else:
+                elif len(question_lines) > 0:
                     question = max(question_lines, key=len).strip()
+                else:
+                    question = refined.strip()
                 print(f"Refined question for RAG retrieval: {question}")
 
             retrieved_docs = self.rag_retriever_agent.retrieve(question)
