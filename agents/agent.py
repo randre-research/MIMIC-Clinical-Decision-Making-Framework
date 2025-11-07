@@ -21,6 +21,7 @@ from agents.prompts import (
     TOOL_USE_EXAMPLES,
     DIAG_CRIT_TOOL_USE_EXAMPLE,
     CHAT_TEMPLATE_RAG, #RAG
+    REQUERY_PROMPT, #RAG
 )
 from agents.DiagnosisWorkflowParser import DiagnosisWorkflowParser
 from tools.Tools import (
@@ -34,49 +35,6 @@ from utils.nlp import calculate_num_tokens, truncate_text
 
 STOP_WORDS = ["Observation:", "Observations:", "observation:", "observations:"]
 REQUERY_EOS = "<END_QUESTION>"
-
-# REQUERY_PROMPT = PromptTemplate(
-#     input_variables=["original_text"],
-#     template="""\
-# Rewrite the following reports into a concise question that allows retrieving the appropriate care plan, treatments, lab tests, or imaging for this patient:
-
-# Original reports:
-# {original_text}
-
-# Rewritten question:
-# """,
-# )
-
-# REQUERY_PROMPT = PromptTemplate(
-#     input_variables=["original_text"],
-#     template=(
-#         "Rewrite the following reports into a single, concise search question.\n"
-#         "- Output ONLY the question on one line.\n"
-#         "- No explanations, no quotes, no bullets.\n"
-#         f"- End your answer with {REQUERY_EOS}.\n\n"
-#         "Original reports:\n{original_text}\n\n"
-#         "Rewritten search question: "
-#     ),
-# )
-
-# REQUERY_PROMPT = PromptTemplate(
-#     input_variables=["original_text"],
-#     partial_variables={
-#     "system_tag_start": tags["system_tag_start"],
-#     "system_tag_end": tags["system_tag_end"],
-#     "user_tag_start": tags["user_tag_start"],
-#     "user_tag_end": tags["user_tag_end"],
-#     "ai_tag_start": tags["ai_tag_start"],
-#     "ai_tag_end": tags["ai_tag_end"],
-#     },
-#     template=(
-# """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for retrieving relevant medical information from guidelines to diagnose and treat them.{system_tag_end}
-
-# {user_tag_start} Rewrite the following reports into a single, concise search question. Output ONLY the question on one line. No explanations, no quotes, no bullets. End your answer with {REQUERY_EOS}.
-
-# Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
-# ),
-# )
 
 class TextSummaryCache:
     def __init__(self):
@@ -122,27 +80,19 @@ class CustomZeroShotAgent(ZeroShotAgent):
         self.step_data = []
 
         if self.rag_requery and self.rag_retriever_agent is not None:
-            # Create a separate chain for requery/refinement
-            # using the same LLM but a simpler prompt
+            # Create a separate prompt for requery/refinement
             prompt_requery = create_prompt_requery(self.tags)
 
+            # IMPORTANT CHANGE:
+            # Do NOT wrap or .bind() the LLM here, because LLMChain expects a BaseLanguageModel,
+            # and .bind() returns a Runnable in your LangChain version.
+            # Instead, reuse the same llm object and control "shortness" via post-processing.
             self.requery_chain = LLMChain(
-                llm=self.llm_chain.llm,   # re-use the same underlying LLM
+                llm=self.llm_chain.llm,
                 prompt=prompt_requery,
-                verbose=True      # if you want logs
+                verbose=True,  # keep if you want logs
             )
-            # requery_llm = self.llm_chain.llm.bind(
-            #     max_tokens=512,  # Limit tokens for requery
-            #     temperature=0.1,  # Slightly higher temp for diversity
-            #     stop=[REQUERY_EOS] + self.stop  # Stop at end token or usual stops
-            # )
-
-            # self.requery_chain = LLMChain(
-            #     llm=requery_llm,   # re-use the same underlying LLM
-            #     prompt=REQUERY_PROMPT,
-            #     verbose=True      # if you want logs
-            # )
-
+            
     # Allow for multiple stop criteria instead of just taking the observation prefix string
     @property
     def _stop(self) -> List[str]:
@@ -189,35 +139,69 @@ class CustomZeroShotAgent(ZeroShotAgent):
         # Perform RAG retrieval if a retriever agent is available
         if self.rag_retriever_agent is not None:
             if self.rag_requery:
-                # # Prompt the LLM to requery the question, and use this answer for RAG retrieval
-                # # Prompt the LLM to requery/refine the question
-                # # so it is more concise or relevant for retrieval
-                # requery_prompt = (
-                #     f"Rewrite the following reports into a question that allows to retrieve what care plan, treatments, lab tests or imaging would be appropriate for this patient:\n\n"
-                #     f"Original reports:\n{question}\n"
-                #     f"Rewritten question:"
-                # )
-                # refined_question = self.llm_chain.predict(
-                #     input=requery_prompt, stop=self._stop
-                # )
-                # question = refined_question.strip()
-                # print(f"Refined question for RAG retrieval: {question}")
+                # Call the separate requery chain; its LLM already has stop=[REQUERY_EOS, ai_tag_end]
+                refined = self.requery_chain.predict(
+                    original_text=question,
+                    stop=[REQUERY_EOS, self.tags["ai_tag_end"]] + self._stop
+                )
 
-                # Call the separate requery chain
-                # refined_question = self.requery_chain.predict(original_text=question, stop=self._stop)
-                # question = refined_question.strip()
-                # question = question.split("\n")[0].strip()
-                refined = self.requery_chain.predict(original_text=question, stop=[REQUERY_EOS] + self.stop)
-                #first remove everything that is before </think>
+                # C. Make post-processing ultra-simple and robust
+
+                # 1) Strip any hidden reasoning if the model emits </think> blocks
                 refined = refined.split("</think>")[-1]
-                question_lines = refined.split(REQUERY_EOS)[0].splitlines()
-                # Find the line that contains the actual question (question mark) or longest line if no question mark
-                if any('?' in line for line in question_lines):
-                    question = next(line for line in question_lines if '?' in line).strip()
-                elif len(question_lines) > 0:
-                    question = max(question_lines, key=len).strip()
+                refined = refined.strip()
+
+                # 2) If <END_QUESTION> ever appears, cut at it
+                refined = refined.split(REQUERY_EOS)[0].strip()
+
+                # 3) Choose the actual query line more intelligently
+
+                # Split into non-empty lines
+                raw_lines = [ln.strip() for ln in refined.splitlines() if ln.strip()]
+
+                def is_garbage_line(s: str) -> bool:
+                    # Lines that are only punctuation/quotes/braces/colons are useless
+                    stripped = s.strip()
+                    if not stripped:
+                        return True
+                    # All chars are from this small punctuation set → treat as garbage
+                    punctuation_only = set(':",{}')
+                    return all(ch in punctuation_only for ch in stripped)
+
+                # Keep only lines that are not "garbage"
+                candidate_lines = [ln for ln in raw_lines if not is_garbage_line(ln)]
+
+                # Prefer a line that already contains a '?'
+                line = ""
+                if candidate_lines:
+                    question_lines = [ln for ln in candidate_lines if "?" in ln]
+                    if question_lines:
+                        # If several, take the longest
+                        line = max(question_lines, key=len)
+                    else:
+                        # Otherwise, take the longest candidate line
+                        line = max(candidate_lines, key=len)
                 else:
-                    question = refined.strip()
+                    # Fallback: use full refined text
+                    line = refined
+
+                # 4) Drop the "Rewritten search question:" prefix if the model echoes it
+                prefix = "Rewritten search question:"
+                if line.lower().startswith(prefix.lower()):
+                    line = line[len(prefix):].strip()
+
+                # 5) Strip leading/trailing quotes
+                line = line.strip(" \"'")
+
+                # 6) Hard length limit to prevent any residual looping from harming retrieval
+                MAX_LEN_CHARS = 2048 #256
+                line = line[:MAX_LEN_CHARS].strip()
+
+                # 7) Ensure it looks like a question
+                if line and "?" not in line:
+                    line = line.rstrip(".") + "?"
+
+                question = line
                 print(f"Refined question for RAG retrieval: {question}")
 
             retrieved_docs = self.rag_retriever_agent.retrieve(question)
@@ -540,13 +524,6 @@ def create_prompt_rag(
 def create_prompt_requery(
     tags
 ) -> PromptTemplate:
-    REQUERY_PROMPT=(
-"""{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for retrieving relevant medical information from guidelines to diagnose and treat them.{system_tag_end}
-
-{user_tag_start} Rewrite the following reports into a single, concise search question. Output ONLY the question on one line. No explanations, no quotes, no bullets. End your answer with {requery_eos}.
-
-Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
-    )
     template = PromptTemplate(
         template=REQUERY_PROMPT,
         input_variables=["original_text"],
@@ -556,7 +533,8 @@ Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search que
             "user_tag_start": tags["user_tag_start"],
             "user_tag_end": tags["user_tag_end"],
             "ai_tag_start": tags["ai_tag_start"],
-            "requery_eos": REQUERY_EOS,
+            # B. Note: we no longer mention requery_eos in the prompt text
+            # but we still use REQUERY_EOS as a stop token in the LLM config.
         },
     )
     return template

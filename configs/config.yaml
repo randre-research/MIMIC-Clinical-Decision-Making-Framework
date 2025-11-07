@@ -1,9 +1,9 @@
 defaults:
   - _self_
   - paths: example 
-  - model: Llama3Instruct8B
+  - model: Llama3Instruct1B
   # - model: Llama3Instruct70B
-  - rag: StellaEN400M
+  - rag: Qwen3-Embedding-0.6B #StellaEN400M
   # - rag: NV-Embed
 
 pathology: appendicitis #Specify one of appendicitis, cholecystitis, diverticulitis, pancreatitis
@@ -12,13 +12,13 @@ agent: ZeroShot
 prompt_template: VANILLA
 fewshot: False
 include_ref_range: False
-bin_lab_results: True #False
-bin_lab_results_abnormal: True #False
+bin_lab_results: False #True #False
+bin_lab_results_abnormal: False #True #False
 provide_diagnostic_criteria: False
 include_tool_use_examples: False
 abbreviated: True
 self_consistency: False
-only_abnormal_labs: True #False
+only_abnormal_labs: False #True #False
 
 seed: 2023
 local_logging: True

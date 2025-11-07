@@ -47,8 +47,8 @@ MODELS = [
     # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4",
     # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_MedCPT_md_k4_no_rerank",
     # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_all-MiniLM-L6-v2",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
-    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5",
     # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_markdown",
     # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md_252k10",
     # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_smart_md",
@@ -76,6 +76,11 @@ MODELS = [
     # # "Llama-3.1-70B-Instruct-exl2-4.0bpw_NV-Embed-v2-md_requery_shortcontext",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
 
+    # --- ALL SMALLER MODELS ---
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
@@ -85,13 +90,32 @@ MODELS = [
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
 
     # --- ALL MEDIUM MODELS ---
-    "gemma-3-27b-it-exl2-4.0bpw",
-    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    "Qwen3-30B-A3B-exl2-4.0bpw",
-    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    ]
+    # "gemma-3-27b-it-exl2-4.0bpw",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "Qwen3-30B-A3B-exl2-4.0bpw",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+
+    # --- ALL LARGE MODELS ---
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3-70B-UltraMedical-exl2-4.0bpw",
+    # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery"
+    # "Meditron3-70B-exl2-4.0bpw",
+    # "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+]
 
 BASELINE_MODEL = MODELS[0]
 # BASELINE_MODEL = "Llama-3.1-70B-Instruct-exl2-4.0bpw"
@@ -142,6 +166,11 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise": "Llama3 70B 4.0bpw + stella5 400M (noise dataset)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery": "Llama3 70B 4.0bpw + MedCPT (noise dataset)",
 
+    # --- ALL SMALLER MODELS ---
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "LLM (Llama-3.2-1B-Instruct 4.0bpw)", 
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, stella5 400M)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
+
     # --- ALL SMALL MODELS ---
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "LLM (Mistral-7B-instruct-v0.3 4.0bpw)",
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M)",
@@ -151,12 +180,31 @@ prettify_model_name = {
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M, k=12, size=512, requery)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)",
+    "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M, k=12, size=512, requery)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M, k=12, size=512, requery)",
 
     # --- ALL MEDIUM MODELS ---
     "gemma-3-27b-it-exl2-4.0bpw": "LLM (gemma-3-27b-it 4.0bpw)",
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M)",
     "Qwen3-30B-A3B-exl2-4.0bpw": "LLM (Qwen3-30B-A3B 4.0bpw)",
     "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M)",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=16)",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=16)",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=12)",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=12)",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=12, size=512, requery)",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=12, size=512, requery)",
+
+    # --- ALL LARGE MODELS ---
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "LLM (Llama-3.1-70B-Instruct 4.0bpw)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, stella5 400M)",
+    "Llama-3-70B-UltraMedical-exl2-4.0bpw": "LLM (Llama-3-70B-UltraMedical 4.0bpw)",
+    "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12)",
+    "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)",
+    "Meditron3-70B-exl2-4.0bpw": "LLM (Meditron3-70B 4.0bpw)",
+    "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Meditron3-70B 4.0bpw, stella5 400M, k=12, size=512, requery)",
     
 }
 
@@ -207,6 +255,11 @@ color_map = {
     "LLM (Llama3 70B 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
 
+    # --- ALL SMALLER MODELS ---
+    "LLM (Llama-3.2-1B-Instruct 4.0bpw)": "#9263BB",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, stella5 400M)": "#512D75",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#711583",
+
     # --- ALL SMALL MODELS ---
     "LLM (Mistral-7B-instruct-v0.3 4.0bpw)": "#0077B6",
     "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M)": "#00B8D8",
@@ -216,12 +269,31 @@ color_map = {
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)": "#C157B8",
     "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)": "#BB2424",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)": "#B75555",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F97F77",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)": "#EC9898",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F9F871",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M, k=12, size=512, requery)": "#943199",
 
     # --- ALL MEDIUM MODELS ---
-    "LLM (gemma-3-27b-it 4.0bpw)": "#169039",
+    "LLM (gemma-3-27b-it 4.0bpw)": "#0E5F25",
     "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M)": "#4dc280",
     "LLM (Qwen3-30B-A3B 4.0bpw)": "#943199",
     "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M)": "#C157B8",
+    "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=16)": "#F97F77",
+    "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=16)": "#EC9898",
+    "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=12)": "#F9F871",
+    "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=12)": "#943199",
+    "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=12, size=512, requery)": "#00e913",
+    "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F760F4",
+
+    # --- ALL LARGE MODELS ---
+    "LLM (Llama-3.1-70B-Instruct 4.0bpw)": "#0077B6",
+    "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, stella5 400M)": "#00B4D8",
+    "LLM (Llama-3-70B-UltraMedical 4.0bpw)": "#169039",
+    "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12)": "#4dc280",
+    "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)": "#943199",
+    "LLM (Meditron3-70B 4.0bpw)": "#BB2424",
+    "LLM + RAG (Meditron3-70B 4.0bpw, stella5 400M, k=12, size=512, requery)": "#880E0E",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",
@@ -1613,6 +1685,636 @@ plt.show()
 
 
 # --- Plot Imaging Count End ---
+
+# --- Plot Bray–Curtis Dissimilarity vs MIMIC Doctors (raw counts) ---
+
+# Use raw counts (not the 'Normalized' column)
+counts_raw = counts.copy()
+
+# Safety: ensure all modalities are represented in every vector (fill missing with 0)
+def modality_vector(df_counts, model, patho, modality_order):
+    sub = df_counts[(df_counts['Model'] == model) & (df_counts['Pathology'] == patho)]
+    return (
+        sub.set_index('Modality')
+           .reindex(modality_order)['Counts']
+           .fillna(0)
+           .to_numpy(dtype=float)
+    )
+
+def bray_curtis_vec(x, y):
+    # BC(x,y) = sum |x_i - y_i| / sum (x_i + y_i); define 0 if both are all zeros
+    denom = (x + y).sum()
+    return 0.0 if denom == 0 else np.abs(x - y).sum() / denom
+
+bc_models = [m for m in model_order if m != "MIMIC Doctors"]
+bc_cols = list(pathologies) + ["Overall"]
+
+# Precompute overall (across all pathologies)
+def overall_vector(df_counts, model, modality_order):
+    sub = df_counts[df_counts['Model'] == model]
+    v = (sub.groupby('Modality')['Counts']
+           .sum()
+           .reindex(modality_order)
+           .fillna(0)
+           .to_numpy(dtype=float))
+    return v
+
+# Build the Bray–Curtis table
+bc_rows = []
+mimic_overall_vec = overall_vector(counts_raw, "MIMIC Doctors", modality_order)
+
+for model in bc_models:
+    row = {}
+    # Per-pathology
+    for patho in pathologies:
+        m_vec = modality_vector(counts_raw, model, patho, modality_order)
+        c_vec = modality_vector(counts_raw, "MIMIC Doctors", patho, modality_order)
+        row[patho] = bray_curtis_vec(m_vec, c_vec)
+    # Overall
+    model_overall_vec = overall_vector(counts_raw, model, modality_order)
+    row["Overall"] = bray_curtis_vec(model_overall_vec, mimic_overall_vec)
+    bc_rows.append(row)
+
+bc_df = pd.DataFrame(bc_rows, index=bc_models, columns=bc_cols)
+
+# --- Heatmap (lower = more similar) ---
+plt.figure(figsize=(12, 6))
+ax = sns.heatmap(
+    bc_df, annot=True, fmt=".2f", 
+    # vmin=0, vmax=1,
+    linewidths=0.5, linecolor='white', cbar_kws={"label": "Bray–Curtis dissimilarity"}
+)
+ax.set_title("Bray–Curtis Dissimilarity vs MIMIC Doctors (lower is more similar)")
+ax.set_xlabel("Pathology")
+ax.set_ylabel("Model")
+
+# Save & show
+plt.savefig(
+    os.path.join(OUTPUT_BASE, dt_string, f"BrayCurtis_{dt_string}.png"),
+    dpi=300, bbox_inches='tight'
+)
+plt.tight_layout()
+plt.show()
+# --- End Bray–Curtis plot ---
+
+# --- Plot Chi-square Distance vs MIMIC Doctors (raw counts, symmetric form) ---
+
+# We work on raw per-modality counts
+counts_raw = counts.copy()
+
+def modality_vector(df_counts, model, patho, modality_order):
+    sub = df_counts[(df_counts['Model'] == model) & (df_counts['Pathology'] == patho)]
+    return (
+        sub.set_index('Modality')
+           .reindex(modality_order)['Counts']
+           .fillna(0)
+           .to_numpy(dtype=float)
+    )
+
+def overall_vector(df_counts, model, modality_order):
+    sub = df_counts[df_counts['Model'] == model]
+    v = (sub.groupby('Modality')['Counts']
+           .sum()
+           .reindex(modality_order)
+           .fillna(0)
+           .to_numpy(dtype=float))
+    return v
+
+def chi2_symmetric_vec(x, y):
+    # 0.5 * sum (x - y)^2 / (x + y); bins with x+y==0 contribute 0
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    denom = x + y
+    num = (x - y) ** 2
+    term = np.where(denom == 0, 0.0, num / denom)
+    return 0.5 * np.sum(term)
+
+chi_models = [m for m in model_order if m != "MIMIC Doctors"]
+chi_cols = list(pathologies) + ["Overall"]
+
+mimic_overall_vec = overall_vector(counts_raw, "MIMIC Doctors", modality_order)
+
+# Build the Chi-square distance table
+chi_rows = []
+for model in chi_models:
+    row = {}
+    for patho in pathologies:
+        m_vec = modality_vector(counts_raw, model, patho, modality_order)
+        c_vec = modality_vector(counts_raw, "MIMIC Doctors", patho, modality_order)
+        row[patho] = chi2_symmetric_vec(m_vec, c_vec)
+    model_overall_vec = overall_vector(counts_raw, model, modality_order)
+    row["Overall"] = chi2_symmetric_vec(model_overall_vec, mimic_overall_vec)
+    chi_rows.append(row)
+
+chi_df = pd.DataFrame(chi_rows, index=chi_models, columns=chi_cols)
+
+# --- Heatmap (smaller is closer to clinicians). Note: chi-square distance is unbounded above. ---
+plt.figure(figsize=(12, 6))
+ax = sns.heatmap(
+    chi_df, annot=True, fmt=".2f",
+    vmin=0,  # no fixed vmax since it's unbounded; lets data scale the colormap
+    linewidths=0.5, linecolor='white',
+    cbar_kws={"label": "Chi-square distance (symmetric)"}
+)
+ax.set_title("Chi-square Distance vs MIMIC Doctors (lower is more similar)")
+ax.set_xlabel("Pathology")
+ax.set_ylabel("Model")
+
+# Save & show
+plt.savefig(
+    os.path.join(OUTPUT_BASE, dt_string, f"ChiSquareDistance_{dt_string}.png"),
+    dpi=300, bbox_inches='tight'
+)
+plt.tight_layout()
+plt.show()
+# --- End Chi-square plot ---
+
+# --- Plot Euclidean (L2) Distance vs MIMIC Doctors (raw counts) ---
+
+# Work from raw counts
+counts_raw = counts.copy()
+
+def modality_vector(df_counts, model, patho, modality_order):
+    sub = df_counts[(df_counts['Model'] == model) & (df_counts['Pathology'] == patho)]
+    return (
+        sub.set_index('Modality')
+           .reindex(modality_order)['Counts']
+           .fillna(0)
+           .to_numpy(dtype=float)
+    )
+
+def overall_vector(df_counts, model, modality_order):
+    sub = df_counts[df_counts['Model'] == model]
+    return (
+        sub.groupby('Modality')['Counts']
+           .sum()
+           .reindex(modality_order)
+           .fillna(0)
+           .to_numpy(dtype=float)
+    )
+
+def euclidean_vec(x, y):
+    x = np.asarray(x, float); y = np.asarray(y, float)
+    diff = x - y
+    return float(np.sqrt(np.dot(diff, diff)))  # L2 norm
+
+eu_models = [m for m in model_order if m != "MIMIC Doctors"]
+eu_cols = list(pathologies) + ["Overall"]
+
+mimic_overall_vec = overall_vector(counts_raw, "MIMIC Doctors", modality_order)
+
+# Build Euclidean distance table
+eu_rows = []
+for model in eu_models:
+    row = {}
+    for patho in pathologies:
+        m_vec = modality_vector(counts_raw, model, patho, modality_order)
+        c_vec = modality_vector(counts_raw, "MIMIC Doctors", patho, modality_order)
+        row[patho] = euclidean_vec(m_vec, c_vec)
+    model_overall_vec = overall_vector(counts_raw, model, modality_order)
+    row["Overall"] = euclidean_vec(model_overall_vec, mimic_overall_vec)
+    eu_rows.append(row)
+
+eu_df = pd.DataFrame(eu_rows, index=eu_models, columns=eu_cols)
+
+# --- Heatmap (lower = closer to clinicians). Note: Euclidean is unbounded above. ---
+plt.figure(figsize=(12, 6))
+ax = sns.heatmap(
+    eu_df, annot=True, fmt=".2f",
+    # vmin=0,  # no fixed vmax so the data range drives the color scale
+    linewidths=0.5, linecolor='white',
+    cbar_kws={"label": "Euclidean (L2) distance"}
+)
+ax.set_title("Euclidean Distance vs MIMIC Doctors (lower is more similar)")
+ax.set_xlabel("Pathology")
+ax.set_ylabel("Model")
+
+# Save & show
+plt.savefig(
+    os.path.join(OUTPUT_BASE, dt_string, f"EuclideanDistance_{dt_string}.png"),
+    dpi=300, bbox_inches='tight'
+)
+plt.tight_layout()
+plt.show()
+# --- End Euclidean plot ---
+
+# --- Trajectory Lengths ---
+
+# Plot the average steps taken by each model per pathology
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.ticker import FixedLocator
+import numpy as np
+from collections import defaultdict
+import os
+import matplotlib.patches as mpatches
+from matplotlib.lines import Line2D
+import matplotlib as mpl
+import matplotlib.ticker as ticker
+from scipy.stats import ttest_ind, bartlett, levene
+
+# Use the existing variables from the main script
+experiment = experiments[0]
+model_scores = experiment_scores[experiment]
+model_results = experiment_results[experiment]
+data = []
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id in model_results[model][patho].keys():
+            steps = len(model_results[model][patho][_id]['intermediate_steps'])
+            data.append({"Model": prettify_model_name[model], "Pathology": patho.capitalize(), "Steps": steps})
+df = pd.DataFrame(data, columns=['Model', 'Pathology', 'Steps'])
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+bar_plot = sns.barplot(x='Pathology', y='Steps', hue='Model', data=df, palette=color_map, saturation=intensity)
+bar_plot.set_xlabel('')
+bar_plot.set_ylabel('Average Steps Taken')
+bar_plot.set_title('Average Trajectory Length by Model and Pathology')
+# Add the counts above each bar
+for i, p in enumerate(bar_plot.patches):
+    bar_plot.annotate(format(p.get_height(), '.1f'), 
+        (p.get_x() + p.get_width() / 2., p.get_height()), 
+        ha = 'center', va = 'center', 
+        xytext = (0, 9), 
+        textcoords = 'offset points',
+        fontsize=16)
+# Adjust legend
+handles, labels = bar_plot.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys(), bbox_to_anchor=(1.05,
+    1), loc=2, borderaxespad=0., frameon=False, fontsize=16)
+# Save the plot
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"TrajectoryLengths_{dt_string}.png"), dpi=300, bbox_inches='tight')
+plt.tight_layout()
+plt.show()
+# --- Trajectory Lengths End ---
+
+# Get scores for experiment
+model_scores = experiment_scores[experiments[0]]
+model_results = experiment_results[experiments[0]]
+model_evals = experiment_evals[experiments[0]]
+
+# --- Trajectory Lengths (successful actions only) ---
+
+import re
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+# Heuristics to decide if a tool-call step was "successful"
+VALID_TOOLS = {
+    "Imaging", "Laboratory Tests", "Physical Examination",
+    "Treatment", "Diagnosis", "Final Diagnosis"
+}
+UNSUCCESSFUL_PATTERNS = re.compile(
+    r"(inconclusive|invalid|failed|unable|not\s+performed|error|no\s+such\s+tool)",
+    flags=re.IGNORECASE
+)
+
+def _is_successful_step(step):
+    """
+    step is typically a (AgentAction, observation) tuple.
+    We count it as successful iff:
+      - action.tool is in VALID_TOOLS, AND
+      - the observation string does not contain "unsuccessful" keywords
+    """
+    try:
+        action = step[0]
+        obs = step[1] if len(step) > 1 else ""
+        tool = getattr(action, "tool", None)
+        if tool not in VALID_TOOLS:
+            return False
+        # observation may be dict/obj; stringify safely
+        obs_text = str(obs)
+        if UNSUCCESSFUL_PATTERNS.search(obs_text):
+            return False
+        return True
+    except Exception:
+        return False
+
+# Compute "effective" steps per patient = only successful steps
+data = []
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id, rec in model_results[model][patho].items():
+            steps_list = rec.get('intermediate_steps', [])
+            # Count only successful steps
+            eff_steps = sum(1 for st in steps_list if _is_successful_step(st))
+            data.append({
+                "Model": prettify_model_name[model],
+                "Pathology": patho.capitalize(),
+                "Steps": eff_steps
+            })
+
+df_eff = pd.DataFrame(data, columns=['Model', 'Pathology', 'Steps'])
+
+# Plot
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+bar_plot = sns.barplot(x='Pathology', y='Steps', hue='Model',
+                       data=df_eff, palette=color_map, saturation=intensity)
+bar_plot.set_xlabel('')
+bar_plot.set_ylabel('Average Steps Taken (successful only)')
+bar_plot.set_title('Average Trajectory Length (Unsuccessful Actions Removed)')
+
+for p in bar_plot.patches:
+    h = p.get_height()
+    if h > 0:
+        bar_plot.annotate(f"{h:.1f}",
+                          (p.get_x() + p.get_width()/2., h),
+                          ha='center', va='center', xytext=(0, 9),
+                          textcoords='offset points', fontsize=16)
+
+handles, labels = bar_plot.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys(),
+           bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
+           frameon=False, fontsize=16)
+
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
+            f"TrajectoryLengths_success_only_{dt_string}.png"),
+            dpi=300, bbox_inches='tight')
+plt.tight_layout()
+plt.show()
+# --- End ---
+
+# --- Trajectory Lengths (correctly diagnosed only) ---
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import os
+
+data = []
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id, rec in model_results[model][patho].items():
+            # Requires per-patient correctness flag from model_evals via DIAG key
+            diag_ok = 0
+            try:
+                diag_ok = int(bool(model_evals[model][patho][_id]['scores'][DIAG]))
+            except Exception:
+                diag_ok = 0
+
+            if diag_ok == 1:
+                steps = len(rec.get('intermediate_steps', []))
+                data.append({
+                    "Model": prettify_model_name[model],
+                    "Pathology": patho.capitalize(),
+                    "Steps": steps
+                })
+
+df_correct = pd.DataFrame(data, columns=['Model', 'Pathology', 'Steps'])
+
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+bar_plot = sns.barplot(x='Pathology', y='Steps', hue='Model',
+                       data=df_correct, palette=color_map, saturation=intensity)
+bar_plot.set_xlabel('')
+bar_plot.set_ylabel('Average Steps Taken')
+bar_plot.set_title('Average Trajectory Length (Correct Diagnosis Only)')
+
+for p in bar_plot.patches:
+    h = p.get_height()
+    if h > 0:
+        bar_plot.annotate(f"{h:.1f}",
+                          (p.get_x() + p.get_width()/2., h),
+                          ha='center', va='center', xytext=(0, 9),
+                          textcoords='offset points', fontsize=16)
+
+handles, labels = bar_plot.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys(),
+           bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
+           frameon=False, fontsize=16)
+
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
+            f"TrajectoryLengths_correct_only_{dt_string}.png"),
+            dpi=300, bbox_inches='tight')
+plt.tight_layout()
+plt.show()
+# --- End ---
+
+
+# --- Trajectory Lengths (correct & successful-only) ---
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import os
+
+# Reuse _is_successful_step / VALID_TOOLS / UNSUCCESSFUL_PATTERNS from above
+
+data = []
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id, rec in model_results[model][patho].items():
+            diag_ok = 0
+            try:
+                diag_ok = int(bool(model_evals[model][patho][_id]['scores'][DIAG]))
+            except Exception:
+                diag_ok = 0
+
+            if diag_ok == 1:
+                steps_list = rec.get('intermediate_steps', [])
+                eff_steps = sum(1 for st in steps_list if _is_successful_step(st))
+                data.append({
+                    "Model": prettify_model_name[model],
+                    "Pathology": patho.capitalize(),
+                    "Steps": eff_steps
+                })
+
+df_correct_eff = pd.DataFrame(data, columns=['Model', 'Pathology', 'Steps'])
+
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+bar_plot = sns.barplot(x='Pathology', y='Steps', hue='Model',
+                       data=df_correct_eff, palette=color_map, saturation=intensity)
+bar_plot.set_xlabel('')
+bar_plot.set_ylabel('Average Steps Taken (successful only)')
+bar_plot.set_title('Average Trajectory Length (Correct Diagnosis + Unsuccessful Actions Removed)')
+
+for p in bar_plot.patches:
+    h = p.get_height()
+    if h > 0:
+        bar_plot.annotate(f"{h:.1f}",
+                          (p.get_x() + p.get_width()/2., h),
+                          ha='center', va='center', xytext=(0, 9),
+                          textcoords='offset points', fontsize=16)
+
+handles, labels = bar_plot.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys(),
+           bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
+           frameon=False, fontsize=16)
+
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
+            f"TrajectoryLengths_correct_success_only_{dt_string}.png"),
+            dpi=300, bbox_inches='tight')
+plt.tight_layout()
+plt.show()
+# --- End ---
+
+
+# --- Trajectory Lengths (steps minus evaluator-counted hallucinations) ---
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+# Uses: model_results, model_evals, prettify_model_name, color_map, intensity, OUTPUT_BASE, dt_string
+# For each patient: effective_steps = max(0, len(intermediate_steps) - invalid_tools_count)
+
+data = []
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id, rec in model_results[model][patho].items():
+            total_steps = len(rec.get('intermediate_steps', []))
+            # Pull evaluator-counted hallucinations; default to 0 if missing
+            invalid = 0
+            try:
+                invalid = model_evals[model][patho][_id]['scores'].get('Invalid Tools', 0)
+                # ensure numeric
+                invalid = float(invalid)
+            except Exception:
+                invalid = 0.0
+
+            eff_steps = max(0.0, float(total_steps) - invalid)
+
+            data.append({
+                "Model": prettify_model_name[model],
+                "Pathology": patho.capitalize(),
+                "Steps": eff_steps
+            })
+
+df_steps_minus_hall = pd.DataFrame(data, columns=['Model', 'Pathology', 'Steps'])
+
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+bar_plot = sns.barplot(
+    x='Pathology', y='Steps', hue='Model',
+    data=df_steps_minus_hall, palette=color_map, saturation=intensity
+)
+
+bar_plot.set_xlabel('')
+bar_plot.set_ylabel('Average Steps Taken (Steps − Hallucinations)')
+bar_plot.set_title('Average Trajectory Length (Evaluator Hallucinations Subtracted)')
+
+# annotate means on bars
+for p in bar_plot.patches:
+    h = p.get_height()
+    if h > 0:
+        bar_plot.annotate(
+            f"{h:.1f}",
+            (p.get_x() + p.get_width() / 2., h),
+            ha='center', va='center', xytext=(0, 9),
+            textcoords='offset points', fontsize=16
+        )
+
+# de-duplicate legend
+handles, labels = bar_plot.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys(),
+           bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
+           frameon=False, fontsize=16)
+
+# save
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(
+    os.path.join(OUTPUT_BASE, dt_string, f"TrajectoryLengths_minus_hallucinations_{dt_string}.png"),
+    dpi=300, bbox_inches='tight'
+)
+plt.tight_layout()
+plt.show()
+# --- End Trajectory Lengths (steps minus hallucinations) ---
+
+# --- Trajectory Lengths (correct diagnosis + steps minus hallucinations) ---
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
+# Uses: model_results, model_evals, prettify_model_name, color_map, intensity, OUTPUT_BASE, dt_string, DIAG
+
+data = []
+for model in model_results.keys():
+    for patho in model_results[model].keys():
+        for _id, rec in model_results[model][patho].items():
+            # keep only correctly diagnosed patients
+            diag_ok = 0
+            try:
+                diag_ok = int(bool(model_evals[model][patho][_id]['scores'][DIAG]))
+            except Exception:
+                diag_ok = 0
+            if diag_ok != 1:
+                continue
+
+            total_steps = len(rec.get('intermediate_steps', []))
+
+            # evaluator-counted hallucinations; default to 0 if missing
+            invalid = 0.0
+            try:
+                invalid = float(model_evals[model][patho][_id]['scores'].get('Invalid Tools', 0))
+            except Exception:
+                invalid = 0.0
+
+            eff_steps = max(0.0, float(total_steps) - invalid)
+
+            data.append({
+                "Model": prettify_model_name[model],
+                "Pathology": patho.capitalize(),
+                "Steps": eff_steps
+            })
+
+df_correct_minus_hall = pd.DataFrame(data, columns=['Model', 'Pathology', 'Steps'])
+
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+bar_plot = sns.barplot(
+    x='Pathology', y='Steps', hue='Model',
+    data=df_correct_minus_hall, palette=color_map, saturation=intensity
+)
+bar_plot.set_xlabel('')
+bar_plot.set_ylabel('Average Steps Taken (Correct − Hallucinations)')
+bar_plot.set_title('Average Trajectory Length (Correct Diagnosis, Evaluator Hallucinations Subtracted)')
+
+# annotate means on bars
+for p in bar_plot.patches:
+    h = p.get_height()
+    if h > 0:
+        bar_plot.annotate(
+            f"{h:.1f}",
+            (p.get_x() + p.get_width() / 2., h),
+            ha='center', va='center', xytext=(0, 9),
+            textcoords='offset points', fontsize=16
+        )
+
+# de-duplicate legend
+handles, labels = bar_plot.get_legend_handles_labels()
+by_label = dict(zip(labels, handles))
+plt.legend(by_label.values(), by_label.keys(),
+           bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.,
+           frameon=False, fontsize=16)
+
+# save
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(
+    os.path.join(OUTPUT_BASE, dt_string, f"TrajectoryLengths_correct_minus_hallucinations_{dt_string}.png"),
+    dpi=300, bbox_inches='tight'
+)
+plt.tight_layout()
+plt.show()
+# --- End Trajectory Lengths (correct + minus hallucinations) ---
 
 
 # --- Plot Treatment Percentage  ---

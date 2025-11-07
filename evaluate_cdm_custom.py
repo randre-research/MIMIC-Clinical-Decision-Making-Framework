@@ -74,6 +74,11 @@ models = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_noise",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_noise_requery",
 
+    # --- ALL SMALLER MODELS ---
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
@@ -83,15 +88,40 @@ models = [
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
-
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    
     # --- ALL MEDIUM MODELS ---
     # "gemma-3-27b-it-exl2-4.0bpw",
     # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    "Qwen3-30B-A3B-exl2-4.0bpw",
-    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Qwen3-30B-A3B-exl2-4.0bpw",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+
+    # --- ALL LARGE MODELS ---
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3-70B-UltraMedical-exl2-4.0bpw",
+    # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery"
+    # "Meditron3-70B-exl2-4.0bpw",
+    # "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
 ]
 
 path_override = {
+    # --- ALL SMALLER MODELS ---
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw": "logs_smaller_models",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_smaller_models",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_smaller_models",
+
     # --- ALL SMALL MODELS ---
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "logs_small_models",
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
@@ -101,12 +131,32 @@ path_override = {
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "logs_small_models",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
     
     # --- ALL MEDIUM MODELS ---
     "gemma-3-27b-it-exl2-4.0bpw": "logs_medium_models",
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_medium_models",
     "Qwen3-30B-A3B-exl2-4.0bpw": "logs_medium_models",
     "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_medium_models",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "logs_medium_models",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "logs_medium_models",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_medium_models",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_medium_models",
+    "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_medium_models",
+    "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_medium_models",
+    
+    # --- ALL LARGE MODELS ---
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw": "logs_large_models",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_large_models",
+    "Llama-3-70B-UltraMedical-exl2-4.0bpw": "logs_large_models",
+    "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_large_models",
+    "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_large_models",
+    "Meditron3-70B-exl2-4.0bpw": "logs_large_models",
+    "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_large_models",
 }
 
 if SEEDED:
@@ -172,6 +222,7 @@ for experiment in [
     # "CDM_VANILLA",
     # "CDM_NOSUMMARY"
     "BIN",
+    # ""
 ]:
     print(experiment)
     model_scores = {}
@@ -204,6 +255,8 @@ for experiment in [
             if experiment == "CDM_VANILLA":
                 # results_log_path = f"{BASE_MIMIC}/logs/{patho}_ZeroShot_{model}_*/{patho}{run}"
                 results_log_path = f"{BASE_MIMIC}/logs/{patho}_ZeroShot_{model}_*[0-9]/{patho}{run}"
+            elif experiment == "":
+                results_log_path = f"{BASE_MIMIC}/logs/{patho}_ZeroShot_{model}_*/{patho}{run}"
             else:
                 results_log_path = f"{BASE_MIMIC}/logs/{patho}_ZeroShot_{model}_*_{experiment}/{patho}{run}"
 

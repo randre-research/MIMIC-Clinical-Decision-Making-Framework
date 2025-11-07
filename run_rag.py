@@ -27,7 +27,7 @@ from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import FAISS
-from rag.rag_appplication import EmbeddingModelContainer, VectorStore, Retriever
+from rag.rag_appplication import EmbeddingModelContainer, VectorStore, Retriever, RerankerContainer
 # --- End RAG Imports ---
 
 # --- NLTK imports ---
@@ -132,6 +132,7 @@ def run(args: DictConfig):
             chunk_overlap=args.rag_chunk_overlap,
             smart_chunking=args.rag_smart_chunking,
             pre_embed_path=os.path.join(args.base_rag_documents, args.rag_pre_embed_path.lstrip('/')) if hasattr(args, 'rag_pre_embed_path') else None,
+            use_bm25=args.rag_vector_store_use_bm25 if hasattr(args, 'rag_vector_store_use_bm25') else False,
         )
 
         # --- IF USING MEDCPT: DOCUMENTS EMBEDDER DIFFERENT FROM QUERY EMBEDDER ---
@@ -144,6 +145,15 @@ def run(args: DictConfig):
             )
             embedding_model_container.load_model(args.base_models)
 
+        
+        # 3) Cross-encoder reranker
+        if (args.rag_re_rank if hasattr(args, 'rag_re_rank') else False):
+            rerank_container = RerankerContainer(
+                model_name_or_path=args.rag_re_rank_model,
+                device=device,
+            )
+            rerank_container.load_model(args.base_models)
+
         # Initialize the retriever
         retriever = Retriever(
             vector_store=vector_store,
@@ -151,7 +161,11 @@ def run(args: DictConfig):
             top_k_retrieval=args.rag_top_k,
             top_k_rerank=args.rag_top_k_rerank if hasattr(args, 'rag_top_k_rerank') else args.rag_top_k,
             re_rank=args.rag_re_rank,
+            rerank_container=rerank_container if (args.rag_re_rank if hasattr(args, 'rag_re_rank') else False) else None,
             prompt_name=args.rag_prompt_name,
+            hybrid=args.rag_retrieval_hybrid_bm25 if hasattr(args, 'rag_retrieval_hybrid_bm25') else False,
+            hybrid_alpha=args.rag_retrieval_hybrid_bm25_alpha if hasattr(args, 'rag_retrieval_hybrid_bm25_alpha') else 1.0,
+            bm25_k=args.rag_retrieval_hybrid_bm25_top_k if hasattr(args, 'rag_retrieval_hybrid_bm25_top_k') else 0,
         )
     # --- End RAG Initialization ---
 

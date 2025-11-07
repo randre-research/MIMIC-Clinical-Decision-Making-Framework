@@ -293,3 +293,11 @@ Relevant Information:
 
 Patient History: 
 {input}{user_tag_end}{ai_tag_start}Thought:{agent_scratchpad}"""
+
+REQUERY_PROMPT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
+
+{user_tag_start}Rewrite the following reports into a single, concise search question.
+Output ONLY the question on one line.
+No explanations, no quotes, no bullets.
+
+Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""

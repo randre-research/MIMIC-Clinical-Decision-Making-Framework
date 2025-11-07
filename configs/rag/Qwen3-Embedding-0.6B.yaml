@@ -1,0 +1,91 @@
+# @package _global_
+defaults:
+  - _self_
+
+rag_name: Qwen3-Embedding-0.6B_boosted_ms-marco_rerank #Qwen3-Embedding-0.6B_boosted_medprocner_rerank
+rag_embedding_model: Qwen3-Embedding-0.6B
+
+#Embedding model parameters
+rag_chunk_size: 256
+rag_chunk_overlap: 64
+
+rag_smart_chunking: False #For markdown
+
+rag_embed_max_length: 256 #for nv embed if i remember correctly
+
+rag_requery: True
+
+#Retrieval parameters
+rag_top_k: 40
+rag_prompt_name: "s2p_query" # or "s2s_query" s2p = (short query to long passage)
+
+rag_re_rank: True
+rag_re_rank_model: MedCPT-Cross-Encoder #ms-marco-MiniLM-L6-v2 #Medprocner-CE-Reranker #MedCPT-Cross-Encoder #ms-marco-MiniLM-L6-v2
+rag_top_k_rerank: 8
+
+rag_vector_store_use_bm25: True
+rag_retrieval_hybrid_bm25: True
+rag_retrieval_hybrid_bm25_alpha: 0.6 # amount of dense, rest is BM25
+rag_retrieval_hybrid_bm25_top_k: 60 # BM25 candidate pool
+
+# Document paths for retrieval
+rag_documents:
+  - /pdf/cdm_appendicitis_s13017-020-00306-3.pdf
+  - /pdf/cdm_cholecystitis_s13017-020-00336-x.pdf
+  - /pdf/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf
+  - /pdf/cdm_pancreatitis_s13017-019-0247-0.pdf
+  # # - /chunkr/cdm_appendicitis_s13017-020-00306-3.json
+  # # - /chunkr/cdm_cholecystitis_s13017-020-00336-x.json
+  # # - /chunkr/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.json
+  # # - /chunkr/cdm_pancreatitis_s13017-019-0247-0.json
+  # - /markdown/cdm_appendicitis_s13017-020-00306-3_edited.md
+  # - /markdown/cdm_cholecystitis_s13017-020-00336-x.md
+  # - /markdown/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.md
+  # - /markdown/cdm_pancreatitis_s13017-019-0247-0.md
+  # - /pdf/noise/Abdominal_Aortic_Aneurysm_ESVS-2024-AAA-Guidelines.pdf
+  # - /pdf/noise/Acute_mesenteric_ischemia_s13017-022-00443-x.pdf
+  # - /pdf/noise/BJOG - 2016 - - Diagnosis and Management of Ectopic Pregnancy.pdf
+  # - /pdf/noise/Cholangitis_piis0016510720351117.pdf
+  # - /pdf/noise/EAU-Guidelines-on-Urolithiasis-2025.pdf
+  # - /pdf/noise/Gastroenteritis_0086IC_ic-51-217.pdf
+  # - /pdf/noise/Ischaemic_colitis_flgastro-2019-101204.pdf
+  # - /pdf/noise/Pelvic_Inflammatory_Disease_tcrm-19-183.pdf
+  # # - /pdf/noise/Peptic_Ulcer_CPGUlcerEN.pdf
+  # - /pdf/noise/Pyelonephritis_acute_antimicrobial_prescribing.pdf
+  # - /pdf/noise/Small_Bowel_Obstruction_s13017-018-0185-2.pdf
+  # - /pdf/john/Abdominal_Aortic_Aneurysm_ESVS-2024-AAA-Guidelines.pdf
+  # - /pdf/john/Acute_mesenteric_ischemia_s13017-022-00443-x.pdf
+  # - /pdf/john/BJOG - 2016 - - Diagnosis and Management of Ectopic Pregnancy.pdf
+  # - /pdf/john/cdm_appendicitis_s13017-020-00306-3.pdf
+  # - /pdf/john/cdm_cholecystitis_s13017-020-00336-x.pdf
+  # - /pdf/john/cdm_diverticulitis_the_american_society_of_colon_and_rectal_surgeons.6.pdf
+  # - /pdf/john/cdm_pancreatitis_s13017-019-0247-0.pdf
+  # - /pdf/john/Cholangitis_piis0016510720351117.pdf
+  # - /pdf/john/Clostridioides_difficile_nfection_dkac404.pdf
+  # - /pdf/john/Diabetic_ketoacidosis_JBDS_02_DKA_Guideline_with_QR_code_March_2023.pdf
+  # - /pdf/john/EAU-Guidelines-on-Urolithiasis-2025.pdf
+  # - /pdf/john/Gastroenteritis_0086IC_ic-51-217.pdf
+  # - /pdf/john/Ischaemic_colitis_flgastro-2019-101204.pdf
+  # - /pdf/john/Pelvic_Inflammatory_Disease_tcrm-19-183.pdf
+  # - /pdf/john/Peptic_Ulcer_CPGUlcerEN.pdf
+  # - /pdf/john/Pyelonephritis_acute_antimicrobial_prescribing.pdf
+  # - /pdf/john/Small_Bowel_Obstruction_s13017-018-0185-2.pdf
+  # - /pdf/john/Spontaneous_Bacterial_Peritonitis_PIIS0168827810004782.pdf
+  # - /pdf/john/Testicular_Torsion_p835.pdf
+  # - /pdf/john/Ulcerative_colitis_PIIS001650852405563X.pdf
+  # --- BOOSTED ---
+  - /pdf/boosted/aafp_appendicitis_aafp.org_0701_p25.pdf
+  - /pdf/boosted/idsa_appendicitis_ciae348.pdf
+  - /pdf/boosted/sages_appendicitis_sages.org-Guideline for the Diagnosis and Treatment of Appendicitis.pdf
+  - /pdf/boosted/jcm_cholecystitis_jcm-13-02695-v2.pdf
+  - /pdf/boosted/nice_cholecystitis_gallstone-disease-pdf-75545237643973.pdf
+  - /pdf/boosted/tokyo_cholecystitis_J Hepato Biliary Pancreat - 2017 - Yokoe - Tokyo Guidelines 2018 diagnostic criteria and severity grading of acute.pdf
+  - /pdf/boosted/aga_diverticulitis_PIIS0016508520355128.pdf
+  - /pdf/boosted/euro_diverticulitis_Colorectal Disease - 2020 - Schultz - European Society of Coloproctology guidelines for the management of diverticular.pdf
+  - /pdf/boosted/nice_diverticulitis_diverticular-disease-diagnosis-and-management-pdf-66141784856005.pdf
+  - /pdf/boosted/bspghan_pancreatitis-frontline-gastro-review.pdf
+  - /pdf/boosted/iap_pancreatitis_IAP_APA_Evidence-based_Guidelines_Management_Acute_Pancreatitis_-_Pancreatology_2013.pdf
+  - /pdf/boosted/nice_pancreatitis-pdf-66141537952453.pdf
+
+
+# RAG Leaderboard: https://huggingface.co/spaces/mteb/leaderboard
