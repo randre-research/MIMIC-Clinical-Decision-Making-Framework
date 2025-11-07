@@ -670,10 +670,6 @@ class Retriever:
             raise ValueError("hybrid=True but VectorStore was created with use_bm25=False.")
 
     def retrieve(self, query):
-        """
-        - If hybrid=False: dense-only retrieval from FAISS.
-        - If hybrid=True: dense + BM25 hybrid fusion, then (optionally) rerank via cross-encoder.
-        """
         # ----- 1) Dense query embedding -----
         query_embedding = self.embedding_model.embed_query(query, prompt_name=self.prompt_name)
         query_embedding = np.array([query_embedding]).astype('float32')
@@ -682,24 +678,21 @@ class Retriever:
         D, I = self.vector_store.index.search(query_embedding, self.top_k_retrieval)
         dense_indices = I[0]
         dense_distances = D[0]   # L2 distances (smaller = better)
+        dense_scores = -dense_distances  # convert to similarity
 
-        # Convert distances to similarities (larger = better)
-        dense_scores = -dense_distances  # simple negation is enough for ranking
-
-        # Map idx -> dense_score
         dense_score_dict = {int(idx): float(score) for idx, score in zip(dense_indices, dense_scores)}
+
+        bm25_score_dict = {}
+        fusion_scores = {}
 
         if self.hybrid:
             # ----- 2) BM25 retrieval -----
             bm25_results = self.vector_store.search_bm25(query, top_k=self.bm25_k)
-            # bm25_results: list[(doc_idx, bm25_score)]
-
             bm25_score_dict = {doc_idx: score for doc_idx, score in bm25_results}
 
-            # ----- 3) Score fusion (min-max normalize each, then weighted sum) -----
+            # ----- 3) Score fusion -----
             all_indices = set(dense_score_dict.keys()) | set(bm25_score_dict.keys())
 
-            # Min-max normalize dense scores
             dense_vals = np.array(list(dense_score_dict.values()))
             if len(dense_vals) > 0 and dense_vals.max() > dense_vals.min():
                 dense_min, dense_max = dense_vals.min(), dense_vals.max()
@@ -707,7 +700,6 @@ class Retriever:
             else:
                 def norm_dense(x): return 1.0
 
-            # Min-max normalize BM25 scores
             bm25_vals = np.array(list(bm25_score_dict.values()))
             if len(bm25_vals) > 0 and bm25_vals.max() > bm25_vals.min():
                 bm25_min, bm25_max = bm25_vals.min(), bm25_vals.max()
@@ -716,7 +708,6 @@ class Retriever:
                 def norm_bm25(x): return 1.0
 
             alpha = self.hybrid_alpha
-            fusion_scores = {}
 
             for idx in all_indices:
                 d = dense_score_dict.get(idx, None)
@@ -728,7 +719,6 @@ class Retriever:
                 combined = alpha * d_norm + (1.0 - alpha) * s_norm
                 fusion_scores[idx] = combined
 
-            # Sort by combined score
             fused_sorted = sorted(
                 fusion_scores.items(),
                 key=lambda kv: kv[1],
@@ -741,8 +731,40 @@ class Retriever:
             # Dense-only path
             final_indices = list(dense_indices)
 
-        # Grab documents
-        retrieved_docs = [self.vector_store.doc_chunks[i] for i in final_indices]
+        # ----- 3.5) Attach retrieval provenance metadata -----
+        retrieved_docs = []
+        for idx in final_indices:
+            doc = self.vector_store.doc_chunks[idx]
+
+            # Flags: did this doc come from dense / BM25 candidate set?
+            dense_hit = idx in dense_score_dict
+            bm25_hit = idx in bm25_score_dict
+
+            doc.metadata['dense_hit'] = dense_hit
+            doc.metadata['bm25_hit'] = bm25_hit
+
+            # Optional: store raw scores for later inspection
+            if idx in dense_score_dict:
+                doc.metadata['dense_score'] = float(dense_score_dict[idx])
+            if idx in bm25_score_dict:
+                doc.metadata['bm25_score'] = float(bm25_score_dict[idx])
+
+            # Optional: a single “source” label for quick analysis
+            if self.hybrid:
+                if dense_hit and not bm25_hit:
+                    primary = 'dense_only'
+                elif bm25_hit and not dense_hit:
+                    primary = 'bm25_only'
+                elif dense_hit and bm25_hit:
+                    primary = 'hybrid'
+                else:
+                    primary = 'unknown'
+            else:
+                primary = 'dense_only'
+
+            doc.metadata['retrieval_source'] = primary
+
+            retrieved_docs.append(doc)
 
         # ----- 4) Optional cross-encoder reranking -----
         if self.re_rank and self.rerank_container is not None and len(retrieved_docs) > 0:
@@ -755,35 +777,39 @@ class Retriever:
         return self._format_results(retrieved_docs)
 
     def _format_results(self, documents):
-        """
-        Uniform result formatting.
-        Includes rerank_score if cross-encoder was used.
-        """
         results = []
         for doc in documents:
             format = doc.metadata.get('format', 'unknown')
             rerank_score = doc.metadata.get('rerank_score', 0.0)
 
+            base = {
+                'chunk_id': doc.metadata.get('chunk_id'),
+                'score': rerank_score,
+                'format': format,
+                # provenance:
+                'retrieval_source': doc.metadata.get('retrieval_source', None),
+                'dense_hit': doc.metadata.get('dense_hit', False),
+                'bm25_hit': doc.metadata.get('bm25_hit', False),
+                'dense_score': doc.metadata.get('dense_score', None),
+                'bm25_score': doc.metadata.get('bm25_score', None),
+            }
+
             if format == 'medcpt':
-                results.append({
-                    'chunk_id': doc.metadata.get('chunk_id'),
+                base.update({
                     'document_reference': doc.metadata.get('source'),
                     'document_id': doc.metadata.get('document_id'),
                     'tags': doc.metadata.get('tags'),
                     'content': doc.page_content,
-                    'score': rerank_score,
-                    'format': format
                 })
             else:
-                results.append({
-                    'chunk_id': doc.metadata.get('chunk_id'),
+                base.update({
                     'document_reference': doc.metadata.get('document_reference'),
                     'page_number': doc.metadata.get('page_number'),
                     'token_size': doc.metadata.get('token_size'),
                     'order_in_document': doc.metadata.get('order_in_document'),
                     'content': doc.page_content,
-                    'score': rerank_score,
-                    'format': format
                 })
+
+            results.append(base)
 
         return results
