@@ -296,7 +296,7 @@ Patient History:
 
 REQUERY_PROMPT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
 
-{user_tag_start}Rewrite the following reports into a single, concise search question.
+{user_tag_start}Rewrite the following reports into a single, concise search question to find relevant imaging modalities and laboratory tests for diagnosis.
 Output ONLY the question on one line.
 No explanations, no quotes, no bullets.
 
