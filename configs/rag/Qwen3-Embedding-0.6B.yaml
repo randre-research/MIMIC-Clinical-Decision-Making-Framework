@@ -14,13 +14,14 @@ rag_smart_chunking: False #For markdown
 rag_embed_max_length: 256 #for nv embed if i remember correctly
 
 rag_requery: True
+rag_requery_max_length: 2048
 
 #Retrieval parameters
 rag_top_k: 40
 rag_prompt_name: "s2p_query" # or "s2s_query" s2p = (short query to long passage)
 
 rag_re_rank: True
-rag_re_rank_model: MedCPT-Cross-Encoder #ms-marco-MiniLM-L6-v2 #Medprocner-CE-Reranker #MedCPT-Cross-Encoder #ms-marco-MiniLM-L6-v2
+rag_re_rank_model: ms-marco-MiniLM-L6-v2 #Medprocner-CE-Reranker #MedCPT-Cross-Encoder #ms-marco-MiniLM-L6-v2
 rag_top_k_rerank: 8
 
 rag_vector_store_use_bm25: True

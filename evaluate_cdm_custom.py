@@ -77,7 +77,8 @@ models = [
     # --- ALL SMALLER MODELS ---
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
 
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
@@ -121,6 +122,7 @@ path_override = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw": "logs_smaller_models",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_smaller_models",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_smaller_models",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "logs_smaller_models",
 
     # --- ALL SMALL MODELS ---
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "logs_small_models",
@@ -221,8 +223,8 @@ for chunk_id, doc_info in pubmed_combined.items():
 for experiment in [
     # "CDM_VANILLA",
     # "CDM_NOSUMMARY"
-    "BIN",
-    # ""
+    # "BIN",
+    ""
 ]:
     print(experiment)
     model_scores = {}

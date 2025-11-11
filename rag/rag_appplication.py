@@ -597,10 +597,21 @@ class RerankerContainer:
 
     def load_model(self, base_models: str) -> None:
         model_path = join(base_models, self.model_name)
-        self.cross_encoder = CrossEncoder(
-            model_path,
-            device=self.device
-        )
+        max_length = 0
+        if ("medcpt" in self.model_name.lower()):
+            max_length = 512
+
+        if (max_length > 0):
+            self.cross_encoder = CrossEncoder(
+                model_path,
+                device=self.device,
+                max_length=max_length #token limit for some models
+            )
+        else:
+            self.cross_encoder = CrossEncoder(
+                model_path,
+                device=self.device
+            )
 
     def rerank(self, query: str, documents):
         pairs = [

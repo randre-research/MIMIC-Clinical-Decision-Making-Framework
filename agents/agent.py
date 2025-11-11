@@ -64,12 +64,15 @@ class CustomZeroShotAgent(ZeroShotAgent):
     # --- RAG ---
     rag_retriever_agent: Any = None #RAG
     rag_requery: bool = False #RAG
+    rag_requery_max_length: int = 2048 #RAG
     retrieved_docs_per_step: Dict[int, List[Dict]] = {}
     requery_chain: Optional[LLMChain] = None
+    
     # step_counter: int = 0
     # --- End RAG ---
     # Added to store step-by-step data
     step_data: List[Dict[str, Any]] = Field(default_factory=list)
+
 
     class Config:
         arbitrary_types_allowed = True
@@ -194,8 +197,8 @@ class CustomZeroShotAgent(ZeroShotAgent):
                 line = line.strip(" \"'")
 
                 # 6) Hard length limit to prevent any residual looping from harming retrieval
-                MAX_LEN_CHARS = 2048 #256
-                line = line[:MAX_LEN_CHARS].strip()
+                max_len_chars = getattr(self, "rag_requery_max_length", 2048)
+                line = line[:max_len_chars].strip()
 
                 # 7) Ensure it looks like a question
                 if line and "?" not in line:
@@ -555,6 +558,7 @@ def build_agent_executor_ZeroShot(
     model_stop_words,
     rag_retriever_agent=None, #RAG
     rag_requery=False, #RAG
+    rag_requery_max_length = 2048, #RAG
 ):
     with open(lab_test_mapping_path, "rb") as f:
         lab_test_mapping_df = pickle.load(f)
@@ -630,6 +634,7 @@ def build_agent_executor_ZeroShot(
         summarize=summarize,
         rag_retriever_agent=rag_retriever_agent, #RAG
         rag_requery=rag_requery, #RAG
+        rag_requery_max_length=rag_requery_max_length,
     )
 
     # Init agent executor

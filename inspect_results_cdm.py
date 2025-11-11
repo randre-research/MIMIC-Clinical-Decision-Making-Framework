@@ -79,7 +79,8 @@ MODELS = [
     # --- ALL SMALLER MODELS ---
     "Llama-3.2-1B-Instruct-exl2-4.0bpw",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
 
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
@@ -170,6 +171,7 @@ prettify_model_name = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw": "LLM (Llama-3.2-1B-Instruct 4.0bpw)", 
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, stella5 400M)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
 
     # --- ALL SMALL MODELS ---
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "LLM (Mistral-7B-instruct-v0.3 4.0bpw)",
@@ -259,6 +261,7 @@ color_map = {
     "LLM (Llama-3.2-1B-Instruct 4.0bpw)": "#9263BB",
     "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, stella5 400M)": "#512D75",
     "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#711583",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#711583",
 
     # --- ALL SMALL MODELS ---
     "LLM (Mistral-7B-instruct-v0.3 4.0bpw)": "#0077B6",
