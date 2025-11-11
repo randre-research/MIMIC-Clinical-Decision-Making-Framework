@@ -256,7 +256,7 @@ def run(args: DictConfig):
             model_stop_words=args.stop_words,
             rag_retriever_agent=retriever if args.use_rag else None,  # RAG
             rag_requery=args.rag_requery if hasattr(args, 'rag_requery') else False,  # RAG
-            requery_max_length=args.rag_requery_max_length if (hasattr(args, 'rag_requery_max_length')) else 2048,  # RAG
+            rag_requery_max_length=args.rag_requery_max_length if (hasattr(args, 'rag_requery_max_length')) else 2048,  # RAG
         )
 
         # Prepare the input for the agent executor
