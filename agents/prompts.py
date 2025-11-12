@@ -301,3 +301,5 @@ Output ONLY the question on one line.
 No explanations, no quotes, no bullets.
 
 Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+
+RERANKER_PROMPT = "Given a clinical search question about a patient case, retrieve passages from clinical guidelines that help choose appropriate physical examinations, laboratory tests, and imaging studies, and that provide diagnostic criteria and initial treatment recommendations for the suspected condition."

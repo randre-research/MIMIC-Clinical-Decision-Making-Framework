@@ -18,6 +18,7 @@ import tiktoken
         
 from sklearn.metrics.pairwise import cosine_similarity
 
+from agents.prompts import RERANKER_PROMPT
 
 
 # --- Embedding Model Container ---
@@ -591,9 +592,23 @@ class RerankerContainer:
     """
     Holds a CrossEncoder reranker and provides a model-agnostic rerank() API.
     """
-    def __init__(self, model_name_or_path: str, device: str = "cpu"):
+    def __init__(
+            self,
+            model_name_or_path: str,
+            device: str = "cpu",
+            instruction: str | None = None,  #optional task/instruction for some rerankers
+        ):
         self.model_name = model_name_or_path
         self.device = device
+
+        name_l = self.model_name.lower()
+        self.is_qwen3_reranker = ("qwen3" in name_l) and ("reranker" in name_l)
+
+        # Default instruction from Qwen3 docs (can be overridden)
+        self.instruction = (
+            instruction
+            or RERANKER_PROMPT
+        )
 
     def load_model(self, base_models: str) -> None:
         model_path = join(base_models, self.model_name)
@@ -613,11 +628,45 @@ class RerankerContainer:
                 device=self.device
             )
 
-    def rerank(self, query: str, documents):
-        pairs = [
-            [query, doc.page_content]
-            for doc in documents
-        ]
+    # --- Qwen3 reranker formatting helpers ---
+    def _format_queries_qwen3(self, query: str, instruction: str | None = None) -> str:
+        """
+        Format the query for Qwen3-Reranker as a chat-style prompt.
+        Mirrors the official example.
+        """
+        #https://huggingface.co/tomaarsen/Qwen3-Reranker-0.6B-seq-cls
+        prefix = '<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. Note that the answer can only be "yes" or "no".<|im_end|>\n<|im_start|>user\n'
+        if instruction is None:
+            instruction = self.instruction
+
+        return f"{prefix}<Instruct>: {instruction}\n<Query>: {query}\n"
+
+    def _format_document_qwen3(self, document: str) -> str:
+        """
+        Format the document for Qwen3-Reranker as a chat-style completion.
+        """
+        suffix = "<|im_end|>\n<|im_start|>assistant\n<think>\n\n</think>\n\n"
+        return f"<Document>: {document}{suffix}"
+    # --- Qwen3 END ---
+
+    def rerank(self, query: str, documents, instruction: str | None = None):
+        instr = instruction or self.instruction
+
+        if self.is_qwen3_reranker:
+            # Qwen3: apply the special formatting to both sides of the pair
+            pairs = [
+                [
+                    self._format_queries_qwen3(query, instr),
+                    self._format_document_qwen3(doc.page_content),
+                ]
+                for doc in documents
+            ]
+        else:
+            # Generic CrossEncoder: vanilla [query, doc] pairs
+            pairs = [
+                [query, doc.page_content]
+                for doc in documents
+            ]
 
         scores = self.cross_encoder.predict(
             pairs,
