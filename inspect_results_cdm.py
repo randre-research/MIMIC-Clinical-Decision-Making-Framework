@@ -34,8 +34,8 @@ import numpy as np
 EVAL_MISMATCH = False
 
 EXPERIMENTS = [
-    # "CDM_VANILLA",
-    "BIN",
+    "CDM_VANILLA",
+    # "BIN",
 ]
 
 MODELS = [
@@ -77,24 +77,44 @@ MODELS = [
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_MedCPT_pubmed_requery",
 
     # --- ALL SMALLER MODELS ---
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
 
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
-    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "gemma-2-9b-it-exl2-4.0bpw",
-    # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    "gemma-2-9b-it-exl2-4.0bpw",
+    # # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw",
-    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
-    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
-    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
-    # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
-    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
+    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
+    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
 
     # --- ALL MEDIUM MODELS ---
     # "gemma-3-27b-it-exl2-4.0bpw",
@@ -103,6 +123,7 @@ MODELS = [
     # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
     # "Qwen3-30B-A3B-exl2-4.0bpw",
     # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
     # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
     # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
     # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
@@ -111,11 +132,13 @@ MODELS = [
     # --- ALL LARGE MODELS ---
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery"
     # "Meditron3-70B-exl2-4.0bpw",
     # "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Meditron3-70B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
 ]
 
 BASELINE_MODEL = MODELS[0]
@@ -172,16 +195,36 @@ prettify_model_name = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, stella5 400M)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
 
     # --- ALL SMALL MODELS ---
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "LLM (Mistral-7B-instruct-v0.3 4.0bpw)",
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
     "gemma-2-9b-it-exl2-4.0bpw": "LLM (gemma-2-9b-it 4.0bpw)",
     "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M)",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw": "LLM (Llama-3.1-8B-Instruct 4.0bpw)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M, k=12, size=512, requery)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)",
     "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M, k=12, size=512, requery)",
@@ -192,6 +235,7 @@ prettify_model_name = {
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M)",
     "Qwen3-30B-A3B-exl2-4.0bpw": "LLM (Qwen3-30B-A3B 4.0bpw)",
     "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M)",
+    "Qwen3-30B-A3B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=16)",
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=16)",
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=12)",
@@ -202,11 +246,13 @@ prettify_model_name = {
     # --- ALL LARGE MODELS ---
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "LLM (Llama-3.1-70B-Instruct 4.0bpw)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, stella5 400M)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw": "LLM (Llama-3-70B-UltraMedical 4.0bpw)",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12)",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)",
     "Meditron3-70B-exl2-4.0bpw": "LLM (Meditron3-70B 4.0bpw)",
     "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Meditron3-70B 4.0bpw, stella5 400M, k=12, size=512, requery)",
+    "Meditron3-70B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Meditron3-70B 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     
 }
 
@@ -258,20 +304,40 @@ color_map = {
     "LLM + RAG (Llama3 70B 4.0bpw, stella5 400M)": "#00B4D8",
 
     # --- ALL SMALLER MODELS ---
-    "LLM (Llama-3.2-1B-Instruct 4.0bpw)": "#9263BB",
+    "LLM (Llama-3.2-1B-Instruct 4.0bpw)": "#813FBA",
     "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, stella5 400M)": "#512D75",
-    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#711583",
-    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#711583",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#C27AD1",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#C27AD1",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#A17AD1",
+    "LLM + RAG (Llama-3.2-1B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#E2B7F0",
 
     # --- ALL SMALL MODELS ---
-    "LLM (Mistral-7B-instruct-v0.3 4.0bpw)": "#0077B6",
+    "LLM (Mistral-7B-instruct-v0.3 4.0bpw)": "#0974AD",
     "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, stella5 400M)": "#00B8D8",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#74BDCB",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#39CFED",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#00B8D8",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#39CFED",
     "LLM (gemma-2-9b-it 4.0bpw)": "#169039",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M)": "#4dc280",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#80c29d",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#80e6ad",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#4dc280",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#80e6ad",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)": "#A0E6AD",
     "LLM (Llama-3.1-8B-Instruct 4.0bpw)": "#943199",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)": "#C157B8",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#BB8FB8",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#E890E0",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#C157B8",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#E890E0",
     "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)": "#BB2424",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)": "#B75555",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#BF8E8E",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#D98888",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#B75555",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#D98888",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)": "#E08888",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F97F77",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)": "#EC9898",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F9F871",
@@ -282,6 +348,7 @@ color_map = {
     "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M)": "#4dc280",
     "LLM (Qwen3-30B-A3B 4.0bpw)": "#943199",
     "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M)": "#C157B8",
+    "LLM + RAG (Qwen3-30B-A3B 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#BB8FB8",
     "LLM + RAG (Qwen3-30B-A3B 4.0bpw, stella5 400M, k=16)": "#F97F77",
     "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=16)": "#EC9898",
     "LLM + RAG (gemma-3-27b-it 4.0bpw, stella5 400M, k=12)": "#F9F871",
@@ -292,11 +359,13 @@ color_map = {
     # --- ALL LARGE MODELS ---
     "LLM (Llama-3.1-70B-Instruct 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, stella5 400M)": "#00B4D8",
+    "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#74BDCB",
     "LLM (Llama-3-70B-UltraMedical 4.0bpw)": "#169039",
     "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12)": "#4dc280",
     "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)": "#943199",
     "LLM (Meditron3-70B 4.0bpw)": "#BB2424",
     "LLM + RAG (Meditron3-70B 4.0bpw, stella5 400M, k=12, size=512, requery)": "#880E0E",
+    "LLM + RAG (Meditron3-70B 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#D98888",
 
     "Appendicitis": "#B0A0BA",
     "Cholecystitis": "#B392AC",
@@ -1379,6 +1448,22 @@ model_hatches = [
     'O',   # larger circle
     '//',  # double slash
     '..',  # dense dots
+    #fix
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
 ]
 
 # Plotting
@@ -1429,6 +1514,36 @@ dense_model_hatches = [
     '+++',  # plus signs
     'ooo',  # triple o
     'OOO',  # triple capital O
+    '////', # quadruple slashes
+    '....', # dense dots
+    #fix
+    '/',   # diagonal slash
+    '.',   # dots
+    '-',   # horizontal dash
+    'x',   # diagonal cross
+    '*',   # star
+    '\\',  # backslash
+    '|',   # vertical bar
+    '+',   # plus
+    'o',   # circle
+    'O',   # larger circle
+    '//',  # double slash
+    '..',  # dense dots
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
+    '/',   # diagonal slash
 ]
 
 model_handles = [mpatches.Patch(facecolor='white', edgecolor='black', hatch=dense_model_hatches[j], label=model_order[j]) for j in range(len(model_order))]
@@ -2038,9 +2153,9 @@ plt.legend(by_label.values(), by_label.keys(),
            frameon=False, fontsize=16)
 
 os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
-plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
-            f"TrajectoryLengths_success_only_{dt_string}.png"),
-            dpi=300, bbox_inches='tight')
+# plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
+#             f"TrajectoryLengths_success_only_{dt_string}.png"),
+#             dpi=300, bbox_inches='tight')
 plt.tight_layout()
 plt.show()
 # --- End ---
@@ -2096,9 +2211,9 @@ plt.legend(by_label.values(), by_label.keys(),
            frameon=False, fontsize=16)
 
 os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
-plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
-            f"TrajectoryLengths_correct_only_{dt_string}.png"),
-            dpi=300, bbox_inches='tight')
+# plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
+#             f"TrajectoryLengths_correct_only_{dt_string}.png"),
+#             dpi=300, bbox_inches='tight')
 plt.tight_layout()
 plt.show()
 # --- End ---
@@ -2157,9 +2272,9 @@ plt.legend(by_label.values(), by_label.keys(),
            frameon=False, fontsize=16)
 
 os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
-plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
-            f"TrajectoryLengths_correct_success_only_{dt_string}.png"),
-            dpi=300, bbox_inches='tight')
+# plt.savefig(os.path.join(OUTPUT_BASE, dt_string,
+#             f"TrajectoryLengths_correct_success_only_{dt_string}.png"),
+#             dpi=300, bbox_inches='tight')
 plt.tight_layout()
 plt.show()
 # --- End ---
@@ -2844,6 +2959,46 @@ import pandas as pd
 #Create pandas dataframe with each document name as a column and each pathology as a row
 #Each cell contains the relative count of chunks of the document for the pathology
 experiment = experiments[0]
+
+brier_scores = {}
+zbrier_scores = {}
+def compute_brier_score(df_heatmap):
+    """
+    Compute the Brier score for the given heatmap DataFrame.
+
+    Args:
+        df_heatmap (pd.DataFrame): DataFrame with actual pathologies as rows and predicted pathologies as columns.
+
+    Returns:
+        float: Brier score.
+    """
+
+    scores = {}
+
+    for i, actual_patho in enumerate(df_heatmap.index):
+        brier_score = 0.0
+        for j, predicted_patho in enumerate(df_heatmap.columns):
+            prob = df_heatmap.iloc[i, j]
+            actual = 1.0 if i == j else 0.0
+            weight = 1.0 if i !=j else len(df_heatmap.columns) -1
+            # brier_score += (prob - actual) ** 2
+            brier_score += (1 - ((prob - actual) ** 2)) * weight  # We invert the Brier score to make higher better
+        brier_score /= ((len(df_heatmap.columns)-1)*2) # In effect its equivalent to the mean squared error across all classes
+        scores[actual_patho] = brier_score
+
+    scores["mean"] = np.mean(list(scores.values()))
+    return scores
+
+def compute_zbrier_score(df_z_heatmap):
+    #score = sum of diag
+    #patho score = diag cell
+    scores = {}
+    for i, patho in enumerate(df_z_heatmap.index):
+        score = df_z_heatmap.iloc[i, i]
+        scores[patho] = score
+    scores["mean"] = np.mean(list(scores.values()))
+    return scores
+
 for model in models:
     df_heatmap_dict = {}
 
@@ -2962,40 +3117,53 @@ for model in models:
             #reduce the empty space between the bars of the barplot
             ax.margins(x=0.01)
 
-        if model_is_rag:
-            # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.eps"), dpi=300, bbox_inches='tight')
-            plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_{pathology}_{dt_string}.png"), dpi=300, bbox_inches='tight')
-        #close the figure
-        plt.close()
+    #     if model_is_rag:
+    #         # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_{pathology}_{dt_string}.eps"), dpi=300, bbox_inches='tight')
+    #         plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_{pathology}_{dt_string}.png"), dpi=300, bbox_inches='tight')
+    #     #close the figure
+    #     plt.close()
 
-    if model_is_rag:
-        #Combine all last four plots into one big plot
-        # fig, axs = plt.subplots(2, 2, figsize=(12, 12))
-        fig, axs = plt.subplots(rows, cols, figsize=(6 * cols, 4 * rows))
-        axs = axs.reshape(-1)  # Flatten to index easily
-        fig.suptitle(f'{model_pretty_name}')
-        #load the images
-        for i, pathology in enumerate(['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']):
-            # ax = axs[i//2, i%2]
-            ax = axs[j]
-            #remove margins
-            ax.margins(x=0)
-            #load the image
-            img = plt.imread(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
-            ax.imshow(img)
-            ax.axis('off')
+    # if model_is_rag:
+    #     #Combine all last four plots into one big plot
+    #     # fig, axs = plt.subplots(2, 2, figsize=(12, 12))
+    #     fig, axs = plt.subplots(rows, cols, figsize=(6 * cols, 4 * rows))
+    #     axs = axs.reshape(-1)  # Flatten to index easily
+    #     fig.suptitle(f'{model_pretty_name}')
+    #     #load the images
+    #     for i, pathology in enumerate(['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']):
+    #         # ax = axs[i//2, i%2]
+    #         ax = axs[j]
+    #         #remove margins
+    #         ax.margins(x=0)
+    #         #load the image
+    #         img = plt.imread(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_{pathology}_{dt_string}.png"))
+    #         ax.imshow(img)
+    #         ax.axis('off')
 
-        # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_all_{dt_string}.eps"), dpi=300, bbox_inches='tight')
-        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_all_{dt_string}.png"), dpi=300, bbox_inches='tight')
-        plt.close()
+    #     # plt.savefig(os.path.join(OUTPUT_BASE, f"Retrievals_{model}_all_{dt_string}.eps"), dpi=300, bbox_inches='tight')
+    #     plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_all_{dt_string}.png"), dpi=300, bbox_inches='tight')
+    #     plt.close()
 
-        #delete the individual images
-        for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
-            os.remove(os.path.join(OUTPUT_BASE, dt_string,f"Retrievals_{model}_{pathology}_{dt_string}.png"))
+    #     #delete the individual images
+    #     for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+    #         os.remove(os.path.join(OUTPUT_BASE, dt_string,f"Retrievals_{model}_{pathology}_{dt_string}.png"))
 
     if model_is_rag:
         #Create a heatmap of the relative counts of chunks per document per pathology per model
-        df_heatmap_count = pd.DataFrame(df_heatmap_dict)
+        df_heatmap_count = pd.DataFrame(df_heatmap_dict).fillna(0.0)
+        #create new pathology columns, which says what pathology each document targets
+        #document names example: "cdm_appendicitis_case123.pdf", "nice_cholecystitis_report456.pdf"
+        df_heatmap_count["document_pathology"] = df_heatmap_count.index.to_series().apply(lambda x: 'appendicitis' if 'appendicitis' in x.lower() else ('cholecystitis' if 'cholecystitis' in x.lower() else ('diverticulitis' if 'diverticulitis' in x.lower() else ('pancreatitis' if 'pancreatitis' in x.lower() else 'other'))))
+        #Order the dataframe by document_pathology
+        df_heatmap_count = df_heatmap_count.sort_values(by="document_pathology")
+        #Clone df_heatmap_count to df_heatmap_count_sum
+        df_heatmap_count_sum = df_heatmap_count.copy()
+        #Drop the document_pathology column
+        df_heatmap_count = df_heatmap_count.drop(columns=["document_pathology"])
+
+        #df_heatmap_count_sum: group by document_pathology and sum the values
+        df_heatmap_count_sum = df_heatmap_count_sum.groupby("document_pathology").sum()
+
         #DEBUG: 
         # print("DF HEATMAP SHAPE", df_heatmap_count.shape)
         # print("DF HEATMAP HEAD", df_heatmap_count.head())
@@ -3036,6 +3204,226 @@ for model in models:
         plt.title(f'{model_pretty_name}\nZ-Score Relative Document Retrieval Per Pathology\n')
         plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_{dt_string}.png"), dpi=300, bbox_inches='tight')
         plt.close()
+
+        #Repeat for df_heatmap_count_sum
+        print("saving heatmap sum")
+        #transpose the dataframe
+        df_heatmap_count_sum = df_heatmap_count_sum.T
+        # #rename the ground truth pathologies to capitalized and the retrieved pathologies to patho%
+        df_heatmap_count_sum.index = [patho.capitalize() for patho in df_heatmap_count_sum.index]
+        df_heatmap_count_sum.columns = [f"{patho}%" for patho in df_heatmap_count_sum.columns]
+        # #DEBUG: make every value in the first three pathologies be 0
+        # df_heatmap_count_sum.iloc[:, :3] = df_heatmap_count_sum.iloc[:, :3] * 0
+        #save to csv
+        df_heatmap_count_sum.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_sum_{dt_string}.csv"))
+        #create new plot
+        # plt.figure(figsize=(12, 12))
+        plt.figure(figsize=(len(df_heatmap_count_sum.columns) * 3, len(df_heatmap_count_sum.index) * 3))
+        sns.heatmap(df_heatmap_count_sum, cmap='viridis', annot=True,
+                    cbar_kws={'label': 'Total Relative Retrieval Per Pathology'})
+        #make the names be diagonal
+        plt.xticks(rotation=45)
+        #make the names be horizontal
+        plt.yticks(rotation=0)
+        plt.title(f'{model_pretty_name}\nTotal Relative Document Retrieval Per Pathology\n')
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_sum_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.close()
+
+        #z-score version
+        #Compute Z-scores per pathology
+        df_heatmap_z_sum = df_heatmap_count_sum.copy()
+        df_heatmap_z_sum = df_heatmap_z_sum.T
+        # for pathology in ['appendicitis', 'cholecystitis', 'diverticulitis', 'pancreatitis']:
+        for pathology in ['Appendicitis', 'Cholecystitis', 'Diverticulitis', 'Pancreatitis']:
+            df_heatmap_z_sum[pathology] = (df_heatmap_z_sum[pathology] - df_heatmap_z_sum[pathology].mean())/df_heatmap_z_sum[pathology].std()  
+        df_heatmap_z_sum = df_heatmap_z_sum.T
+        #save to csv
+        # df_heatmap_z_sum.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_sum_{dt_string}.csv"))
+        #create new plot
+        # plt.figure(figsize=(12, 12))
+        plt.figure(figsize=(len(df_heatmap_z_sum.columns) * 3, len(df_heatmap_z_sum.index) * 3))
+        sns.heatmap(df_heatmap_z_sum, cmap='coolwarm', annot=True, 
+                    cbar_kws={'label': 'Z-Score Total Relative Retrieval Per Pathology'})
+        #make the names be diagonal
+        plt.xticks(rotation=45)
+        #make the names be horizontal
+        plt.yticks(rotation=0)
+        plt.title(f'{model_pretty_name}\nZ-Score Total Relative Document Retrieval Per Pathology\n')
+        plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"Retrievals_{model}_heatmap_zscores_sum_{dt_string}.png"), dpi=300, bbox_inches='tight')
+        plt.close()
+
+        brier_scores[model] = compute_brier_score(df_heatmap_count_sum)
+        zbrier_scores[model] = compute_zbrier_score(df_heatmap_z_sum)
+
+# Barplot of mean brier scores per model
+brier_data = []
+model_names = []
+for model in brier_scores.keys():
+    pretty_name = prettify_model_name[model]
+    brier_data.append([pretty_name, brier_scores[model]["mean"]])
+    model_names.append(pretty_name)
+brier_df = pd.DataFrame(brier_data, columns=['Model', 'Brier Score'])
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+
+# Create the barplot with hue and legend=False to avoid deprecation warning
+bar_plot = sns.barplot(x='Model', y='Brier Score', hue='Model', data=brier_df, 
+                       palette=color_map, saturation=intensity, legend=False)
+bar_plot.set_xlabel('')
+bar_plot.set_title('Weighted inverted Brier utility per Model')
+bar_plot.set_ylabel('Brier Score')
+bar_plot.set_ylim(0, max(brier_df['Brier Score']) * 1.2)
+# Remove x-axis tick labels (model names under bars)
+bar_plot.set_xticklabels([])
+
+# Add the counts above each bar with 4 decimal precision
+for i, p in enumerate(bar_plot.patches):
+    bar_plot.annotate(format(p.get_height(), '.4f'), 
+        (p.get_x() + p.get_width() / 2., p.get_height()), 
+        ha = 'center', va = 'center', 
+        xytext = (0, 9), 
+        textcoords = 'offset points',
+        fontsize=16)
+
+# Create custom legend using pretty names that we know exist
+from matplotlib.patches import Patch
+legend_elements = []
+for i, pretty_name in enumerate(model_names):
+    # Get color from the barplot patches
+    color = bar_plot.patches[i].get_facecolor()
+    legend_elements.append(Patch(color=color, label=pretty_name))
+
+# Add the legend
+plt.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc='upper left', 
+           borderaxespad=0., frameon=False, fontsize=16)
+
+# Adjust layout to make room for legend
+plt.tight_layout(rect=[0, 0, 0.85, 1])  # Leave 15% space on right for legend
+
+# Save the plot
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"BrierScores_{dt_string}.png"), 
+            dpi=300, bbox_inches='tight')
+plt.show()
+# --- brier scores End ---
+
+# Z Retrieval Scores
+brier_data = []
+model_names = []
+for model in brier_scores.keys():
+    pretty_name = prettify_model_name[model]
+    brier_data.append([pretty_name, zbrier_scores[model]["mean"]])
+    model_names.append(pretty_name)
+brier_df = pd.DataFrame(brier_data, columns=['Model', 'Z-Score'])
+sns.set_theme(style="whitegrid", font_scale=1.8)
+plt.figure(figsize=(10, 6))
+
+# Create the barplot with hue and legend=False to avoid deprecation warning
+bar_plot = sns.barplot(x='Model', y='Z-Score', hue='Model', data=brier_df, 
+                       palette=color_map, saturation=intensity, legend=False)
+bar_plot.set_xlabel('')
+bar_plot.set_title('Mean Retrieval Z-Score per Model')
+bar_plot.set_ylabel('Z-Score')
+bar_plot.set_ylim(0, max(brier_df['Z-Score']) * 1.2)
+# Remove x-axis tick labels (model names under bars)
+bar_plot.set_xticklabels([])
+
+# Add the counts above each bar with 4 decimal precision
+for i, p in enumerate(bar_plot.patches):
+    bar_plot.annotate(format(p.get_height(), '.4f'), 
+        (p.get_x() + p.get_width() / 2., p.get_height()), 
+        ha = 'center', va = 'center', 
+        xytext = (0, 9), 
+        textcoords = 'offset points',
+        fontsize=16)
+
+# Create custom legend using pretty names that we know exist
+from matplotlib.patches import Patch
+legend_elements = []
+for i, pretty_name in enumerate(model_names):
+    # Get color from the barplot patches
+    color = bar_plot.patches[i].get_facecolor()
+    legend_elements.append(Patch(color=color, label=pretty_name))
+
+# Add the legend
+plt.legend(handles=legend_elements, bbox_to_anchor=(1.05, 1), loc='upper left', 
+           borderaxespad=0., frameon=False, fontsize=16)
+
+# Adjust layout to make room for legend
+plt.tight_layout(rect=[0, 0, 0.85, 1])  # Leave 15% space on right for legend
+
+# Save the plot
+os.makedirs(os.path.join(OUTPUT_BASE, dt_string), exist_ok=True)
+plt.savefig(os.path.join(OUTPUT_BASE, dt_string, f"BrierZScores_{dt_string}.png"), 
+            dpi=300, bbox_inches='tight')
+plt.show()
+# --- Z brier scores End ---
+
+# # Barplot of mean brier scores per model
+# brier_data = []
+# for model in brier_scores.keys():
+#     brier_data.append([prettify_model_name[model], brier_scores[model]["mean"]])
+# brier_df = pd.DataFrame(brier_data, columns=['Model', 'Brier Score'])
+
+# sns.set(style="whitegrid", font_scale=1.4)
+
+# # Use fig, ax explicitly so we can adjust layout
+# fig, ax = plt.subplots(figsize=(10, 6))
+
+# bar_plot = sns.barplot(
+#     x='Model',
+#     y='Brier Score',
+#     data=brier_df,
+#     palette=color_map,
+#     saturation=intensity,
+#     ax=ax
+# )
+
+# for p in bar_plot.patches:
+#     if p.get_height() > 0:
+#         ax.annotate(
+#             format(p.get_height(), '.3f'),
+#             (p.get_x() + p.get_width() / 2., p.get_height()),
+#             ha='center', va='center',
+#             xytext=(0, 9),
+#             textcoords='offset points'
+#         )
+
+# ax.set_title('Weighted inverted Brier utility per Model')
+# ax.set_ylabel('Brier Score')
+# ax.set_xlabel('')
+# # ax.set_ylim(0, max(brier_df['Brier Score']) * 1.2)
+# ax.set_ylim(0, 1)
+
+# # Legend: move clearly to the right, outside the axes
+# handles, labels = bar_plot.get_legend_handles_labels()
+# by_label = dict(zip(labels, handles))
+
+# # legend = ax.legend(
+# #     by_label.values(),
+# #     by_label.keys(),
+# #     title="Model",
+# #     bbox_to_anchor=(1.02, 1),
+# #     loc="upper left",
+# #     borderaxespad=0.,
+# #     frameon=False,
+# #     fontsize=12
+# # )
+
+# # Give extra space on the right so the legend doesn't squash the plot
+# fig.subplots_adjust(right=0.8, top=0.88)  # tweak top if title is cramped
+
+# plt.savefig(
+#     os.path.join(OUTPUT_BASE, dt_string, f"BrierScores_{dt_string}.png"),
+#     dpi=300,
+#     bbox_inches='tight'
+# )
+# plt.close(fig)
+
+
+#Save brier scores to csv
+brier_scores_df = pd.DataFrame.from_dict(brier_scores, orient='index')
+brier_scores_df.to_csv(os.path.join(OUTPUT_BASE, dt_string, f"BrierScores_{dt_string}.csv"))
 
 if EVAL_MISMATCH:
     # === MISMATCH RAG PLOT ===

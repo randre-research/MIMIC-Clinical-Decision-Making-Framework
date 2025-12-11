@@ -78,18 +78,38 @@ models = [
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
     # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
-    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
 
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
     # "gemma-2-9b-it-exl2-4.0bpw",
     # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw",
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
     # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
     # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
@@ -100,6 +120,7 @@ models = [
     # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
     # "Qwen3-30B-A3B-exl2-4.0bpw",
     # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Qwen3-30B-A3B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
     # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
     # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16",
     # "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
@@ -110,11 +131,13 @@ models = [
     # --- ALL LARGE MODELS ---
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery"
     # "Meditron3-70B-exl2-4.0bpw",
     # "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # "Meditron3-70B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
 ]
 
 path_override = {
@@ -123,17 +146,37 @@ path_override = {
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_smaller_models",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_smaller_models",
     "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "logs_smaller_models",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_smaller_models",
+    "Llama-3.2-1B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "logs_smaller_models",
 
     # --- ALL SMALL MODELS ---
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw": "logs_small_models",
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_small_models",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "logs_small_models",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_small_models",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "logs_small_models",
     "gemma-2-9b-it-exl2-4.0bpw": "logs_small_models",
     "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "logs_small_models",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "logs_small_models",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw": "logs_small_models",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_small_models",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "logs_small_models",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "logs_small_models",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_small_models",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "logs_small_models",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "logs_small_models",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
     "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_small_models",
@@ -144,6 +187,7 @@ path_override = {
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_medium_models",
     "Qwen3-30B-A3B-exl2-4.0bpw": "logs_medium_models",
     "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_medium_models",
+    "Qwen3-30B-A3B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_medium_models",
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "logs_medium_models",
     "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k16": "logs_medium_models",
     "gemma-3-27b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_medium_models",
@@ -154,11 +198,13 @@ path_override = {
     # --- ALL LARGE MODELS ---
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "logs_large_models",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "logs_large_models",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_large_models",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw": "logs_large_models",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "logs_large_models",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_large_models",
     "Meditron3-70B-exl2-4.0bpw": "logs_large_models",
     "Meditron3-70B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "logs_large_models",
+    "Meditron3-70B-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "logs_large_models",
 }
 
 if SEEDED:
@@ -221,10 +267,10 @@ for chunk_id, doc_info in pubmed_combined.items():
         chunk_docs[chunk_id] = doc_id
 
 for experiment in [
-    # "CDM_VANILLA",
+    "CDM_VANILLA",
     # "CDM_NOSUMMARY"
     # "BIN",
-    ""
+    # ""
 ]:
     print(experiment)
     model_scores = {}
