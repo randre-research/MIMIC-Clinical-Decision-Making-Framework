@@ -302,4 +302,20 @@ No explanations, no quotes, no bullets.
 
 Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
 
+# REQUERY_PROMPT_SINGLE_REPORT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite a patient report into a concise search question for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
+
+# {user_tag_start}Rewrite the following report into a single, concise search question to find relevant imaging modalities and laboratory tests for diagnosis.
+# Output ONLY the question on one line.
+# No explanations, no quotes, no bullets.
+
+# Original report:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+
+REQUERY_PROMPT_SINGLE_REPORT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite a patient report into a concise search question for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
+
+{user_tag_start}Rewrite the following report into a single, concise search question to find relevant imaging modalities and laboratory tests for diagnosis.
+Output ONLY the question on one line.
+No quotes, no bullets.
+
+Original report:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+
 RERANKER_PROMPT = "Given a clinical search question about a patient case, retrieve passages from clinical guidelines that help choose appropriate physical examinations, laboratory tests, and imaging studies, and that provide diagnostic criteria and initial treatment recommendations for the suspected condition."

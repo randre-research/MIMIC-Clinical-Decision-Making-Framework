@@ -22,6 +22,7 @@ from agents.prompts import (
     DIAG_CRIT_TOOL_USE_EXAMPLE,
     CHAT_TEMPLATE_RAG, #RAG
     REQUERY_PROMPT, #RAG
+    REQUERY_PROMPT_SINGLE_REPORT, #RAG
 )
 from agents.DiagnosisWorkflowParser import DiagnosisWorkflowParser
 from tools.Tools import (
@@ -65,6 +66,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
     rag_retriever_agent: Any = None #RAG
     rag_requery: bool = False #RAG
     rag_requery_max_length: int = 2048 #RAG
+    rag_requery_only_last_report: bool = False #RAG
     retrieved_docs_per_step: Dict[int, List[Dict]] = {}
     requery_chain: Optional[LLMChain] = None
     
@@ -84,7 +86,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
 
         if self.rag_requery and self.rag_retriever_agent is not None:
             # Create a separate prompt for requery/refinement
-            prompt_requery = create_prompt_requery(self.tags)
+            prompt_requery = create_prompt_requery(self.tags, single_report=self.rag_requery_only_last_report)
 
             # IMPORTANT CHANGE:
             # Do NOT wrap or .bind() the LLM here, because LLMChain expects a BaseLanguageModel,
@@ -120,11 +122,16 @@ class CustomZeroShotAgent(ZeroShotAgent):
         current_step = len(intermediate_steps)
 
         # Extract current information to form the question
-        question = self.extract_current_information(intermediate_steps, kwargs)
+        if self.rag_retriever_agent is not None:
+            if not self.rag_requery_only_last_report:
+                question = self.extract_current_information(intermediate_steps, kwargs)
+            else:
+                # Only use the last report/input for the question
+                question = intermediate_steps[-1][1] if intermediate_steps else kwargs.get("input", "")
 
-        #Print the question
-        print(f"RAG Query (length): {len(question)}")
-        print(f"RAG Query: {question}")
+            #Print the question
+            print(f"RAG Query (length): {len(question)}")
+            print(f"RAG Query: {question}")
 
         # #If the question is too long, ask the LLM to summarize it
         # if len(question) > self.rag_retriever_agent.embedding_model.embed_max_length:
@@ -525,10 +532,11 @@ def create_prompt_rag(
     return template
 
 def create_prompt_requery(
-    tags
+    tags,
+    single_report: bool = False,
 ) -> PromptTemplate:
     template = PromptTemplate(
-        template=REQUERY_PROMPT,
+        template=REQUERY_PROMPT if not single_report else REQUERY_PROMPT_SINGLE_REPORT,
         input_variables=["original_text"],
         partial_variables={
             "system_tag_start": tags["system_tag_start"],
@@ -559,6 +567,7 @@ def build_agent_executor_ZeroShot(
     rag_retriever_agent=None, #RAG
     rag_requery=False, #RAG
     rag_requery_max_length = 2048, #RAG
+    rag_requery_only_last_report=False, #RAG
 ):
     with open(lab_test_mapping_path, "rb") as f:
         lab_test_mapping_df = pickle.load(f)
@@ -634,7 +643,8 @@ def build_agent_executor_ZeroShot(
         summarize=summarize,
         rag_retriever_agent=rag_retriever_agent, #RAG
         rag_requery=rag_requery, #RAG
-        rag_requery_max_length=rag_requery_max_length,
+        rag_requery_max_length=rag_requery_max_length, #RAG
+        rag_requery_only_last_report=rag_requery_only_last_report, #RAG
     )
 
     # Init agent executor

@@ -257,6 +257,7 @@ def run(args: DictConfig):
             rag_retriever_agent=retriever if args.use_rag else None,  # RAG
             rag_requery=args.rag_requery if hasattr(args, 'rag_requery') else False,  # RAG
             rag_requery_max_length=args.rag_requery_max_length if (hasattr(args, 'rag_requery_max_length')) else 2048,  # RAG
+            rag_requery_only_last_report=args.rag_requery_only_last_report if (hasattr(args, 'rag_requery_only_last_report')) else False,  # RAG
         )
 
         # Prepare the input for the agent executor
