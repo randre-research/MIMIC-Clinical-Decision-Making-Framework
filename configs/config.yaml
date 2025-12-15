@@ -15,7 +15,7 @@ include_ref_range: False
 bin_lab_results: False #True #False
 bin_lab_results_abnormal: False #True #False
 provide_diagnostic_criteria: False
-include_tool_use_examples: False
+include_tool_use_examples: False #True #False
 abbreviated: True
 self_consistency: False
 only_abnormal_labs: False #True #False

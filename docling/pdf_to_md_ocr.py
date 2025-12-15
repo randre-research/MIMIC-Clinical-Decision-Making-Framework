@@ -9,6 +9,7 @@ python pdf_to_md_ocr.py \
     /path/to/output_md \
     --ocr \
     --ocr-engine rapidocr \
+    --ocr-backend torch \
     --ocr-lang en \
     --generate-images \
     --image-mode referenced \
@@ -19,29 +20,108 @@ Notes
 -----
 - Requires:
     pip install "docling[all]" transformers huggingface_hub
-    # For RapidOCR + ONNX runtime:
+    # For RapidOCR + ONNX runtime (if you want the ONNX backend):
     pip install rapidocr_onnxruntime
 """
 
 import argparse
+import html
 import logging
 import os
+import re
 from pathlib import Path
 from typing import List, Optional
 
 from huggingface_hub import snapshot_download
 
-from docling.document_converter import (
-    DocumentConverter,
-    PdfFormatOption,
-)
+from hierarchical.postprocessor import ResultPostprocessor
+
+from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling.datamodel.base_models import InputFormat
 from docling.datamodel.accelerator_options import AcceleratorOptions, AcceleratorDevice
-from docling.datamodel.pipeline_options import PdfPipelineOptions, RapidOcrOptions
+from docling.datamodel.pipeline_options import (
+    PdfPipelineOptions,
+    RapidOcrOptions,
+    TableFormerMode,
+)
 from docling_core.types.doc import ImageRefMode
-
+from docling_core.types.doc.document import ContentLayer
+from docling_core.transforms.serializer.base import SerializationResult
+from docling_core.transforms.serializer.markdown import (
+    MarkdownDocSerializer,
+    MarkdownParams,
+    MarkdownTableSerializer,
+)
 
 log = logging.getLogger(__name__)
+
+
+class CleanMarkdownTableSerializer(MarkdownTableSerializer):
+    """
+    Custom table serializer that:
+    - Uses Docling's standard Markdown table serialization.
+    - Then post-processes each table line to:
+        * collapse excessive spaces,
+        * shrink dot-leader patterns (' . . . . . ' / '.....') to a single '...',
+        * shrink long dash runs ('--------') to '---' (Markdown's minimal valid header / rule).
+    """
+
+    # precompiled patterns for speed & clarity
+    DOT_SPACED_PATTERN = re.compile(r"(?:\.\s){3,}")  # ' . . . . ' (3+ spaced dots)
+    DOT_RUN_PATTERN = re.compile(r"\.{4,}")           # '......' (4+ consecutive dots)
+    DASH_RUN_PATTERN = re.compile(r"-{4,}")           # '----' or more dashes
+    MULTISPACE_PATTERN = re.compile(r"[ \t]{2,}")     # 2+ spaces or tabs
+
+    @classmethod
+    def _clean_leaders(cls, text: str) -> str:
+        """
+        Clean dot-leaders and dash-leaders inside a table row.
+        """
+        # Collapse spaced dot leaders: " . . . . . " → " ..."
+        text = cls.DOT_SPACED_PATTERN.sub(" ... ", text)
+        # Collapse long dot runs: "........" → "..."
+        text = cls.DOT_RUN_PATTERN.sub("...", text)
+        # Collapse long dash runs: "--------" → "---"
+        text = cls.DASH_RUN_PATTERN.sub("---", text)
+        return text
+
+    @classmethod
+    def _clean_whitespace(cls, text: str) -> str:
+        """
+        Collapse multiple spaces/tabs while keeping one space for readability.
+        """
+        text = cls.MULTISPACE_PATTERN.sub(" ", text)
+        return text.rstrip()
+
+    def serialize(
+        self,
+        *,
+        item,
+        doc_serializer,
+        doc,
+        **kwargs,
+    ) -> SerializationResult:
+        # Let the base MarkdownTableSerializer create the table (and captions)
+        base_res = super().serialize(
+            item=item,
+            doc_serializer=doc_serializer,
+            doc=doc,
+            **kwargs,
+        )
+
+        if not base_res.text:
+            return base_res
+
+        cleaned_lines: list[str] = []
+        for line in base_res.text.splitlines():
+            if "|" in line:
+                # Only modify actual table rows/separator lines
+                line = self._clean_leaders(line)
+                line = self._clean_whitespace(line)
+            cleaned_lines.append(line)
+
+        base_res.text = "\n".join(cleaned_lines)
+        return base_res
 
 
 def build_pdf_converter(
@@ -60,25 +140,31 @@ def build_pdf_converter(
 
     # Where Docling caches its models (layout, table, OCR, etc.)
     if artifacts_path is not None:
-        # PdfPipelineOptions expects a string path
         pipeline_options.artifacts_path = str(artifacts_path)
+
+    # Use GPU for layout / tableformer if available (Docling will fall back if needed).
+    pipeline_options.accelerator_options = AcceleratorOptions(
+        device=AcceleratorDevice.CUDA
+    )
 
     # Table structure (recommended ON for RAG)
     pipeline_options.do_table_structure = enable_tables
     if enable_tables and getattr(pipeline_options, "table_structure_options", None):
-        # Better header/body cell detection
         ts_opts = pipeline_options.table_structure_options
-        if hasattr(ts_opts, "do_cell_matching"):
-            ts_opts.do_cell_matching = True
+        # High-quality table model
+        ts_opts.mode = TableFormerMode.ACCURATE
+        # Let TableFormer define the cell layout directly
+        ts_opts.do_cell_matching = False
 
     # OCR configuration
     if enable_ocr:
         pipeline_options.do_ocr = True
 
         if use_rapidocr:
+            ocr_options: Optional[RapidOcrOptions] = None
+
             if rapidocr_backend == "onnx":
-                # --- Use RapidOCR as OCR engine, like in the example ---
-                # Where to download the RapidOCR models
+                # ONNX backend: point to ONNX models from Hugging Face
                 if artifacts_path is not None:
                     rapidocr_dir = artifacts_path / "rapidocr_models"
                     download_path = snapshot_download(
@@ -89,7 +175,6 @@ def build_pdf_converter(
                 else:
                     download_path = snapshot_download(repo_id="SWHL/RapidOCR")
 
-                # Model paths follow the Hugging Face repo layout :contentReference[oaicite:1]{index=1}
                 det_model_path = os.path.join(
                     download_path, "PP-OCRv4", "en_PP-OCRv3_det_infer.onnx"
                 )
@@ -97,7 +182,7 @@ def build_pdf_converter(
                     download_path, "PP-OCRv4", "ch_PP-OCRv4_rec_server_infer.onnx"
                 )
                 cls_model_path = os.path.join(
-                    download_path, "PP-OCRv3", "ch_ppocr_mobile_v2.0_cls_train.onnx"
+                    download_path, "PP-OCRv3", "ch_PP-OCRv4_rec_server_infer.onnx"
                 )
 
                 ocr_options = RapidOcrOptions(
@@ -105,34 +190,25 @@ def build_pdf_converter(
                     rec_model_path=rec_model_path,
                     cls_model_path=cls_model_path,
                 )
-            elif rapidocr_backend == "torch":
-                ocr_options = RapidOcrOptions(
-                    backend="torch",
-                )
 
-                # Optional: propagate generic flags
+            elif rapidocr_backend == "torch":
+                # Torch backend: RapidOCR manages its own .pth models and uses GPU
+                ocr_options = RapidOcrOptions(backend="torch")
+
+            else:
+                raise ValueError(f"Unknown RapidOCR backend: {rapidocr_backend}")
+
+            # Propagate generic options
+            if ocr_options is not None:
                 if force_full_page_ocr and hasattr(ocr_options, "force_full_page_ocr"):
                     ocr_options.force_full_page_ocr = True
                 if ocr_lang and hasattr(ocr_options, "lang"):
                     ocr_options.lang = ocr_lang
 
-                # DO NOT set det_model_path / rec_model_path / cls_model_path here
                 pipeline_options.ocr_options = ocr_options
 
-            # Propagate generic options if the RapidOCR class supports them
-            if force_full_page_ocr and hasattr(ocr_options, "force_full_page_ocr"):
-                ocr_options.force_full_page_ocr = True
-            if ocr_lang and hasattr(ocr_options, "lang"):
-                # RapidOCR can also take a lang list in newer docling versions :contentReference[oaicite:2]{index=2}
-                ocr_options.lang = ocr_lang
-
-            pipeline_options.ocr_options = ocr_options
-
-            pipeline_options.accelerator_options = AcceleratorOptions(
-                device=AcceleratorDevice.CUDA,
-            )
         else:
-            # Default / auto OCR engine (Docling decides)
+            # Let Docling pick an OCR engine; pass generic options only
             ocr_opts = getattr(pipeline_options, "ocr_options", None)
             if ocr_opts is not None:
                 if ocr_lang and hasattr(ocr_opts, "lang"):
@@ -222,6 +298,22 @@ def infer_doc_title(doc, fallback: str) -> str:
     return fallback
 
 
+def clean_markdown_entities(md_text: str) -> str:
+    """
+    Decode common HTML entities in the Markdown text so that things like
+    '&lt;' become '<', '&gt;' become '>', etc.
+
+    Also normalizes non-breaking spaces to regular spaces.
+    """
+    # Decode standard HTML entities (&lt;, &gt;, &amp;, &le;, &ge;, &nbsp;, ...)
+    md_text = html.unescape(md_text)
+
+    # Replace non-breaking spaces with regular spaces so they don't cause odd spacing
+    md_text = md_text.replace("\u00a0", " ")
+
+    return md_text
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Batch convert PDFs to Markdown using Docling."
@@ -265,7 +357,10 @@ def main():
     parser.add_argument(
         "--force-full-page-ocr",
         action="store_true",
-        help="If supported by the OCR engine, OCR the full page image even if text is embedded.",
+        help=(
+            "If supported by the OCR engine, OCR the full page image even if "
+            "text is embedded."
+        ),
     )
     parser.add_argument(
         "--ocr-engine",
@@ -359,15 +454,26 @@ def main():
 
         try:
             result = converter.convert(str(pdf_path))
+
+            # Infer and fix heading hierarchy *before* you grab dl_doc
+            ResultPostprocessor(result, source=str(pdf_path)).process()
+
             dl_doc = result.document
 
-            # Save as Markdown; this will also save referenced images if requested.
-            dl_doc.save_as_markdown(
-                filename=out_md_path,
-                artifacts_dir=artifacts_dir,
-                image_mode=image_mode,
-                # keep default image_placeholder <!-- image --> for now
+            serializer = MarkdownDocSerializer(
+                doc=dl_doc,
+                table_serializer=CleanMarkdownTableSerializer(),
+                params=MarkdownParams(
+                    layers={ContentLayer.BODY},
+                    image_mode=image_mode,
+                    image_placeholder="<!-- image -->",
+                ),
             )
+
+            ser_result = serializer.serialize()
+            md_text = ser_result.text
+            md_text = clean_markdown_entities(md_text)
+            out_md_path.write_text(md_text, encoding="utf-8")
 
             # Optional title normalization
             if args.add_title:

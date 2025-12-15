@@ -86,35 +86,41 @@ MODELS = [
 
     # --- ALL SMALL MODELS ---
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw",
-    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
-    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
     # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
-    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
-    "gemma-2-9b-it-exl2-4.0bpw",
-    # # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
-    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
-    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
-    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
-    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
+    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
+    # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw",
+    # # # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    # # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
+    # "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank",
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw",
-    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
-    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
     # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
-    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
-    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
-    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
-    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
-    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
-    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
-    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
-    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
-    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
-    # # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
-    # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
+    # "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw",
+    # # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf",
+    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank",
+    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank",
+    # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank",
+    # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank",
+    # # # "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # # "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # # "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
+    # # # "Mistral-7B-instruct-v0.3-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
 
     # --- ALL MEDIUM MODELS ---
     # "gemma-3-27b-it-exl2-4.0bpw",
@@ -130,9 +136,10 @@ MODELS = [
     # "Qwen3-30B-A3B-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery",
 
     # --- ALL LARGE MODELS ---
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw",
     # "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf",
-    # "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen_rerank",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12",
     # "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery"
@@ -205,6 +212,8 @@ prettify_model_name = {
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)",
+    "Mistral-7B-instruct-v0.3-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank": "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)",
     "gemma-2-9b-it-exl2-4.0bpw": "LLM (gemma-2-9b-it 4.0bpw)",
     "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M)",
     "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
@@ -212,12 +221,15 @@ prettify_model_name = {
     "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
     "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)",
+    "gemma-2-9b-it-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank": "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw": "LLM (Llama-3.1-8B-Instruct 4.0bpw)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_ms-marco_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)",
+    "Llama-3.1-8B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw": "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medprocner_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)",
@@ -225,6 +237,7 @@ prettify_model_name = {
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen3_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_john_medcpt_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)",
+    "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_Qwen3-Embedding-0.6B_lastreport_boosted_medcpt_rerank": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)",
     "Llama-3.1-8B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M, k=12, size=512, requery)",
     "Llama-3.1-8B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)",
     "gemma-2-9b-it-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M, k=12, size=512, requery)",
@@ -247,6 +260,7 @@ prettify_model_name = {
     "Llama-3.1-70B-Instruct-exl2-4.0bpw": "LLM (Llama-3.1-70B-Instruct 4.0bpw)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_stella_en_400M_v5_pdf": "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, stella5 400M)",
     "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_medcpt_rerank": "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)",
+    "Llama-3.1-70B-Instruct-exl2-4.0bpw_Qwen3-Embedding-0.6B_boosted_qwen_rerank": "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw": "LLM (Llama-3-70B-UltraMedical 4.0bpw)",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12": "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12)",
     "Llama-3-70B-UltraMedical-exl2-4.0bpw_stella_en_400M_v5_pdf_k12_s512_ol16_requery": "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)",
@@ -318,6 +332,8 @@ color_map = {
     "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#39CFED",
     "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#00B8D8",
     "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#39CFED",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)": "#6ADFED",
+    "LLM + RAG (Mistral-7B-instruct-v0.3 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)": "#A0E6AD",
     "LLM (gemma-2-9b-it 4.0bpw)": "#169039",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M)": "#4dc280",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#80c29d",
@@ -325,12 +341,15 @@ color_map = {
     "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#4dc280",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#80e6ad",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)": "#A0E6AD",
+    "LLM + RAG (gemma-2-9b-it 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)": "#C2F0D6",
     "LLM (Llama-3.1-8B-Instruct 4.0bpw)": "#943199",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M)": "#C157B8",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#BB8FB8",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, ms-marco rerank)": "#E890E0",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#C157B8",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#E890E0",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)": "#F0A0F0",
+    "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)": "#F4CFF4",
     "MEDLLM (Llama-3.1-8B-UltraMedical 4.0bpw)": "#BB2424",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M)": "#B75555",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, medprocner rerank)": "#BF8E8E",
@@ -338,6 +357,7 @@ color_map = {
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#B75555",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#D98888",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, noise, MedCPT rerank)": "#E08888",
+    "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, Qwen3-Embedding-0.6B, boosted, lastreport MedCPT rerank)": "#F4AFAF",
     "LLM + RAG (Llama-3.1-8B-Instruct 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F97F77",
     "MEDLLM + RAG (Llama-3.1-8B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)": "#EC9898",
     "LLM + RAG (gemma-2-9b-it 4.0bpw, stella5 400M, k=12, size=512, requery)": "#F9F871",
@@ -360,6 +380,7 @@ color_map = {
     "LLM (Llama-3.1-70B-Instruct 4.0bpw)": "#0077B6",
     "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, stella5 400M)": "#00B4D8",
     "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, MedCPT rerank)": "#74BDCB",
+    "LLM + RAG (Llama-3.1-70B-Instruct 4.0bpw, Qwen3-Embedding-0.6B, boosted, Qwen3 rerank)": "#39CFED",
     "LLM (Llama-3-70B-UltraMedical 4.0bpw)": "#169039",
     "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12)": "#4dc280",
     "LLM + RAG (Llama-3-70B-UltraMedical 4.0bpw, stella5 400M, k=12, size=512, requery)": "#943199",
@@ -3153,7 +3174,7 @@ for model in models:
         df_heatmap_count = pd.DataFrame(df_heatmap_dict).fillna(0.0)
         #create new pathology columns, which says what pathology each document targets
         #document names example: "cdm_appendicitis_case123.pdf", "nice_cholecystitis_report456.pdf"
-        df_heatmap_count["document_pathology"] = df_heatmap_count.index.to_series().apply(lambda x: 'appendicitis' if 'appendicitis' in x.lower() else ('cholecystitis' if 'cholecystitis' in x.lower() else ('diverticulitis' if 'diverticulitis' in x.lower() else ('pancreatitis' if 'pancreatitis' in x.lower() else 'other'))))
+        df_heatmap_count["document_pathology"] = df_heatmap_count.index.to_series().apply(lambda x: 'appendicitis' if 'appendicitis' in x.lower() else ('cholecystitis' if 'cholecystitis' in x.lower() else ('diverticulitis' if 'diverticulitis' in x.lower() else ('pancreatitis' if 'pancreatitis' in x.lower() else 'z_other'))))
         #Order the dataframe by document_pathology
         df_heatmap_count = df_heatmap_count.sort_values(by="document_pathology")
         #Clone df_heatmap_count to df_heatmap_count_sum
@@ -3163,6 +3184,10 @@ for model in models:
 
         #df_heatmap_count_sum: group by document_pathology and sum the values
         df_heatmap_count_sum = df_heatmap_count_sum.groupby("document_pathology").sum()
+        #change index z_other to other
+        df_heatmap_count_sum = df_heatmap_count_sum.rename(index={"z_other": "other"})
+        # df_heatmap_count[df_heatmap_count["document_pathology"] == 'z']["document_pathology"] = 'other'
+        # df_heatmap_count.loc[df_heatmap_count["document_pathology"] == 'z_other', "document_pathology"] = 'other'
 
         #DEBUG: 
         # print("DF HEATMAP SHAPE", df_heatmap_count.shape)
