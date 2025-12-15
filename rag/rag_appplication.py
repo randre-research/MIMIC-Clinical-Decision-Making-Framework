@@ -20,6 +20,10 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 from agents.prompts import RERANKER_PROMPT
 
+from docling.document_converter import DocumentConverter
+from docling.chunking import HybridChunker
+from docling_core.transforms.chunker.tokenizer.huggingface import HuggingFaceTokenizer
+from docling_core.transforms.chunker.hierarchical_chunker import DocChunk
 
 # --- Embedding Model Container ---
 
@@ -281,6 +285,32 @@ class VectorStore:
         self.bm25 = None
         self.bm25_corpus_tokens = None
 
+        # Docling fields
+        # --- Docling converter + HybridChunker for markdown files ---
+        # Reuse the *same* tokenizer as the embedding model so that
+        # token-aware chunking matches your embedding context window.
+        self.docling_converter = DocumentConverter()
+
+        hf_tok = getattr(self.embedding_model, "tokenizer", None)
+        self.docling_tokenizer = None
+        self.docling_chunker = None
+
+        if hf_tok is not None:
+            # Wrap HF tokenizer for Docling HybridChunker
+            self.docling_tokenizer = HuggingFaceTokenizer(
+                tokenizer=hf_tok,
+                # optional: cap to your embed_max_length
+                max_tokens=getattr(self.embedding_model, "embed_max_length", 512),
+            )
+            self.docling_chunker = HybridChunker(
+                tokenizer=self.docling_tokenizer,
+                merge_peers=True,  # recommended default
+            )
+        else:
+            # Fallback: HybridChunker with default tokenizer config
+            self.docling_chunker = HybridChunker()
+        # --- End Docling setup ---
+
         # 1) Load & chunk docs
         self.docs = self.load_documents(document_paths)
         self.doc_chunks = self.split_documents(self.docs)
@@ -353,19 +383,84 @@ class VectorStore:
                 raise ValueError(f"Unsupported file format for: {path}")
         return docs
 
-    def load_markdown_file(self, path):
-        with open(path, 'r', encoding='utf-8') as f:
-            content = f.read()
+    # def load_markdown_file(self, path):
+    #     with open(path, 'r', encoding='utf-8') as f:
+    #         content = f.read()
 
+    #     doc_name = os.path.basename(path)
+    #     doc = Document(
+    #         page_content=content,
+    #         metadata={
+    #             "source": doc_name,
+    #             "format": "markdown"
+    #         }
+    #     )
+    #     return [doc]
+
+    def load_markdown_file(self, path):
+        """
+        Load a Markdown file via Docling, then chunk it with HybridChunker
+        and return contextualized chunks as LangChain Documents.
+        """
         doc_name = os.path.basename(path)
-        doc = Document(
-            page_content=content,
-            metadata={
+
+        # If we didn't manage to set up a docling_chunker, fall back
+        # to the old "single big markdown document" behaviour.
+        if self.docling_chunker is None or self.docling_converter is None:
+            with open(path, 'r', encoding='utf-8') as f:
+                content = f.read()
+            doc = Document(
+                page_content=content,
+                metadata={
+                    "source": doc_name,
+                    "format": "markdown",
+                },
+            )
+            return [doc]
+
+        # --- 1) Parse Markdown into a DoclingDocument ---
+        conv_res = self.docling_converter.convert(str(path))
+        dl_doc = conv_res.document
+
+        # --- 2) Run HybridChunker on the DoclingDocument ---
+        chunks = list(self.docling_chunker.chunk(dl_doc=dl_doc))
+
+        lc_docs = []
+        hf_tokenizer = getattr(self.embedding_model, "tokenizer", None)
+
+        for i, ch in enumerate(chunks):
+            print(i, getattr(ch.meta, "headings", None))
+            # --- 3) Contextualize the chunk (adds heading context, etc.) ---            
+            chunk_text = ch.text
+            embed_text = self.docling_chunker.contextualize(chunk=ch)
+            
+            # Optional but recommended: compute token length with your embed tokenizer
+            token_size = None
+            if hf_tokenizer is not None:
+                tokens = hf_tokenizer.encode(chunk_text, add_special_tokens=False)
+                token_size = len(tokens)
+
+            # Basic metadata – you can add more by inspecting ch.meta.doc_items
+            meta = {
                 "source": doc_name,
-                "format": "markdown"
+                "format": "markdown_docling",       # <- important for split_documents
+                "chunk_id": f"{doc_name}_chunk_{i}",
+                "document_reference": doc_name,
+                "page_number": "unknown",
+                "order_in_document": i,
+                "embed_text": embed_text,
             }
-        )
-        return [doc]
+            if token_size is not None:
+                meta["token_size"] = token_size
+
+            lc_doc = Document(
+                page_content=chunk_text,
+                metadata=meta,
+            )
+            lc_docs.append(lc_doc)
+
+        return lc_docs
+
     
     def load_json_file(self, path):
         with open(path, 'r', encoding='utf-8') as file:
@@ -528,8 +623,8 @@ class VectorStore:
 
                     doc_chunks.append(new_chunk)
 
-            # ---------- MEDCPT (already chunked) ----------
-            elif doc.metadata.get('format') == 'medcpt':
+            # ---------- MEDCPT or Docling-based markdown (already chunked) ----------
+            elif doc.metadata.get('format') in ('medcpt', 'markdown_docling'):
                 doc_chunks.append(doc)
 
             # ---------- ALL OTHER FORMATS (PDF, plain text, etc.) ----------
@@ -559,7 +654,12 @@ class VectorStore:
 
     def create_vector_store(self, doc_chunks, pre_embed_path=None):
         if pre_embed_path is None:
-            texts = [doc.page_content for doc in doc_chunks]
+            # Prefer embed_text if present, otherwise fallback to page_content
+            texts = [
+                doc.metadata.get("embed_text", doc.page_content)
+                for doc in doc_chunks
+            ]
+
             embeddings = self.embedding_model.embed(texts)
             embeddings = np.array(embeddings).astype('float32')
 
@@ -620,7 +720,7 @@ class RerankerContainer:
             self.cross_encoder = CrossEncoder(
                 model_path,
                 device=self.device,
-                max_length=max_length #token limit for some models
+                max_length=max_length  # token limit for some models
             )
         else:
             self.cross_encoder = CrossEncoder(
@@ -634,8 +734,10 @@ class RerankerContainer:
         Format the query for Qwen3-Reranker as a chat-style prompt.
         Mirrors the official example.
         """
-        #https://huggingface.co/tomaarsen/Qwen3-Reranker-0.6B-seq-cls
-        prefix = '<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. Note that the answer can only be "yes" or "no".<|im_end|>\n<|im_start|>user\n'
+        # https://huggingface.co/tomaarsen/Qwen3-Reranker-0.6B-seq-cls
+        prefix = (
+            "<|im_start|>system\nJudge whether the Document meets the requirements based on the Query and the Instruct provided. Note that the answer can only be \"yes\" or \"no\".<|im_end|>\n<|im_start|>user\n"
+        )
         if instruction is None:
             instruction = self.instruction
 
@@ -652,19 +754,23 @@ class RerankerContainer:
     def rerank(self, query: str, documents, instruction: str | None = None):
         instr = instruction or self.instruction
 
+        # Helper: pick the text we want the reranker to see
+        def _get_rerank_text(doc):
+            return doc.metadata.get("embed_text", doc.page_content)
+
         if self.is_qwen3_reranker:
             # Qwen3: apply the special formatting to both sides of the pair
             pairs = [
                 [
                     self._format_queries_qwen3(query, instr),
-                    self._format_document_qwen3(doc.page_content),
+                    self._format_document_qwen3(_get_rerank_text(doc)),
                 ]
                 for doc in documents
             ]
         else:
             # Generic CrossEncoder: vanilla [query, doc] pairs
             pairs = [
-                [query, doc.page_content]
+                [query, _get_rerank_text(doc)]
                 for doc in documents
             ]
 
