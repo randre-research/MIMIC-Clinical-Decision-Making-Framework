@@ -121,6 +121,7 @@ class CustomZeroShotAgent(ZeroShotAgent):
         # Calculate the current step number
         current_step = len(intermediate_steps)
 
+        question = ""
         # Extract current information to form the question
         if self.rag_retriever_agent is not None:
             if not self.rag_requery_only_last_report:
