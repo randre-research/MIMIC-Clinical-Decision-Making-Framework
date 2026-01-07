@@ -294,13 +294,29 @@ Relevant Information:
 Patient History: 
 {input}{user_tag_end}{ai_tag_start}Thought:{agent_scratchpad}"""
 
-REQUERY_PROMPT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
+# REQUERY_PROMPT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite patient reports into concise search questions for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
 
-{user_tag_start}Rewrite the following reports into a single, concise search question to find relevant imaging modalities and laboratory tests for diagnosis.
-Output ONLY the question on one line.
-No explanations, no quotes, no bullets.
+# {user_tag_start}Rewrite the following reports into a single, concise search question to find relevant imaging modalities and laboratory tests for diagnosis.
+# Output ONLY the question on one line.
+# No explanations, no quotes, no bullets.
 
-Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+# Original reports:{original_text}{user_tag_end}{ai_tag_start}Rewritten search question:"""
+
+REQUERY_PROMPT = """{system_tag_start}You are an expert clinical diagnostic assistant. Convert longitudinal patient reports (including results of tests already performed) into ONE concise search question that retrieves guideline/pathway content about NEXT diagnostic steps (sequencing of labs + imaging). Avoid disease-definition or “what is the diagnosis” framing.{system_tag_end}
+
+{user_tag_start}Rewrite the following reports into a single, concise search question.
+
+MANDATORY TEMPLATE (must follow exactly):
+"In a patient with <presentation>, after <completed tests/results so far>, what is the recommended next diagnostic workup (labs + imaging) according to guidelines/appropriateness criteria?"
+
+Rules:
+- <presentation>: 5–15 words summarizing the current clinical picture (symptoms + key context).
+- <completed tests/results so far>: mention ONLY the most relevant already-done labs/imaging and their high-level results (normal/abnormal/inconclusive/negative/positive).
+- Do NOT ask “what is the diagnosis?” and do NOT optimize for naming a disease (only mention a diagnosis if explicitly confirmed in the reports).
+- The question must include at least one of these phrases: "recommended diagnostic workup", "diagnostic pathway", "next step", or "imaging appropriateness".
+- Output ONLY the question on one line. No quotes, no bullets.
+
+Reports:{original_text}{user_tag_end}{ai_tag_start}"""
 
 # REQUERY_PROMPT_SINGLE_REPORT = """{system_tag_start}You are an expert medical assistant AI that helps to rewrite a patient report into a concise search question for searching relevant medical information from guidelines, to select the right laboratory tests and imaging modalities to diagnose and treat them.{system_tag_end}
 

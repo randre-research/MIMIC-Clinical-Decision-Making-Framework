@@ -454,7 +454,8 @@ class VectorStore:
                 meta["token_size"] = token_size
 
             lc_doc = Document(
-                page_content=chunk_text,
+                # page_content=chunk_text,
+                page_content=embed_text,   # <- Change 07.01.2026: embed the contextualized text
                 metadata=meta,
             )
             lc_docs.append(lc_doc)
