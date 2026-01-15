@@ -729,6 +729,23 @@ class RerankerContainer:
                 device=self.device
             )
 
+        # -------------------- FIX: ensure padding token is defined --------------------
+        tok = self.cross_encoder.tokenizer
+        model = self.cross_encoder.model
+
+        # CrossEncoder.predict tokenizes with padding=True; batched seq-cls models
+        # error out if config.pad_token_id is missing. :contentReference[oaicite:1]{index=1}
+        if tok.pad_token is None:
+            # Common and safe inference fallback for decoder-ish tokenizers:
+            tok.pad_token = tok.eos_token  # e.g., GPT/Qwen families :contentReference[oaicite:2]{index=2}
+
+        if getattr(model.config, "pad_token_id", None) is None:
+            model.config.pad_token_id = tok.pad_token_id  # :contentReference[oaicite:3]{index=3}
+
+        # Optional (usually harmless): keep padding consistent
+        tok.padding_side = "right"
+        # ---------------------------------------------------------------------------      
+
     # --- Qwen3 reranker formatting helpers ---
     def _format_queries_qwen3(self, query: str, instruction: str | None = None) -> str:
         """
